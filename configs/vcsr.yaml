@@ -1,0 +1,52 @@
+experiment:
+  name: vcsr_main
+  seed: 42
+
+dataset:
+  name: BatsResearch/planetarium
+  split_strategy: template_hash
+  split_ratios: [0.8, 0.1, 0.1]
+
+generation:
+  model: null  # set to HF model id or API endpoint
+  temperature: 0.8
+  top_p: 0.95
+  K_values: [1, 4, 8, 16, 32]
+  max_new_tokens: 1024
+  prompt_template: default
+
+verifier:
+  backbone: microsoft/deberta-v3-base
+  max_seq_len: 512
+  learning_rate: 2.0e-5
+  lr_sweep: [1.0e-5, 2.0e-5, 5.0e-5]
+  batch_size: 16
+  gradient_accumulation_steps: 4
+  epochs: 3
+  early_stopping_patience: 2
+  dropout: 0.1
+  weight_decay: 0.01
+  neg_samples_per_pos: 4
+  perturbation_count: 2
+
+calibration:
+  method: temperature_scaling  # or isotonic
+  tau_sweep: [0.5, 0.6, 0.7, 0.8, 0.9]
+
+search:
+  strategy: verifier_ranked
+  max_repairs: 1
+  planner_filter: false  # enable once Fast Downward is set up
+
+evaluation:
+  check_parse: true
+  check_solvability: false
+  check_equivalence: true
+  planner_timeout_sec: 30
+  report_by_domain: true
+  report_by_style: true
+
+output:
+  dir: results/vcsr_main
+  save_predictions: true
+  wandb_project: vcsr

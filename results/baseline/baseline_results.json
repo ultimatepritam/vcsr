@@ -1,0 +1,34 @@
+{
+  "oracle": {
+    "metrics": "BatchMetrics(n=30, parse=1.000, solve=0.000, equiv=1.000, equiv|parse=1.000, errors=0)",
+    "per_stratum": {
+      "all": "BatchMetrics(n=30, parse=1.000, solve=0.000, equiv=1.000, equiv|parse=1.000, errors=0)",
+      "domain=blocksworld": "BatchMetrics(n=30, parse=1.000, solve=0.000, equiv=1.000, equiv|parse=1.000, errors=0)",
+      "goal=abstract": "BatchMetrics(n=15, parse=1.000, solve=0.000, equiv=1.000, equiv|parse=1.000, errors=0)",
+      "goal=explicit": "BatchMetrics(n=15, parse=1.000, solve=0.000, equiv=1.000, equiv|parse=1.000, errors=0)",
+      "init=abstract": "BatchMetrics(n=15, parse=1.000, solve=0.000, equiv=1.000, equiv|parse=1.000, errors=0)",
+      "init=explicit": "BatchMetrics(n=15, parse=1.000, solve=0.000, equiv=1.000, equiv|parse=1.000, errors=0)",
+      "style=abstract/abstract": "BatchMetrics(n=15, parse=1.000, solve=0.000, equiv=1.000, equiv|parse=1.000, errors=0)",
+      "style=explicit/explicit": "BatchMetrics(n=15, parse=1.000, solve=0.000, equiv=1.000, equiv|parse=1.000, errors=0)"
+    }
+  },
+  "perturbed": {
+    "metrics": "BatchMetrics(n=30, parse=1.000, solve=0.000, equiv=0.667, equiv|parse=0.667, errors=0)",
+    "per_stratum": {
+      "all": "BatchMetrics(n=30, parse=1.000, solve=0.000, equiv=0.667, equiv|parse=0.667, errors=0)",
+      "domain=blocksworld": "BatchMetrics(n=30, parse=1.000, solve=0.000, equiv=0.667, equiv|parse=0.667, errors=0)",
+      "goal=abstract": "BatchMetrics(n=15, parse=1.000, solve=0.000, equiv=0.667, equiv|parse=0.667, errors=0)",
+      "goal=explicit": "BatchMetrics(n=15, parse=1.000, solve=0.000, equiv=0.667, equiv|parse=0.667, errors=0)",
+      "init=abstract": "BatchMetrics(n=15, parse=1.000, solve=0.000, equiv=0.667, equiv|parse=0.667, errors=0)",
+      "init=explicit": "BatchMetrics(n=15, parse=1.000, solve=0.000, equiv=0.667, equiv|parse=0.667, errors=0)",
+      "style=abstract/abstract": "BatchMetrics(n=15, parse=1.000, solve=0.000, equiv=0.667, equiv|parse=0.667, errors=0)",
+      "style=explicit/explicit": "BatchMetrics(n=15, parse=1.000, solve=0.000, equiv=0.667, equiv|parse=0.667, errors=0)"
+    }
+  },
+  "solvability": {
+    "solvable": 30,
+    "total": 30,
+    "rate": 1.0,
+    "errors": 0
+  }
+}
