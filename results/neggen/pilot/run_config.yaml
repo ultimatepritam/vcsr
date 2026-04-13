@@ -1,0 +1,31 @@
+dataset:
+  domains:
+  - blocksworld
+  - gripper
+  max_rows: 500
+  split: train
+experiment:
+  name: neggen_pilot
+  seed: 42
+generation:
+  backends:
+  - K: 2
+    type: bedrock
+  max_new_tokens: 1024
+  retry_attempts: 3
+  retry_delay_sec: 2
+  temperature: 0.8
+  top_p: 0.95
+labeling:
+  method: lightweight
+output:
+  checkpoint_every: 50
+  dir: results/neggen/pilot
+perturbations:
+  count_per_gold: 2
+  types:
+  - swap_goal_pred
+  - drop_init_pred
+  - add_extra_object
+  - negate_goal
+  - swap_pred_args

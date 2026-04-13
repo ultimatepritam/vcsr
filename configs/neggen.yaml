@@ -1,0 +1,47 @@
+experiment:
+  name: neggen_pilot
+  seed: 42
+
+dataset:
+  split: train
+  max_rows: 500
+  domains: [blocksworld, gripper]
+
+generation:
+  backends:
+    # Primary: AWS Bedrock (reads BEDROCK_MODEL_ID from .env)
+    - type: bedrock
+      K: 2
+    # Secondary: OpenRouter (reads OPENROUTER_API_KEY from .env)
+    # - type: openrouter
+    #   model: meta-llama/llama-3-8b-instruct
+    #   K: 2
+    # Optional: direct OpenAI (reads OPENAI_API_KEY from .env)
+    # - type: openai
+    #   model: gpt-4o-mini
+    #   K: 2
+    # Optional: local HuggingFace model
+    # - type: huggingface
+    #   model: meta-llama/Meta-Llama-3-8B-Instruct
+    #   K: 2
+  temperature: 0.8
+  top_p: 0.95
+  max_new_tokens: 1024
+  retry_attempts: 3
+  retry_delay_sec: 2
+
+perturbations:
+  count_per_gold: 2
+  types:
+    - swap_goal_pred
+    - drop_init_pred
+    - add_extra_object
+    - negate_goal
+    - swap_pred_args
+
+labeling:
+  method: lightweight  # or "full" if planner available
+
+output:
+  dir: results/neggen/pilot
+  checkpoint_every: 50

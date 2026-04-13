@@ -15,6 +15,11 @@ networkx>=3.2
 numpy>=1.26.0
 pandas>=2.2.0
 
+# LLM API backends
+openai>=1.30.0
+boto3>=1.34.0
+python-dotenv>=1.0.0
+
 # Config and logging
 pyyaml>=6.0
 wandb>=0.17.0

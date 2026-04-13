@@ -1,0 +1,14 @@
+{
+  "rows_processed": 5,
+  "rows_skipped": 0,
+  "llm_total": 10,
+  "llm_parseable": 0,
+  "llm_equivalent": 0,
+  "llm_errors": 10,
+  "pert_total": 10,
+  "pert_parseable": 10,
+  "pert_equivalent": 0,
+  "total_examples": 15,
+  "parseable_examples": 15,
+  "elapsed_sec": 1018.7
+}
