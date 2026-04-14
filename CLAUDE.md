@@ -110,7 +110,7 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 - **Logging:** `tqdm` + piped stdout can look “stuck”; use `PYTHONUNBUFFERED=1`, per-row `logger` lines, and optional `Tee-Object` to `run_log.txt`.
 - **PowerShell:** use `Set-Location ...; $env:VAR = "1"; ...` — not bash `&& $env:VAR=...` syntax.
-- **Label noise:** rare `perturbation` + `label=1` pairs possible (e.g. `negate_goal` quirks); optional filter before training.
+- **Label noise:** rare `perturbation` + `label=1` pairs — use `labeling.perturbation_positive_policy` (`relabel` default, or `drop` / `keep`) in `configs/neggen.yaml`, or `scripts/apply_perturbation_label_policy.py` on existing JSONL.
 
 ---
 

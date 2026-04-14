@@ -72,6 +72,10 @@ Pilot artifacts live under `results/neggen/pilot/` when you run `generate_negati
 
 Configure generation in `configs/neggen.yaml` (backends, K, perturbations, **equivalence timeout**).
 
+Rare **perturbation** rows can get Planetarium `label=1` (noise). Default **`labeling.perturbation_positive_policy: relabel`** forces them to negatives on new runs. To patch an existing JSONL without regenerating:
+
+`python scripts/apply_perturbation_label_policy.py results/neggen/pilot/verifier_train.jsonl out.jsonl --policy relabel`
+
 ## External Tools
 
 **Fast Downward** (classical planner) and **VAL** (plan validator) are C++ tools

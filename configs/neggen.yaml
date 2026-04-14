@@ -46,6 +46,9 @@ labeling:
   # Use subprocess+timeout only when num_objects >= this (avoids ~10–30s spawn cost per check on small rows).
   # Set to 0 to always use subprocess+timeout.
   equivalence_subprocess_min_objects: 8
+  # Perturbations are meant as hard negatives. Rare Planetarium equiv=1 rows are usually noise.
+  # relabel: force label 0 | drop: skip row | keep: trust equivalence
+  perturbation_positive_policy: relabel
 
 output:
   dir: results/neggen/pilot

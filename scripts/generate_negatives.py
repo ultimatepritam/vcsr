@@ -140,6 +140,7 @@ def process_row(
     row_idx: int,
     equiv_timeout_sec: Optional[float] = 120.0,
     subprocess_min_objects: int = 8,
+    perturbation_positive_policy: str = "relabel",
 ) -> dict:
     """
     Process a single Planetarium row:
@@ -173,6 +174,8 @@ def process_row(
         "pert_total": 0,
         "pert_parseable": 0,
         "pert_equivalent": 0,
+        "pert_positive_relabeled": 0,
+        "pert_positive_dropped": 0,
         "equiv_timeouts": 0,
     }
 
@@ -242,6 +245,10 @@ def process_row(
         allowed_types=pert_types,
     )
 
+    policy = (perturbation_positive_policy or "relabel").lower()
+    if policy not in ("keep", "relabel", "drop"):
+        policy = "relabel"
+
     for perturbed_pddl, ptype in perturbations:
         stats["pert_total"] += 1
         parseable = try_parse_pddl(perturbed_pddl)
@@ -261,6 +268,22 @@ def process_row(
                 stats["equiv_timeouts"] += 1
         else:
             label = 0
+
+        planetarium_equiv = bool(parseable and label == 1)
+        if planetarium_equiv and policy == "drop":
+            logger.warning(
+                "Perturbation %s equivalent to gold — dropping row (perturbation_positive_policy=drop)",
+                ptype,
+            )
+            stats["pert_positive_dropped"] += 1
+            continue
+        if planetarium_equiv and policy == "relabel":
+            logger.warning(
+                "Perturbation %s equivalent to gold — relabeling as negative",
+                ptype,
+            )
+            label = 0
+            stats["pert_positive_relabeled"] += 1
 
         if label == 1:
             stats["pert_equivalent"] += 1
@@ -307,6 +330,7 @@ def main():
     out_config = config.get("output", {})
     equiv_timeout_sec = label_config.get("equivalence_timeout_sec", 120.0)
     subprocess_min_objects = int(label_config.get("equivalence_subprocess_min_objects", 8))
+    pert_pos_policy = str(label_config.get("perturbation_positive_policy", "relabel"))
 
     max_rows = args.max_rows or ds_config.get("max_rows", 500)
     if args.dry_run:
@@ -380,6 +404,8 @@ def main():
         "pert_total": 0,
         "pert_parseable": 0,
         "pert_equivalent": 0,
+        "pert_positive_relabeled": 0,
+        "pert_positive_dropped": 0,
         "equiv_timeouts": 0,
     }
 
@@ -413,6 +439,7 @@ def main():
             row_idx=i,
             equiv_timeout_sec=float(equiv_timeout_sec),
             subprocess_min_objects=subprocess_min_objects,
+            perturbation_positive_policy=pert_pos_policy,
         )
         row_elapsed = time.time() - row_t0
 
@@ -425,6 +452,8 @@ def main():
             "pert_total",
             "pert_parseable",
             "pert_equivalent",
+            "pert_positive_relabeled",
+            "pert_positive_dropped",
             "equiv_timeouts",
         ]:
             agg_stats[k] += row_stats[k]
@@ -493,8 +522,13 @@ def main():
     logger.info(
         f"Perturbations: {agg_stats['pert_total']} total, "
         f"{agg_stats['pert_parseable']} parseable, "
-        f"{agg_stats['pert_equivalent']} equivalent"
+        f"{agg_stats['pert_equivalent']} equivalent (after policy)"
     )
+    if agg_stats.get("pert_positive_relabeled") or agg_stats.get("pert_positive_dropped"):
+        logger.info(
+            f"Perturbation equiv overrides: relabeled={agg_stats['pert_positive_relabeled']} "
+            f"dropped={agg_stats['pert_positive_dropped']}"
+        )
     logger.info(f"Equivalence timeouts (labeled not equivalent): {agg_stats['equiv_timeouts']}")
     logger.info(f"Elapsed: {elapsed:.1f}s")
     logger.info(f"Output: {output_dir}")
