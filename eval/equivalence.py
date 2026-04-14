@@ -3,10 +3,16 @@ Equivalence evaluation wrapper around Planetarium's evaluation API.
 
 Provides batch evaluation with parseability, solvability (optional),
 and semantic equivalence metrics, stratified by domain and description style.
+
+Large PDDL instances can make graph isomorphism / fully_specify pathologically slow.
+Use check_equivalence_lightweight_timed() from data pipelines to bound wall time.
 """
 
 import logging
+import multiprocessing as mp
+import queue
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Optional
 
 import planetarium
@@ -98,6 +104,73 @@ def check_equivalence_lightweight(
         result.error = f"Equivalence check failed: {e}"
 
     return result
+
+
+def _equiv_child_run(
+    gold_pddl: str,
+    candidate_pddl: str,
+    is_placeholder: bool,
+    out_q: "mp.Queue",
+) -> None:
+    """Module-level entry for multiprocessing spawn (Windows)."""
+    import sys
+
+    root = Path(__file__).resolve().parent.parent
+    if str(root) not in sys.path:
+        sys.path.insert(0, str(root))
+    try:
+        r = check_equivalence_lightweight(gold_pddl, candidate_pddl, is_placeholder)
+        out_q.put(r)
+    except Exception as e:
+        out_q.put(EvalResult(parseable=False, equivalent=False, error=str(e)))
+
+
+def check_equivalence_lightweight_timed(
+    gold_pddl: str,
+    candidate_pddl: str,
+    is_placeholder: bool = False,
+    timeout_sec: float = 120.0,
+) -> EvalResult:
+    """
+    Same as check_equivalence_lightweight but runs in a spawned subprocess and
+    kills it if it exceeds timeout_sec. Prevents hour-long hangs on large instances.
+
+    On timeout, returns equivalent=False, parseable=True, error='timeout' (conservative
+    for verifier negatives).
+    """
+    if timeout_sec <= 0:
+        return check_equivalence_lightweight(
+            gold_pddl, candidate_pddl, is_placeholder=is_placeholder
+        )
+
+    ctx = mp.get_context("spawn")
+    out_q: mp.Queue = ctx.Queue()
+    proc = ctx.Process(
+        target=_equiv_child_run,
+        args=(gold_pddl, candidate_pddl, is_placeholder, out_q),
+    )
+    proc.start()
+    proc.join(timeout_sec)
+    if proc.is_alive():
+        logger.warning(
+            "Equivalence timed out after %.0fs — killing worker (large/problematic PDDL)",
+            timeout_sec,
+        )
+        proc.terminate()
+        proc.join(25)
+        return EvalResult(
+            parseable=True,
+            equivalent=False,
+            error="timeout",
+        )
+    try:
+        return out_q.get_nowait()
+    except queue.Empty:
+        return EvalResult(
+            parseable=False,
+            equivalent=False,
+            error="child_no_result",
+        )
 
 
 def check_equivalence_full(

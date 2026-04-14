@@ -160,12 +160,20 @@ class BedrockSampler(BaseSampler):
         super().__init__(resolved_model, config)
 
         import boto3
+        from botocore.config import Config
 
+        read_timeout = int(os.environ.get("BEDROCK_READ_TIMEOUT", "600"))
+        boto_config = Config(
+            read_timeout=read_timeout,
+            connect_timeout=60,
+            retries={"max_attempts": 5, "mode": "adaptive"},
+        )
         self._client = boto3.client(
             "bedrock-runtime",
             region_name=os.environ.get("AWS_REGION", "us-east-1"),
             aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
             aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
+            config=boto_config,
         )
         logger.info(f"BedrockSampler initialized: model={self.model}")
 

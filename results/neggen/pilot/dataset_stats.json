@@ -1,23 +1,26 @@
 {
-  "total": 15,
-  "positives": 5,
-  "negatives": 10,
-  "unparseable": 0,
-  "pos_neg_ratio": 0.5,
+  "total": 2499,
+  "positives": 919,
+  "negatives": 1580,
+  "unparseable": 104,
+  "pos_neg_ratio": 0.5816,
   "by_source": {
-    "perturbation": 10,
-    "gold": 5
+    "llm_bedrock": 1000,
+    "perturbation": 999,
+    "gold": 500
   },
   "by_domain": {
-    "gripper": 9,
-    "blocksworld": 6
+    "blocksworld": 1514,
+    "gripper": 985
   },
   "by_perturbation_type": {
-    "drop_init_pred": 4,
-    "add_extra_object": 2,
-    "negate_goal": 2,
-    "swap_goal_pred": 1,
-    "swap_pred_args": 1
+    "negate_goal": 259,
+    "drop_init_pred": 241,
+    "add_extra_object": 228,
+    "swap_pred_args": 189,
+    "swap_goal_pred": 82
   },
-  "by_source_model": {}
+  "by_source_model": {
+    "global.anthropic.claude-haiku-4-5-20251001-v1:0": 1000
+  }
 }

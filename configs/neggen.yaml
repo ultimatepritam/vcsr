@@ -41,7 +41,13 @@ perturbations:
 
 labeling:
   method: lightweight  # or "full" if planner available
+  # Large PDDL graphs can make isomorphism take hours. Subprocess + kill after timeout (Windows-safe).
+  equivalence_timeout_sec: 120
+  # Use subprocess+timeout only when num_objects >= this (avoids ~10–30s spawn cost per check on small rows).
+  # Set to 0 to always use subprocess+timeout.
+  equivalence_subprocess_min_objects: 8
 
 output:
   dir: results/neggen/pilot
-  checkpoint_every: 50
+  # Save checkpoint.jsonl every N rows (resume with --resume). Lower = safer if you stop early.
+  checkpoint_every: 10

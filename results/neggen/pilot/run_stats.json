@@ -1,14 +1,15 @@
 {
-  "rows_processed": 5,
+  "rows_processed": 500,
   "rows_skipped": 0,
-  "llm_total": 10,
-  "llm_parseable": 0,
-  "llm_equivalent": 0,
-  "llm_errors": 10,
-  "pert_total": 10,
-  "pert_parseable": 10,
-  "pert_equivalent": 0,
-  "total_examples": 15,
-  "parseable_examples": 15,
-  "elapsed_sec": 1018.7
+  "llm_total": 1000,
+  "llm_parseable": 902,
+  "llm_equivalent": 417,
+  "llm_errors": 0,
+  "pert_total": 999,
+  "pert_parseable": 993,
+  "pert_equivalent": 2,
+  "equiv_timeouts": 72,
+  "total_examples": 2499,
+  "parseable_examples": 2395,
+  "elapsed_sec": 28746.9
 }

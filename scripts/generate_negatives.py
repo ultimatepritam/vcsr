@@ -15,6 +15,7 @@ import os
 import sys
 import time
 from pathlib import Path
+from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -23,7 +24,10 @@ from tqdm import tqdm
 
 from data.planetarium_loader import PlanetariumDataset
 from data.verifier_dataset import VerifierDatasetBuilder
-from eval.equivalence import check_equivalence_lightweight
+from eval.equivalence import (
+    check_equivalence_lightweight,
+    check_equivalence_lightweight_timed,
+)
 from generation.perturbations import generate_perturbations
 from generation.sampler import MultiSampler, SamplerConfig
 
@@ -32,6 +36,16 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
 logger = logging.getLogger(__name__)
+
+
+def _flush_logs():
+    """Force log handlers to flush (helps when stdout is piped / line-buffering is off)."""
+    for h in logging.root.handlers:
+        h.flush()
+    if hasattr(sys.stdout, "flush"):
+        sys.stdout.flush()
+    if hasattr(sys.stderr, "flush"):
+        sys.stderr.flush()
 
 
 def load_config(config_path: str) -> dict:
@@ -51,16 +65,50 @@ def try_parse_pddl(pddl_str: str) -> bool:
         return False
 
 
-def label_candidate(gold_pddl: str, candidate_pddl: str, is_placeholder: bool = False) -> int:
-    """Label a candidate via Planetarium equivalence. Returns 1 if equivalent, 0 otherwise."""
+def label_candidate(
+    gold_pddl: str,
+    candidate_pddl: str,
+    is_placeholder: bool = False,
+    equiv_timeout_sec: Optional[float] = None,
+    num_objects: Optional[int] = None,
+    subprocess_min_objects: int = 8,
+) -> tuple[int, bool]:
+    """
+    Label a candidate via Planetarium equivalence. Returns (label, timed_out).
+
+    For num_objects >= subprocess_min_objects (when set), runs the check in a
+    subprocess with a hard timeout — avoids multi-hour hangs on large graphs.
+    Smaller problems stay in-process (fast; ~milliseconds) to avoid Windows
+    spawn overhead (~10–30s per subprocess call).
+    Set subprocess_min_objects to 0 to always use the subprocess+timeout path.
+    """
     try:
-        result = check_equivalence_lightweight(
-            gold_pddl, candidate_pddl, is_placeholder=is_placeholder
+        use_subproc = (
+            equiv_timeout_sec is not None
+            and float(equiv_timeout_sec) > 0
+            and (
+                subprocess_min_objects <= 0
+                or (num_objects is not None and num_objects >= subprocess_min_objects)
+            )
         )
-        return 1 if result.equivalent else 0
+        if use_subproc:
+            result = check_equivalence_lightweight_timed(
+                gold_pddl,
+                candidate_pddl,
+                is_placeholder=is_placeholder,
+                timeout_sec=float(equiv_timeout_sec),
+            )
+        else:
+            result = check_equivalence_lightweight(
+                gold_pddl, candidate_pddl, is_placeholder=is_placeholder
+            )
+        timed_out = result.error == "timeout"
+        if timed_out:
+            logger.warning("Equivalence timeout — labeling as not equivalent")
+        return (1 if result.equivalent else 0), timed_out
     except Exception as e:
         logger.debug(f"Equivalence check failed: {e}")
-        return 0
+        return 0, False
 
 
 def load_checkpoint_progress(output_dir: Path) -> set[str]:
@@ -90,6 +138,8 @@ def process_row(
     perturbation_config: dict,
     seed: int,
     row_idx: int,
+    equiv_timeout_sec: Optional[float] = 120.0,
+    subprocess_min_objects: int = 8,
 ) -> dict:
     """
     Process a single Planetarium row:
@@ -106,6 +156,7 @@ def process_row(
     init_abstract = row.get("init_is_abstract", 0)
     goal_abstract = row.get("goal_is_abstract", 0)
     is_placeholder = bool(row.get("is_placeholder", 0))
+    num_objects = row.get("num_objects")
 
     row_meta = dict(
         domain=domain,
@@ -122,17 +173,22 @@ def process_row(
         "pert_total": 0,
         "pert_parseable": 0,
         "pert_equivalent": 0,
+        "equiv_timeouts": 0,
     }
 
     # 1. Gold positive
     builder.add_gold_positive(nl=nl, gold_pddl=gold_pddl, **row_meta)
 
     # 2. LLM candidates
+    logger.info("Bedrock/LLM: sampling K=%s …", sampler.total_k)
+    _flush_logs()
     try:
         results = sampler.sample(natural_language=nl, domain=domain)
     except Exception as e:
         logger.error(f"Row {row_idx} ({name}): sampler failed: {e}")
         results = []
+    logger.info("Bedrock/LLM: got %d raw results", len(results))
+    _flush_logs()
 
     for sr in results:
         stats["llm_total"] += 1
@@ -146,7 +202,20 @@ def process_row(
         if parseable:
             stats["llm_parseable"] += 1
 
-        label = label_candidate(gold_pddl, pddl, is_placeholder) if parseable else 0
+        if parseable:
+            label, t_out = label_candidate(
+                gold_pddl,
+                pddl,
+                is_placeholder,
+                equiv_timeout_sec=equiv_timeout_sec,
+                num_objects=num_objects,
+                subprocess_min_objects=subprocess_min_objects,
+            )
+            if t_out:
+                stats["equiv_timeouts"] += 1
+        else:
+            label = 0
+
         if label == 1:
             stats["llm_equivalent"] += 1
 
@@ -161,6 +230,8 @@ def process_row(
         )
 
     # 3. Perturbations
+    logger.info("Perturbations + equivalence labeling …")
+    _flush_logs()
     pert_count = perturbation_config.get("count_per_gold", 2)
     pert_types = perturbation_config.get("types", None)
     perturbations = generate_perturbations(
@@ -177,7 +248,20 @@ def process_row(
         if parseable:
             stats["pert_parseable"] += 1
 
-        label = label_candidate(gold_pddl, perturbed_pddl, is_placeholder) if parseable else 0
+        if parseable:
+            label, t_out = label_candidate(
+                gold_pddl,
+                perturbed_pddl,
+                is_placeholder,
+                equiv_timeout_sec=equiv_timeout_sec,
+                num_objects=num_objects,
+                subprocess_min_objects=subprocess_min_objects,
+            )
+            if t_out:
+                stats["equiv_timeouts"] += 1
+        else:
+            label = 0
+
         if label == 1:
             stats["pert_equivalent"] += 1
 
@@ -206,12 +290,23 @@ def main():
                         help="Override output directory")
     args = parser.parse_args()
 
+    # When stdout is piped (e.g. Tee-Object), block buffering hides logs; prefer line mode.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            try:
+                stream.reconfigure(line_buffering=True)
+            except Exception:
+                pass
+
     config = load_config(args.config)
     seed = config.get("experiment", {}).get("seed", 42)
     ds_config = config.get("dataset", {})
     gen_config = config.get("generation", {})
     pert_config = config.get("perturbations", {})
+    label_config = config.get("labeling", {})
     out_config = config.get("output", {})
+    equiv_timeout_sec = label_config.get("equivalence_timeout_sec", 120.0)
+    subprocess_min_objects = int(label_config.get("equivalence_subprocess_min_objects", 8))
 
     max_rows = args.max_rows or ds_config.get("max_rows", 500)
     if args.dry_run:
@@ -245,7 +340,12 @@ def main():
         indices.sort()
         train_data = train_data.select(indices)
 
-    logger.info(f"Processing {len(train_data)} rows")
+    logger.info(
+        "Processing %s rows | equiv: timeout=%ss, subprocess if num_objects>=%s",
+        len(train_data),
+        equiv_timeout_sec,
+        subprocess_min_objects,
+    )
 
     # Initialize sampler
     sampler_config = SamplerConfig(
@@ -280,17 +380,30 @@ def main():
         "pert_total": 0,
         "pert_parseable": 0,
         "pert_equivalent": 0,
+        "equiv_timeouts": 0,
     }
 
     t0 = time.time()
+    n_total = len(train_data)
 
-    for i, row in enumerate(tqdm(train_data, desc="Generating negatives")):
+    # tqdm uses \\r updates; piped logs often look "stuck". Log every row + flush.
+    for i, row in enumerate(tqdm(train_data, desc="Generating negatives", mininterval=2.0)):
         name = row["name"]
 
         if name in processed_names:
             agg_stats["rows_skipped"] += 1
             continue
 
+        logger.info(
+            "Row %d/%d start | domain=%s | name=%s",
+            i + 1,
+            n_total,
+            row.get("domain", ""),
+            (name[:100] + "…") if len(name) > 100 else name,
+        )
+        _flush_logs()
+
+        row_t0 = time.time()
         row_stats = process_row(
             row=row,
             sampler=sampler,
@@ -298,12 +411,32 @@ def main():
             perturbation_config=pert_config,
             seed=seed,
             row_idx=i,
+            equiv_timeout_sec=float(equiv_timeout_sec),
+            subprocess_min_objects=subprocess_min_objects,
         )
+        row_elapsed = time.time() - row_t0
 
         agg_stats["rows_processed"] += 1
-        for k in ["llm_total", "llm_parseable", "llm_equivalent", "llm_errors",
-                   "pert_total", "pert_parseable", "pert_equivalent"]:
+        for k in [
+            "llm_total",
+            "llm_parseable",
+            "llm_equivalent",
+            "llm_errors",
+            "pert_total",
+            "pert_parseable",
+            "pert_equivalent",
+            "equiv_timeouts",
+        ]:
             agg_stats[k] += row_stats[k]
+
+        logger.info(
+            "Row %d/%d done in %.1fs | llm_err=%d this_row",
+            agg_stats["rows_processed"],
+            n_total,
+            row_elapsed,
+            row_stats.get("llm_errors", 0),
+        )
+        _flush_logs()
 
         # Progress logging
         if (agg_stats["rows_processed"]) % 10 == 0:
@@ -315,7 +448,8 @@ def main():
                 f"({agg_stats['llm_parseable']} parseable, "
                 f"{agg_stats['llm_equivalent']} equiv), "
                 f"{agg_stats['pert_total']} perturbations, "
-                f"rate={rate:.1f} rows/sec"
+                f"equiv_timeouts={agg_stats['equiv_timeouts']}, "
+                f"rate={rate:.3f} rows/sec"
             )
 
         # Checkpoint
@@ -361,6 +495,7 @@ def main():
         f"{agg_stats['pert_parseable']} parseable, "
         f"{agg_stats['pert_equivalent']} equivalent"
     )
+    logger.info(f"Equivalence timeouts (labeled not equivalent): {agg_stats['equiv_timeouts']}")
     logger.info(f"Elapsed: {elapsed:.1f}s")
     logger.info(f"Output: {output_dir}")
 

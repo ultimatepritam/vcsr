@@ -17,9 +17,11 @@ generation:
   temperature: 0.8
   top_p: 0.95
 labeling:
+  equivalence_subprocess_min_objects: 8
+  equivalence_timeout_sec: 120
   method: lightweight
 output:
-  checkpoint_every: 50
+  checkpoint_every: 10
   dir: results/neggen/pilot
 perturbations:
   count_per_gold: 2
