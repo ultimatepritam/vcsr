@@ -46,4 +46,5 @@ output:
 
 logging:
   wandb_project: null
-  log_every_n_steps: 20
+  # Optimizer-step interval (not micro-batches). Use 1 to log every step; higher = quieter.
+  log_every_n_steps: 1

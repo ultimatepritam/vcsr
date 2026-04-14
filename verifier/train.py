@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import logging
 import math
+import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -26,6 +27,13 @@ from verifier.model import VerifierModel
 logger = logging.getLogger(__name__)
 
 
+def _flush_logs():
+    for h in logging.root.handlers:
+        h.flush()
+    sys.stdout.flush()
+    sys.stderr.flush()
+
+
 @dataclass
 class TrainConfig:
     learning_rate: float = 2e-5
@@ -39,7 +47,7 @@ class TrainConfig:
     early_stopping_patience: int = 2
     early_stopping_metric: str = "val_auc"
     eval_steps: int = 0
-    log_every_n_steps: int = 20
+    log_every_n_steps: int = 1
     dataloader_workers: int = 0
     save_best_model: bool = True
     save_last_model: bool = False
@@ -120,15 +128,25 @@ def train(
     ]
     optimizer = AdamW(param_groups, lr=config.learning_rate)
 
-    steps_per_epoch = math.ceil(len(train_loader) / config.gradient_accumulation_steps)
-    total_steps = steps_per_epoch * config.epochs
-    warmup_steps = int(total_steps * config.warmup_ratio)
-    scheduler = _get_linear_warmup_scheduler(optimizer, warmup_steps, total_steps)
+    batches_per_epoch = len(train_loader)
+    opt_steps_per_epoch = math.ceil(batches_per_epoch / config.gradient_accumulation_steps)
+    total_opt_steps = opt_steps_per_epoch * config.epochs
+    warmup_steps = int(total_opt_steps * config.warmup_ratio)
+    scheduler = _get_linear_warmup_scheduler(optimizer, warmup_steps, total_opt_steps)
 
     use_amp = config.fp16 and device.type == "cuda"
     scaler = GradScaler("cuda", enabled=use_amp)
 
     state = TrainState()
+
+    logger.info(
+        "Each epoch: %d batches → ~%d optimizer steps (accum=%d). First progress line was slow before; now logs every %d step(s).",
+        batches_per_epoch,
+        opt_steps_per_epoch,
+        config.gradient_accumulation_steps,
+        max(1, config.log_every_n_steps),
+    )
+    _flush_logs()
 
     for epoch in range(1, config.epochs + 1):
         state.epoch = epoch
@@ -138,6 +156,15 @@ def train(
         t0 = time.time()
 
         optimizer.zero_grad()
+
+        logger.info(
+            "Epoch %d/%d start (%d batches, ~%d optimizer steps) …",
+            epoch,
+            config.epochs,
+            batches_per_epoch,
+            opt_steps_per_epoch,
+        )
+        _flush_logs()
 
         for batch_idx, batch in enumerate(train_loader):
             batch = {k: v.to(device) for k, v in batch.items()}
@@ -155,6 +182,14 @@ def train(
             epoch_loss += out["loss"].item()
             n_batches += 1
 
+            if batch_idx == 0:
+                logger.info(
+                    "  First micro-batch OK (batch 0/%d) — loss=%.4f",
+                    batches_per_epoch - 1,
+                    out["loss"].item(),
+                )
+                _flush_logs()
+
             if (batch_idx + 1) % config.gradient_accumulation_steps == 0 or (batch_idx + 1) == len(train_loader):
                 scaler.unscale_(optimizer)
                 torch.nn.utils.clip_grad_norm_(model.parameters(), config.max_grad_norm)
@@ -164,13 +199,23 @@ def train(
                 optimizer.zero_grad()
                 state.global_step += 1
 
-                if config.log_every_n_steps and state.global_step % config.log_every_n_steps == 0:
+                log_this = config.log_every_n_steps <= 0 or (
+                    state.global_step % max(1, config.log_every_n_steps) == 0
+                )
+                if log_this:
                     avg = epoch_loss / n_batches
                     lr = scheduler.get_last_lr()[0]
                     logger.info(
-                        "epoch %d step %d | loss=%.4f lr=%.2e",
-                        epoch, state.global_step, avg, lr,
+                        "epoch %d optimizer_step %d/%d (epoch batch %d/%d) | loss=%.4f lr=%.2e",
+                        epoch,
+                        state.global_step,
+                        total_opt_steps,
+                        batch_idx + 1,
+                        batches_per_epoch,
+                        avg,
+                        lr,
                     )
+                    _flush_logs()
                     if wandb_run:
                         wandb_run.log({"train/loss": avg, "train/lr": lr}, step=state.global_step)
 

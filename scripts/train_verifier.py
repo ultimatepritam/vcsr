@@ -111,7 +111,7 @@ def main():
         early_stopping_patience=train_cfg.get("early_stopping_patience", 2),
         early_stopping_metric=train_cfg.get("early_stopping_metric", "val_auc"),
         eval_steps=eval_cfg.get("eval_steps", 0),
-        log_every_n_steps=log_cfg.get("log_every_n_steps", 20),
+        log_every_n_steps=log_cfg.get("log_every_n_steps", 1),
         dataloader_workers=train_cfg.get("dataloader_workers", 0),
         save_best_model=out_cfg.get("save_best_model", True),
         save_last_model=out_cfg.get("save_last_model", False),
