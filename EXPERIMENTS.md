@@ -146,6 +146,73 @@ Project takeaway:
 - It is not yet ready for final abstention claims without a cleaner calibration protocol.
 - Before paper-facing conclusions, use a separate calibration split or nested validation and then recompute threshold / risk-coverage curves.
 
+### Clean Calibration Protocol
+
+- Goal: fit calibration on one split and evaluate threshold / risk-coverage behavior on a separate untouched split.
+- Script: [scripts/calibrate_verifier.py](/e:/Engineering/vcsr/scripts/calibrate_verifier.py)
+- Inputs:
+  - [configs/verifier_full.yaml](/e:/Engineering/vcsr/configs/verifier_full.yaml)
+  - [results/verifier/full_run/best_model/model.pt](/e:/Engineering/vcsr/results/verifier/full_run/best_model/model.pt)
+- Outputs:
+  - [results/verifier/full_run/calibration_report.json](/e:/Engineering/vcsr/results/verifier/full_run/calibration_report.json)
+  - [results/verifier/full_run/calibration_eval_scores.jsonl](/e:/Engineering/vcsr/results/verifier/full_run/calibration_eval_scores.jsonl)
+- Protocol:
+  - start from the verifier's held-out validation pool (`357` rows)
+  - split by template group into calibration (`180`) and evaluation (`177`) subsets
+  - fit calibration only on the calibration subset
+  - report threshold sweeps and risk-coverage curves only on the evaluation subset
+- Status: completed
+
+Key evaluation results from [calibration_report.json](/e:/Engineering/vcsr/results/verifier/full_run/calibration_report.json):
+
+- Evaluation raw-score AUC: `0.7982`
+- Evaluation raw-score log loss: `0.5176`
+- Evaluation raw-score ECE: `0.0803`
+- Temperature scaling:
+  - fitted temperature: `1.05`
+  - evaluation log loss: `0.5156`
+  - evaluation ECE: `0.0776`
+- Isotonic regression:
+  - evaluation AUC: `0.7763`
+  - evaluation log loss: `0.5378`
+  - evaluation ECE: `0.0398`
+
+Best threshold results on the untouched evaluation subset:
+
+- Raw: best F1 `0.6374` at threshold `0.25`
+- Temperature-scaled: best F1 `0.6374` at threshold `0.25`
+- Isotonic: best F1 `0.6378` at threshold `0.30`
+
+Risk-coverage examples on the evaluation subset:
+
+- Raw scores at threshold `0.50`:
+  - coverage `0.1864`
+  - selective accuracy `0.6970`
+  - selective risk `0.3030`
+- Raw scores at threshold `0.25`:
+  - coverage `0.6780`
+  - selective accuracy `0.4833`
+  - selective risk `0.5167`
+- Temperature-scaled scores at threshold `0.90`:
+  - coverage `0.0904`
+  - selective accuracy `0.9375`
+  - selective risk `0.0625`
+
+Interpretation:
+
+- This is the first calibration result we should treat as methodologically credible for internal decision-making.
+- The verifier's ranking quality remains encouraging under the cleaner protocol (`AUC ≈ 0.80` on the untouched evaluation subset).
+- Temperature scaling helps calibration a little, but does not materially change ranking or the best threshold.
+- Isotonic improves calibration error more strongly, but loses some ranking quality on the untouched evaluation subset.
+- The trustworthy operating region now looks clearer:
+  - lower thresholds around `0.25` are better if we want higher recall / coverage
+  - higher thresholds are useful for abstention-style high-confidence acceptance with lower coverage
+
+Project takeaway:
+
+- We now have a usable and cleaner basis for threshold selection and selective prediction analysis.
+- The next natural experiment is verifier-ranked best-of-K with one or two chosen operating points from this report, rather than using the arbitrary default `0.5`.
+
 ## Recommended Next Entries
 
 - Threshold sweep on `results/verifier/full_run` validation scores
