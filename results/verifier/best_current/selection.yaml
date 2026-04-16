@@ -1,0 +1,22 @@
+selected_at: 2026-04-17
+selected_run: results\verifier\lr_sweep\lr_5em05
+checkpoint_path: results\verifier\lr_sweep\lr_5em05\best_model\model.pt
+training_history_path: results\verifier\lr_sweep\lr_5em05\train_history.json
+val_metrics_path: results\verifier\lr_sweep\lr_5em05\val_metrics.json
+calibration_report_path: results\verifier\lr_sweep\lr_5em05\calibration_report.json
+
+selection_reason:
+  summary: Best current verifier checkpoint from the LR sweep.
+  criteria:
+    - highest validation AUC among the tested learning rates
+    - highest clean evaluation raw AUC under the separate calibration/evaluation protocol
+    - highest best-threshold F1 on the untouched evaluation subset
+
+metrics_snapshot:
+  val_auc: 0.7777074542897329
+  val_f1: 0.4787234042553192
+  eval_raw_auc: 0.7929172510518934
+  best_raw_f1: 0.6630434782608695
+  best_raw_threshold: 0.25
+  best_temp_f1: 0.6630434782608695
+  best_temp_threshold: 0.3
