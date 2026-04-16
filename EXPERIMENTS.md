@@ -105,6 +105,47 @@ Project takeaway:
 - We are now past "can the verifier train?" and into "how do we calibrate and use it safely?"
 - The next experiments should focus on score calibration, threshold sweeps, and selective-risk analysis before implementing verifier-ranked search as the main inference policy.
 
+### Verifier Calibration / Threshold Analysis
+
+- Goal: understand whether the verifier's weak-looking fixed-threshold behavior is a ranking problem or a calibration / operating-point problem.
+- Config/model source: [configs/verifier_full.yaml](/e:/Engineering/vcsr/configs/verifier_full.yaml),
+  [results/verifier/full_run/best_model/model.pt](/e:/Engineering/vcsr/results/verifier/full_run/best_model/model.pt)
+- Analysis script: [scripts/analyze_verifier.py](/e:/Engineering/vcsr/scripts/analyze_verifier.py)
+- Outputs:
+  - [results/verifier/full_run/score_analysis.json](/e:/Engineering/vcsr/results/verifier/full_run/score_analysis.json)
+  - [results/verifier/full_run/val_scores.jsonl](/e:/Engineering/vcsr/results/verifier/full_run/val_scores.jsonl)
+- Status: completed diagnostic analysis
+
+Key findings from [score_analysis.json](/e:/Engineering/vcsr/results/verifier/full_run/score_analysis.json):
+
+- Raw-score AUC: `0.7766`
+- Raw-score log loss: `0.5038`
+- Raw-score ECE (10 bins): `0.0777`
+- Best raw-threshold F1 on this validation split: `0.6198` at threshold `0.20`
+- Temperature scaling improved calibration modestly:
+  - best temperature: `1.15`
+  - log loss: `0.5018`
+  - ECE: `0.0696`
+- Isotonic regression fit the validation split much more aggressively:
+  - AUC: `0.7934`
+  - log loss: `0.4432`
+  - ECE: effectively `0`
+  - best F1: `0.6253` at threshold `0.30`
+
+Interpretation:
+
+- The main bottleneck after training is threshold selection and calibration, not total verifier failure.
+- The default threshold of `0.5` is too conservative for this checkpoint and leaves substantial recall on the table.
+- A lower threshold around `0.2` to `0.3` dramatically improves F1 on the held-out split.
+- Temperature scaling gives a small but believable improvement and preserves ranking behavior.
+- Isotonic looks stronger in this analysis, but because it is fit and evaluated on the same validation split, it is optimistic and should not yet be treated as a final reporting result.
+
+Project takeaway:
+
+- This verifier is likely ready for early verifier-ranked best-of-K experiments as a ranking component.
+- It is not yet ready for final abstention claims without a cleaner calibration protocol.
+- Before paper-facing conclusions, use a separate calibration split or nested validation and then recompute threshold / risk-coverage curves.
+
 ## Recommended Next Entries
 
 - Threshold sweep on `results/verifier/full_run` validation scores
