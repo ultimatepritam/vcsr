@@ -6,7 +6,7 @@ calibrated semantic verification, best-of-K selection, and abstention-aware repa
 ## Project Structure
 
 ```
-configs/           YAML experiment configs (baseline, vcsr, neggen)
+configs/           YAML experiment configs (baseline, vcsr, neggen, verifier)
 data/              Dataset loaders, splits, verifier JSONL assembly
   planetarium_loader.py   Template-hash splits for Planetarium
   verifier_dataset.py     Build (NL, PDDL, label) rows for verifier training
@@ -17,12 +17,20 @@ generation/        LLM backends, prompts, perturbations
   sampler.py              Bedrock, OpenRouter, OpenAI, HF, MultiSampler
   perturbations.py        Domain-aware gold PDDL mutations (hard negatives)
 pddl_utils/        Oracle planner, Fast Downward + VAL wrappers (not `pddl/` — shadows PyPI `pddl`)
-verifier/          (planned) Cross-encoder training, calibration
-search/            (planned) Best-of-K, abstention, repair loop
-scripts/           Entry points: baselines, negative generation, JSONL sampling
-results/           Metrics, pilot verifier JSONL, run logs
+verifier/          Cross-encoder dataset/model/train/eval code
+search/            (currently minimal) Best-of-K, abstention, repair loop
+scripts/           Baselines, neggen, verifier training, calibration, sweeps
+results/           Metrics, verifier runs, calibration reports, selected checkpoints
 tools/             External tool installs (Fast Downward, VAL)
 ```
+
+## Current Status
+
+- Foundations and the negative-generation pilot are completed.
+- Verifier training is implemented and has been run successfully on the pilot dataset.
+- Clean calibration analysis and a small learning-rate sweep have also been completed.
+- The current selected verifier checkpoint is recorded in `results/verifier/best_current/selection.yaml`.
+- The main remaining gap is downstream integration into verifier-ranked best-of-K, abstention, and later repair experiments.
 
 ## Quick Start
 
@@ -60,6 +68,15 @@ python scripts/generate_negatives.py --config configs/neggen.yaml --dry_run
 
 # 8. Stratified random sample from verifier JSONL (sanity check)
 python scripts/sample_verifier_jsonl.py results/neggen/pilot/verifier_train.jsonl
+
+# 9. Full verifier training run
+python scripts/train_verifier.py --config configs/verifier_full.yaml
+
+# 10. Clean calibration / threshold analysis
+python scripts/calibrate_verifier.py --config configs/verifier_full.yaml
+
+# 11. Optional: verifier LR sweep from configs/vcsr.yaml
+python scripts/run_verifier_lr_sweep.py
 ```
 
 ## Windows E: Drive Setup
@@ -110,6 +127,35 @@ Rare **perturbation** rows can get Planetarium `label=1` (noise). Default **`lab
 
 `python scripts/apply_perturbation_label_policy.py results/neggen/pilot/verifier_train.jsonl out.jsonl --policy relabel`
 
+## Verifier Workflow
+
+The verifier is trained on the neggen pilot JSONL, then analyzed with a
+separate calibration/evaluation protocol.
+
+Main verifier configs and scripts:
+
+- `configs/verifier_full.yaml`
+- `scripts/train_verifier.py`
+- `scripts/analyze_verifier.py`
+- `scripts/calibrate_verifier.py`
+- `scripts/run_verifier_lr_sweep.py`
+
+Current key verifier artifacts:
+
+| Path | Description |
+|------|-------------|
+| `results/verifier/pilot/` | Earlier dry-run / smoke-test outputs |
+| `results/verifier/full_run/` | First completed verifier training run |
+| `results/verifier/lr_sweep/` | LR sweep runs plus aggregate summaries |
+| `results/verifier/best_current/selection.yaml` | Stable metadata record for the current best verifier checkpoint |
+
+As of the current repo state, the selected best verifier comes from:
+
+- run: `results/verifier/lr_sweep/lr_5em05`
+- checkpoint: `results/verifier/lr_sweep/lr_5em05/best_model/model.pt`
+
+See `EXPERIMENTS.md` for the running experiment log and interpretation of these results.
+
 ## External Tools
 
 **Fast Downward** (classical planner) and **VAL** (plan validator) are C++ tools
@@ -122,4 +168,4 @@ best built under Linux/WSL. See `tools/README.md` for build instructions.
 - [Fast Downward](https://github.com/aibasel/downward)
 - [VAL](https://github.com/KCL-Planning/VAL)
 
-Design background: `deep-research-report.md`. Contributor-oriented notes: `CLAUDE.md`.
+Design background: `deep-research-report.md`. Contributor-oriented notes: `CLAUDE.md`. Experiment log: `EXPERIMENTS.md`.

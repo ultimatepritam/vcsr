@@ -38,6 +38,9 @@ scripts/
   reproduce_baselines.py  Oracle, perturbed, solvability checks
   generate_negatives.py   Full neggen pipeline: LLM + perturb + label + checkpoint/resume
   train_verifier.py       Cross-encoder verifier training entry point
+  analyze_verifier.py     Threshold / score analysis for trained verifier
+  calibrate_verifier.py   Separate calibration/evaluation protocol + risk-coverage curves
+  run_verifier_lr_sweep.py  Execute LR sweep and summarize verifier runs
   sample_verifier_jsonl.py  Stratified random lines from verifier_train.jsonl
 search/                   (currently minimal) Best-of-K, abstention, repair
 verifier/                 Dataset/model/train/eval code for cross-encoder verifier
@@ -45,6 +48,9 @@ results/
   baseline/               Baseline JSON
   neggen/pilot/           Pilot verifier JSONL + run_log + stats (when generated)
   verifier/pilot/         Dry-run / smoke-test verifier outputs (not a completed experiment)
+  verifier/full_run/      First completed verifier training run + calibration analysis
+  verifier/lr_sweep/      LR sweep runs, clean calibration reports, sweep summary
+  verifier/best_current/  Stable pointer to the currently selected verifier checkpoint
 tools/                    FD/VAL setup scripts
 ```
 
@@ -131,8 +137,11 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] **Negative generator pipeline** (`generation/sampler.py`, `perturbations.py`, `generate_negatives.py`, `verifier_dataset.py`, `configs/neggen.yaml`)
 - [x] **500-row pilot** verifier JSONL (`results/neggen/pilot/`)
 - [x] **Verifier training code scaffold** (`scripts/train_verifier.py`, `verifier/`, `configs/verifier.yaml`)
-- [ ] **Run full text cross-encoder verifier experiment** (current `results/verifier/pilot/` artifacts are from an earlier dry run / smoke test, not a completed training milestone)
-- [ ] **Calibration + abstention** on val set
+- [x] **Run full text cross-encoder verifier experiment** (`results/verifier/full_run/`)
+- [x] **Calibration analysis with separate calibration/evaluation split** (`scripts/calibrate_verifier.py`, `results/verifier/full_run/calibration_report.json`)
+- [x] **Learning-rate sweep for verifier** (`results/verifier/lr_sweep/`)
+- [x] **Select current best verifier checkpoint** (`results/verifier/best_current/selection.yaml`)
+- [ ] **Use verifier in downstream best-of-K / abstention experiments**
 
 ### Phase 3: Search and Repair (Weeks 5-6)
 
@@ -147,15 +156,19 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Verifier training** on `results/neggen/pilot/verifier_train.jsonl` (and/or expand data with a weaker local generator for harder negatives).
-2. **Val/test** evaluation using **held-out Planetarium** rows (template-hash splits); do **not** train on test.
+1. **Verifier-ranked best-of-K experiment** using the selected checkpoint in `results/verifier/best_current/selection.yaml`.
+2. **Val/test** evaluation using held-out Planetarium rows (template-hash splits); do **not** train on test.
 3. **Baselines:** greedy LLM, best-of-K random, planner-valid-only vs **verifier-ranked**.
+4. **Abstention operating-point study** using the clean calibration protocol and risk-coverage curves.
 
 ## Current Status Notes
 
 - The negative-generation pilot under `results/neggen/pilot/` is the completed data milestone for Phase 2.
-- The verifier training pipeline is implemented, but the project should still treat verifier training as **not yet completed** until a real run is executed and logged separately from smoke tests.
-- Existing artifacts under `results/verifier/pilot/` should be interpreted as dry-run / debugging outputs unless replaced by a documented full experiment.
+- `results/verifier/pilot/` should still be treated as dry-run / debugging output from the earlier smoke-test stage.
+- A completed verifier training run now exists under `results/verifier/full_run/`, along with threshold analysis and a cleaner calibration/evaluation report.
+- The LR sweep under `results/verifier/lr_sweep/` currently favors `lr=5e-5` as the best verifier checkpoint among the tested settings.
+- `results/verifier/best_current/selection.yaml` is the stable metadata record for the currently selected verifier artifact.
+- The main remaining gap is no longer verifier training itself; it is downstream integration into verifier-ranked search, abstention, and repair experiments.
 
 ## Conventions
 
