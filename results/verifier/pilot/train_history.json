@@ -8,6 +8,6 @@
     "val_precision": 0.0,
     "val_recall": 0.0,
     "val_n": 32,
-    "val_loss": 0.6469488590955734
+    "val_loss": 0.6469627171754837
   }
 ]
