@@ -213,6 +213,55 @@ Project takeaway:
 - We now have a usable and cleaner basis for threshold selection and selective prediction analysis.
 - The next natural experiment is verifier-ranked best-of-K with one or two chosen operating points from this report, rather than using the arbitrary default `0.5`.
 
+### Verifier Learning-Rate Sweep
+
+- Goal: make the planned `lr_sweep` in `configs/vcsr.yaml` real and compare verifier quality under a small controlled hyperparameter sweep.
+- Runner: [scripts/run_verifier_lr_sweep.py](/e:/Engineering/vcsr/scripts/run_verifier_lr_sweep.py)
+- Sweep source:
+  - [configs/vcsr.yaml](/e:/Engineering/vcsr/configs/vcsr.yaml)
+  - [configs/verifier_full.yaml](/e:/Engineering/vcsr/configs/verifier_full.yaml)
+- Output root: [results/verifier/lr_sweep](/e:/Engineering/vcsr/results/verifier/lr_sweep)
+- Summary:
+  - [summary.json](/e:/Engineering/vcsr/results/verifier/lr_sweep/summary.json)
+  - [summary.md](/e:/Engineering/vcsr/results/verifier/lr_sweep/summary.md)
+- Status: completed
+
+Swept learning rates:
+
+- `1e-5`
+- `2e-5`
+- `5e-5`
+
+Summary of results from [summary.json](/e:/Engineering/vcsr/results/verifier/lr_sweep/summary.json):
+
+- `lr=1e-5`
+  - val AUC: `0.7197`
+  - eval raw AUC: `0.7247`
+  - best raw F1 on clean eval split: `0.5990`
+- `lr=2e-5`
+  - val AUC: `0.7751`
+  - eval raw AUC: `0.7925`
+  - best raw F1 on clean eval split: `0.6417`
+- `lr=5e-5`
+  - val AUC: `0.7777`
+  - eval raw AUC: `0.7929`
+  - best raw F1 on clean eval split: `0.6630`
+
+Interpretation:
+
+- `1e-5` underperforms clearly and should not be our default.
+- `2e-5` and `5e-5` are both strong, but `5e-5` is now the best candidate on the metrics most relevant to VCSR:
+  highest validation AUC, highest clean evaluation AUC, and highest best-threshold F1.
+- Calibration quality is mixed:
+  `2e-5` has slightly better ECE than `5e-5`, but `5e-5` has the stronger ranking and operating-point performance.
+- The project should now treat `5e-5` as the best current verifier checkpoint among the tested LRs.
+
+Project takeaway:
+
+- The sweep was worth doing; we got a measurable improvement over simply assuming the original `2e-5` was best.
+- The verifier now has a more justified default training LR for future experiments.
+- Next best step is to use the `5e-5` checkpoint for verifier-ranked best-of-K experiments, while keeping the clean calibration protocol in the loop for threshold selection.
+
 ## Recommended Next Entries
 
 - Threshold sweep on `results/verifier/full_run` validation scores
