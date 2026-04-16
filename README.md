@@ -35,7 +35,11 @@ python -m venv .venv
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Install Planetarium
+# 3. Optional: install verifier training extras
+#    (heavier stack; better suited to Linux/WSL or older Python versions)
+pip install -r requirements-training.txt
+
+# 4. Install Planetarium
 pip install git+https://github.com/BatsResearch/planetarium.git
 
 # 4. Optional: API keys for generation — create `.env` (not committed) with
@@ -57,6 +61,36 @@ python scripts/generate_negatives.py --config configs/neggen.yaml --dry_run
 # 8. Stratified random sample from verifier JSONL (sanity check)
 python scripts/sample_verifier_jsonl.py results/neggen/pilot/verifier_train.jsonl
 ```
+
+## Windows E: Drive Setup
+
+If you want all writable runtime artifacts to stay inside this repository on
+`E:`, use the bootstrap script before installing or running anything:
+
+```powershell
+PowerShell -ExecutionPolicy Bypass -File .\scripts\setup_windows_e_drive.ps1
+```
+
+That script creates `.venv` plus a repo-local `.local/` tree and sets common
+cache/temp locations for `pip`, Hugging Face, `datasets`, Transformers, Torch,
+`wandb`, Matplotlib, Jupyter, Python bytecode, and Windows profile-style temp
+paths used by newer Python builds.
+
+Recommended install flow in that same PowerShell session:
+
+```powershell
+$env:PIP_NO_INDEX = ""
+python -m pip --python .\.venv\Scripts\python.exe install --upgrade pip
+python -m pip --python .\.venv\Scripts\python.exe install -r requirements.txt
+python -m pip --python .\.venv\Scripts\python.exe install git+https://github.com/BatsResearch/planetarium.git
+```
+
+Notes:
+
+- `bitsandbytes` is optional for PEFT experiments and often problematic on Windows.
+  If it fails, remove it from the install command for baseline dataset/evaluation work.
+- The Python runtime also defaults `PlanetariumDataset` downloads and planner temp
+  files into `.local/`, so the common baseline paths stay on `E:` by default.
 
 ## Verifier training data (pilot)
 

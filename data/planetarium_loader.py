@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 from datasets import load_dataset, Dataset
+from vcsr_env import get_runtime_dir
 
 logger = logging.getLogger(__name__)
 
@@ -71,8 +72,13 @@ class PlanetariumDataset:
         self.split_strategy = split_strategy
         self.seed = seed
 
-        logger.info("Loading Planetarium dataset from HuggingFace...")
-        raw = load_dataset(self.DATASET_ID, cache_dir=cache_dir)
+        resolved_cache_dir = cache_dir or str(get_runtime_dir("hf_datasets"))
+
+        logger.info(
+            "Loading Planetarium dataset from HuggingFace (cache_dir=%s)...",
+            resolved_cache_dir,
+        )
+        raw = load_dataset(self.DATASET_ID, cache_dir=resolved_cache_dir)
 
         self._raw_train: Dataset = raw["train"]
         self._raw_test: Dataset = raw["test"]

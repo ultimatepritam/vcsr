@@ -14,6 +14,7 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
+from vcsr_env import get_runtime_dir
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +83,10 @@ def _write_temp_files(
 
         return tmpdir, f"{tmpdir}/domain.pddl", f"{tmpdir}/problem.pddl"
     else:
-        tmpdir = tempfile.mkdtemp(prefix="vcsr_planner_")
+        tmpdir = tempfile.mkdtemp(
+            prefix="vcsr_planner_",
+            dir=str(get_runtime_dir("tmp")),
+        )
         domain_path = os.path.join(tmpdir, "domain.pddl")
         problem_path = os.path.join(tmpdir, "problem.pddl")
         with open(domain_path, "w") as f:

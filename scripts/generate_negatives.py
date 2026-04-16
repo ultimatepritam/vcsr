@@ -19,6 +19,7 @@ from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+import vcsr_env  # noqa: F401
 import yaml
 from tqdm import tqdm
 
