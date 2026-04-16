@@ -50,6 +50,48 @@ def get_runtime_dir(name: str) -> Path:
     return path
 
 
+def resolve_hf_snapshot(model_id: str, revision: str | None = None) -> Path | None:
+    """
+    Resolve a locally cached Hugging Face model snapshot directory, if present.
+
+    This lets us load from disk directly and avoid metadata calls back to the
+    hub when the files are already cached locally.
+    """
+    hub_root = Path(
+        os.environ.get("HUGGINGFACE_HUB_CACHE")
+        or (get_runtime_dir("hf_hub"))
+    )
+    repo_dir = hub_root / f"models--{model_id.replace('/', '--')}"
+    if not repo_dir.exists():
+        return None
+
+    commit = None
+    if revision:
+        ref_file = repo_dir / "refs" / Path(*revision.split("/"))
+        if ref_file.exists():
+            commit = ref_file.read_text(encoding="utf-8").strip()
+        elif len(revision) >= 8:
+            candidate = repo_dir / "snapshots" / revision
+            if candidate.exists():
+                return candidate
+
+    if commit:
+        candidate = repo_dir / "snapshots" / commit
+        if candidate.exists():
+            return candidate
+
+    snapshots_dir = repo_dir / "snapshots"
+    if not snapshots_dir.exists():
+        return None
+
+    snapshots = sorted(
+        [p for p in snapshots_dir.iterdir() if p.is_dir()],
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    return snapshots[0] if snapshots else None
+
+
 def bootstrap_local_storage() -> Path:
     """
     Configure environment variables so caches and temp files stay under

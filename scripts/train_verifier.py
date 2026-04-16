@@ -52,13 +52,24 @@ def main():
     out_cfg = cfg.get("output", {})
     log_cfg = cfg.get("logging", {})
 
+    revision = model_cfg.get("revision")
     backbone = model_cfg.get("backbone", "microsoft/deberta-v3-base")
     max_seq_len = model_cfg.get("max_seq_len", 512)
+    backbone_source = vcsr_env.resolve_hf_snapshot(backbone, revision=revision) or backbone
 
     # Tokenizer
-    revision = model_cfg.get("revision")
-    logger.info("Loading tokenizer: %s (revision=%s)", backbone, revision)
-    tokenizer = AutoTokenizer.from_pretrained(backbone, revision=revision)
+    logger.info(
+        "Loading tokenizer: %s (revision=%s, source=%s)",
+        backbone,
+        revision,
+        backbone_source,
+    )
+    tokenizer = AutoTokenizer.from_pretrained(
+        str(backbone_source),
+        revision=revision,
+        local_files_only=True,
+        use_fast=False,
+    )
 
     # Datasets
     jsonl_path = data_cfg.get("train_jsonl", "results/neggen/pilot/verifier_train.relabeled.jsonl")
@@ -88,9 +99,15 @@ def main():
         val_rows_eval = val_rows
 
     # Model
-    logger.info("Initializing model: %s (dropout=%.2f, revision=%s)", backbone, model_cfg.get("dropout", 0.1), revision)
+    logger.info(
+        "Initializing model: %s (dropout=%.2f, revision=%s, source=%s)",
+        backbone,
+        model_cfg.get("dropout", 0.1),
+        revision,
+        backbone_source,
+    )
     model = VerifierModel(
-        backbone_name=backbone,
+        backbone_name=str(backbone_source),
         dropout=model_cfg.get("dropout", 0.1),
         revision=revision,
     )
