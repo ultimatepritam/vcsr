@@ -37,12 +37,14 @@ pddl_utils/
 scripts/
   reproduce_baselines.py  Oracle, perturbed, solvability checks
   generate_negatives.py   Full neggen pipeline: LLM + perturb + label + checkpoint/resume
+  train_verifier.py       Cross-encoder verifier training entry point
   sample_verifier_jsonl.py  Stratified random lines from verifier_train.jsonl
-search/                   (empty) Best-of-K, abstention, repair
-verifier/                 (empty) Cross-encoder training, calibration
+search/                   (currently minimal) Best-of-K, abstention, repair
+verifier/                 Dataset/model/train/eval code for cross-encoder verifier
 results/
   baseline/               Baseline JSON
   neggen/pilot/           Pilot verifier JSONL + run_log + stats (when generated)
+  verifier/pilot/         Dry-run / smoke-test verifier outputs (not a completed experiment)
 tools/                    FD/VAL setup scripts
 ```
 
@@ -128,7 +130,8 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 - [x] **Negative generator pipeline** (`generation/sampler.py`, `perturbations.py`, `generate_negatives.py`, `verifier_dataset.py`, `configs/neggen.yaml`)
 - [x] **500-row pilot** verifier JSONL (`results/neggen/pilot/`)
-- [ ] **Train text cross-encoder verifier** (`verifier/` — DeBERTa or similar, see `configs/vcsr.yaml`)
+- [x] **Verifier training code scaffold** (`scripts/train_verifier.py`, `verifier/`, `configs/verifier.yaml`)
+- [ ] **Run full text cross-encoder verifier experiment** (current `results/verifier/pilot/` artifacts are from an earlier dry run / smoke test, not a completed training milestone)
 - [ ] **Calibration + abstention** on val set
 
 ### Phase 3: Search and Repair (Weeks 5-6)
@@ -147,6 +150,12 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 1. **Verifier training** on `results/neggen/pilot/verifier_train.jsonl` (and/or expand data with a weaker local generator for harder negatives).
 2. **Val/test** evaluation using **held-out Planetarium** rows (template-hash splits); do **not** train on test.
 3. **Baselines:** greedy LLM, best-of-K random, planner-valid-only vs **verifier-ranked**.
+
+## Current Status Notes
+
+- The negative-generation pilot under `results/neggen/pilot/` is the completed data milestone for Phase 2.
+- The verifier training pipeline is implemented, but the project should still treat verifier training as **not yet completed** until a real run is executed and logged separately from smoke tests.
+- Existing artifacts under `results/verifier/pilot/` should be interpreted as dry-run / debugging outputs unless replaced by a documented full experiment.
 
 ## Conventions
 
