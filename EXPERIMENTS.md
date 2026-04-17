@@ -640,11 +640,119 @@ Project takeaway:
   more real candidate-pool hard negatives and acceptance based on replay wins,
   not just offline metric gains.
 
+### Ranking-Aligned Verifier Training Round 1
+
+- Goal: perform the first verifier retraining round explicitly aligned with the
+  downstream ranking task by mining whole candidate pools, warm-starting from
+  the best ranking-oriented checkpoint, and validating the result with fixed-pool
+  replay.
+- Mining script:
+  [scripts/mine_verifier_ranking_examples.py](/e:/Engineering/vcsr/scripts/mine_verifier_ranking_examples.py)
+- Training config:
+  [configs/verifier_ranking_aligned_round1.yaml](/e:/Engineering/vcsr/configs/verifier_ranking_aligned_round1.yaml)
+- Outputs:
+  - mined data root:
+    [results/verifier/ranking_aligned_round1](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round1)
+  - trained checkpoint:
+    [results/verifier/ranking_aligned_round1/retrain_from_capacity_push](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round1/retrain_from_capacity_push)
+  - replay comparison:
+    [results/vcsr/bestofk_pilot/replay_compare_ranking_round1](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/replay_compare_ranking_round1)
+- Status: completed first ranking-aligned development round
+
+Method:
+
+- Start from the same fixed candidate pool used in replay:
+  [results/vcsr/bestofk_pilot/candidate_dump.jsonl](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/candidate_dump.jsonl)
+- For rows with equivalent candidates in the `K=8` pool:
+  - add up to `2` parseable equivalent positives
+  - add up to `4` parseable non-equivalent negatives from the same pool,
+    prioritizing verifier-selected wrong candidates and high-scoring near misses
+- For rows with no equivalent candidate in-pool:
+  - optionally add one top-scoring parseable negative so the model still sees
+    realistic hard negatives from those rows
+- Warm-start training from:
+  [results/verifier/capacity_push/lr_2p0em05/selection.yaml](/e:/Engineering/vcsr/results/verifier/capacity_push/lr_2p0em05/selection.yaml)
+- Keep the base verifier validation split fixed and inject the mined rows
+  through `extra_train_jsonl`
+- Repeat the mined set `4x` during training to make the ranking-focused signal
+  matter relative to the base neggen data
+
+Mining results from
+[results/verifier/ranking_aligned_round1/mining_report.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round1/mining_report.json):
+
+- `30` pilot rows considered
+- `29` rows had at least one parseable candidate in the `K=8` pool
+- `18` rows had at least one equivalent candidate in-pool
+- `23` rows had parseable non-equivalent candidates in-pool
+- `4` rows were verifier misses with a recoverable equivalent candidate available
+- `11` rows contributed negative-only mining examples
+- `63` mined examples created:
+  - `25` positives
+  - `38` negatives
+- By domain:
+  - `53` `blocksworld`
+  - `10` `gripper`
+
+Training results from
+[val_metrics.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round1/retrain_from_capacity_push/val_metrics.json):
+
+- Warm-start source:
+  [results/verifier/capacity_push/lr_2p0em05/val_metrics.json](/e:/Engineering/vcsr/results/verifier/capacity_push/lr_2p0em05/val_metrics.json)
+- Ranking-aligned round 1:
+  - val AUC: `0.7995`
+  - val F1: `0.4813`
+  - val precision: `0.6716`
+  - val recall: `0.3750`
+- Compared with the warm-start checkpoint:
+  - AUC moved slightly upward: `0.7972 -> 0.7995`
+  - thresholded metrics stayed broadly similar
+
+Clean calibration results from
+[calibration_report.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round1/retrain_from_capacity_push/calibration_report.json):
+
+- evaluation raw AUC: `0.7973`
+- evaluation raw log loss: `0.5022`
+- evaluation raw ECE: `0.0762`
+- best raw-threshold F1 on the untouched eval subset: `0.6595` at threshold `0.35`
+
+Fixed-pool replay results from
+[replay_summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/replay_compare_ranking_round1/replay_summary.md):
+
+- `K=1`
+  - all policies still coincide at `0.4333`, as expected
+- `K=4`
+  - ranking-aligned round 1 did not change the replay result
+  - `verifier_ranked` remained at `0.4000`
+- `K=8`
+  - previous best-current verifier (`lr_5em05`): `0.4333`
+  - capacity-push verifier (`lr_2p0em05`): `0.4000`
+  - ranking-aligned round 1: `0.4667`
+  - `random_parseable` baseline remained stronger at `0.5000`
+
+Interpretation:
+
+- This is the first experiment that gives evidence the ranking-aligned direction
+  is actually helping on the downstream task we care about.
+- The improvement at `K=8` on the fixed pool is meaningful:
+  the new checkpoint beat both previous verifier candidates on the same cached
+  candidate set.
+- At the same time, the gain is not yet sufficient for project success because
+  the model still does not beat the simple `random_parseable` baseline.
+- Offline validation and calibration metrics alone would have understated the
+  value of this round; replay remains the more important acceptance criterion.
+
+Project takeaway:
+
+- Ranking-aligned training appears directionally correct.
+- The first round was too small to fully solve the ranking problem.
+- The next step should be a stronger round 2:
+  mine larger real candidate pools, widen the ranking-focused supervision, and
+  keep using fixed-pool replay as the main decision test.
+
 ## Recommended Next Entries
 
-- Ranking-aligned verifier training round built from larger real candidate pools
-- Replay-based comparison of the next hard-negative retrain against current best
-  checkpoints
+- Ranking-aligned verifier training round 2 built from larger real candidate pools
+- Replay-based comparison of round 2 against current best checkpoints
 - Error analysis of replay failures by domain, style, and candidate type
 - Fresh held-out downstream best-of-K evaluation after replay-based checkpoint
   selection
