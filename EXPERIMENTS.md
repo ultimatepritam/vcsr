@@ -863,6 +863,26 @@ Later clean rerun of the round-2 pool from
   - `random_parseable`: `0.4400`
   - `verifier_ranked`: `0.4200`
 
+Replay-style comparison on that newer pool from
+[results/vcsr/bestofk_ranking_round2_pool/replay_compare/replay_summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_ranking_round2_pool/replay_compare/replay_summary.md):
+
+- `K=4`
+  - previous best-current verifier (`lr_5em05`): `0.4200`
+  - capacity-push verifier (`lr_2p0em05`): `0.4200`
+  - ranking-aligned round 1 (`retrain_from_capacity_push`): `0.4200`
+  - ranking-aligned round 2 (`retrain_from_round1`): `0.4800`
+  - `greedy_first`: `0.4600`
+  - `random_parseable`: `0.4800`
+  - oracle best-of-4 upper bound: `0.5600`
+- `K=8`
+  - previous best-current verifier (`lr_5em05`): `0.4200`
+  - capacity-push verifier (`lr_2p0em05`): `0.3800`
+  - ranking-aligned round 1 (`retrain_from_capacity_push`): `0.3800`
+  - ranking-aligned round 2 (`retrain_from_round1`): `0.4600`
+  - `greedy_first`: `0.4600`
+  - `random_parseable`: `0.4400`
+  - oracle best-of-8 upper bound: `0.6200`
+
 Interpretation:
 
 - This is the strongest downstream verifier result we have so far on the fixed
@@ -872,14 +892,17 @@ Interpretation:
 - That means ranking-aligned training is no longer just directionally
   promising; it has now produced a real downstream win on the evaluation tool
   we trust most.
-- At the same time, the later fresh pool rerun is a caution signal:
-  in that direct end-to-end run, the same verifier does not dominate.
-- However, that newer pool has **not** yet gone through the same replay-style
-  controlled comparison across verifier checkpoints, so it should not be
-  over-interpreted as definitive evidence about robustness.
+- On the newer round-2 pool, replay-style controlled comparison now shows that
+  round 2 is still the best verifier checkpoint among the tested choices.
+- However, the stronger fixed-pool win does **not** fully reproduce:
+  on the newer pool, round 2 ties `greedy_first` at `K=8` and ties
+  `random_parseable` at `K=4`, rather than clearly beating both.
+- This makes the likely story more precise:
+  the best round-2 run benefited from useful pool-mined supervision, but that
+  gain is not yet stable enough across pools to count as solved robustness.
 - The project question is therefore no longer "does ranking-aligned training
-  help at all?" but "can we reproduce the replay win on newer pools under the
-  same controlled evaluation?"
+  help at all?" but "how do we make the replay gain reproducible across
+  independently generated pools?"
 
 Project takeaway:
 
@@ -888,9 +911,9 @@ Project takeaway:
 - The current best verifier for downstream replay is
   [results/verifier/ranking_aligned_round2/retrain_from_round1/selection.yaml](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round2/retrain_from_round1/selection.yaml).
 - The next step should focus on robustness:
-  more diverse ranking-aligned mining across multiple pools and replay-style
-  controlled evaluation on newer pools before spending on new end-to-end
-  generation comparisons.
+  more diverse ranking-aligned mining across multiple pools and acceptance based
+  on replay wins that hold on more than one cached pool before spending on new
+  end-to-end generation comparisons.
 
 ## Recommended Next Entries
 

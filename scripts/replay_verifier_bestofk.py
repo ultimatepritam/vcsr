@@ -93,7 +93,7 @@ def _markdown(summary: dict) -> str:
         "",
         f"Source pool: `{summary['source_pool']['candidate_dump']}`",
         "",
-        "| Verifier | K | Policy | Parse | Equiv | Equiv|Parse | Avg Parseable | Avg Equivalent | Oracle Best-of-K |",
+        "| Verifier | K | Policy | Parse | Equiv | Equiv / Parse | Avg Parseable | Avg Equivalent | Oracle Best-of-K |",
         "|---|---:|---|---:|---:|---:|---:|---:|---:|",
     ]
     for verifier_block in summary["verifiers"]:

@@ -27,11 +27,13 @@ decisions:
 - Ranking-aligned verifier training is now validated as the right direction.
 - Round 2 is the first checkpoint that produces a real downstream replay win
   over the simple `random_parseable` baseline on the fixed `K=8` pool.
-- A later fresh end-to-end pool run with that verifier was weaker, but that
-  fresh run has **not** yet been analyzed through the same replay-controlled
-  comparison across checkpoints.
-- So the current concern is not that round 2 has been disproven, but that we do
-  not yet have enough controlled evidence to claim cross-pool robustness.
+- Replay-controlled evaluation on a newer pool now shows the same round-2
+  checkpoint is still the best verifier among the tested choices there.
+- But that newer-pool result is weaker than the original fixed-pool win:
+  round 2 ties `greedy_first` at `K=8` and ties `random_parseable` at `K=4`
+  instead of clearly outperforming both.
+- So the current concern is no longer lack of controlled evidence; it is that
+  the replay win is real but not yet consistently reproducible across pools.
 
 That last point is the key update.
 We are no longer asking whether ranking-aligned training is worth trying.
@@ -50,20 +52,26 @@ replay now gives:
 - At `K=8`, ranking-aligned round 2 reaches `0.5333`.
 - At `K=4`, ranking-aligned round 2 reaches `0.4667`.
 
-On the later fresh `50`-row round-2 pool rerun, the same round-2 verifier does
-not dominate in the direct end-to-end run:
+On the original cached pilot pool, round 2 is the best result so far:
 
-- At `K=4`, `verifier_ranked` is `0.4800`, tied with `random_parseable`.
-- At `K=8`, `verifier_ranked` falls to `0.4200` versus `0.4400` for
-  `random_parseable`.
+- At `K=8`, round 2 reaches `0.5333` versus `0.5000` for `random_parseable`.
+
+On the newer cached round-2 pool under replay-controlled comparison:
+
+- At `K=4`, round 2 reaches `0.4800`, tying `random_parseable` and beating the
+  earlier verifier checkpoints.
+- At `K=8`, round 2 reaches `0.4600`, tying `greedy_first`, beating
+  `random_parseable` at `0.4400`, and beating the earlier verifier checkpoints.
+- Oracle on that newer pool is `0.6200`, so there is still substantial room to
+  improve ranking quality.
 
 This tells us two important things:
 
 - fixed-pool replay was the right diagnostic tool
 - ranking-aligned supervision is improving the downstream task we care about
-- we still need replay-style controlled analysis on newer pools before making
-  strong cross-pool claims
-- robustness across pools is still the central unsolved problem
+- round 2 is the current best verifier on both replay-tested pools
+- robustness across pools is still the central unsolved problem because the size
+  of the win changes meaningfully from pool to pool
 
 ## Main Conclusion
 
@@ -77,7 +85,7 @@ a more controlled, generalization-oriented way.
 
 The project bottleneck still looks like training-signal alignment rather than
 backbone choice or pure optimization budget, but now specifically in the form of
-cross-pool robustness.
+cross-pool robustness and dependence on the quality of mined candidate pools.
 
 ## Why This Is The Right Next Step
 
@@ -132,8 +140,8 @@ Success should mean:
 - verifier-ranked beats greedy and random-parseable on the same cached candidate
   pool
 - especially at `K=8`, where round 2 already produced a modest win
-- verifier improvements also survive replay-style evaluation on at least one
-  newer generated pool, not just the original pilot pool
+- verifier improvements also survive replay-style evaluation on newer generated
+  pools with a clearer margin than the current tie-level behavior
 - with enough margin and stability to justify a fresh held-out downstream rerun
 
 ### Architecture Recommendation
@@ -177,8 +185,8 @@ at a larger scale a fair test.
 ## Bottom Line
 
 The project direction still looks viable, and the most important update is that
-we now have evidence of a real downstream replay win from ranking-aligned
-training on the fixed evaluation pool.
+we now have evidence that ranking-aligned round 2 is the best verifier on both
+replay-tested pools, even though the strength of the win is not yet stable.
 
 Earlier, the main recommendation was:
 
