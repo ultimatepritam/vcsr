@@ -74,6 +74,7 @@ def main():
     # Datasets
     jsonl_path = data_cfg.get("train_jsonl", "results/neggen/pilot/verifier_train.relabeled.jsonl")
     extra_train_jsonl = data_cfg.get("extra_train_jsonl")
+    extra_train_repeat = int(data_cfg.get("extra_train_repeat", 1))
     val_fraction = data_cfg.get("val_fraction", 0.15)
     filter_unparseable = data_cfg.get("filter_unparseable", True)
 
@@ -83,14 +84,17 @@ def main():
         val_groups = {row.planetarium_name for row in val_rows}
         extra_rows = load_jsonl(extra_train_jsonl, filter_unparseable=filter_unparseable)
         extra_rows = [row for row in extra_rows if row.planetarium_name not in val_groups]
+        if extra_train_repeat > 1:
+            extra_rows = extra_rows * extra_train_repeat
         train_rows = train_rows + extra_rows
         train_ds = VerifierDataset(train_rows, tokenizer, max_length=max_seq_len)
         val_ds = VerifierDataset(val_rows, tokenizer, max_length=max_seq_len)
         logger.info(
-            "Loaded base split plus extra training-only rows: base_train=%d extra_train=%d val=%d",
+            "Loaded base split plus extra training-only rows: base_train=%d extra_train=%d val=%d (extra_repeat=%d)",
             len(train_rows) - len(extra_rows),
             len(extra_rows),
             len(val_rows),
+            max(1, extra_train_repeat),
         )
     else:
         train_ds, val_ds, train_rows, val_rows = build_datasets(
@@ -129,6 +133,15 @@ def main():
         dropout=model_cfg.get("dropout", 0.1),
         revision=revision,
     )
+    init_selection_path = model_cfg.get("init_selection_path")
+    init_checkpoint_path = model_cfg.get("init_checkpoint_path")
+    if init_checkpoint_path is None and init_selection_path:
+        with open(init_selection_path, encoding="utf-8") as f:
+            init_metadata = yaml.safe_load(f)
+        init_checkpoint_path = init_metadata.get("checkpoint_path")
+    if init_checkpoint_path:
+        logger.info("Warm-starting verifier weights from %s", init_checkpoint_path)
+        model.load_state_dict(torch.load(init_checkpoint_path, weights_only=True))
     n_params = sum(p.numel() for p in model.parameters())
     n_trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     logger.info("Parameters: %s total, %s trainable", f"{n_params:,}", f"{n_trainable:,}")

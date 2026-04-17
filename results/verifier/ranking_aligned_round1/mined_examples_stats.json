@@ -1,0 +1,20 @@
+{
+  "total": 63,
+  "positives": 25,
+  "negatives": 38,
+  "unparseable": 0,
+  "pos_neg_ratio": 0.6579,
+  "by_source": {
+    "bestofk_ranking_negative": 27,
+    "bestofk_ranking_positive": 25,
+    "bestofk_ranking_negative_only": 11
+  },
+  "by_domain": {
+    "blocksworld": 53,
+    "gripper": 10
+  },
+  "by_perturbation_type": {},
+  "by_source_model": {
+    "global.anthropic.claude-haiku-4-5-20251001-v1:0": 63
+  }
+}

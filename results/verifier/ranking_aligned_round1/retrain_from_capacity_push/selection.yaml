@@ -1,0 +1,22 @@
+selected_at: 2026-04-17
+selected_run: results\verifier\ranking_aligned_round1\retrain_from_capacity_push
+checkpoint_path: results\verifier\ranking_aligned_round1\retrain_from_capacity_push\best_model\model.pt
+training_history_path: results\verifier\ranking_aligned_round1\retrain_from_capacity_push\train_history.json
+val_metrics_path: results\verifier\ranking_aligned_round1\retrain_from_capacity_push\val_metrics.json
+calibration_report_path: results\verifier\ranking_aligned_round1\retrain_from_capacity_push\calibration_report.json
+
+selection_reason:
+  summary: First ranking-aligned verifier fine-tune warm-started from the capacity-push checkpoint.
+  criteria:
+    - pool-mined positives and hard negatives from the fixed best-of-K pilot candidate dump
+    - warm-started from results/verifier/capacity_push/lr_2p0em05
+    - intended for replay-based downstream verification rather than generic offline comparison alone
+
+metrics_snapshot:
+  val_auc: 0.7994901547116736
+  val_f1: 0.48128342245989303
+  eval_raw_auc: 0.7973352033660589
+  best_raw_f1: 0.6594594594594595
+  best_raw_threshold: 0.35
+  best_temp_f1: 0.6526315789473685
+  best_temp_threshold: 0.2
