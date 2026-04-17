@@ -1,0 +1,34 @@
+experiment:
+  name: vcsr_bestofk_pilot
+  seed: 42
+
+dataset:
+  split: test
+  split_strategy: template_hash
+  domains: [blocksworld, gripper]
+  max_samples: 30
+
+generation:
+  backends:
+    - type: bedrock
+      K: 8
+  temperature: 0.8
+  top_p: 0.95
+  K_values: [1, 4, 8]
+  max_new_tokens: 1024
+  retry_attempts: 3
+  retry_delay_sec: 2
+
+verifier:
+  selection_metadata: results/verifier/best_current/selection.yaml
+  scoring_batch_size: 8
+
+evaluation:
+  check_parse: true
+  check_equivalence: true
+  planner_filter: false
+  policies: [greedy_first, random_parseable, verifier_ranked]
+
+output:
+  dir: results/vcsr/bestofk_pilot
+  save_predictions: true

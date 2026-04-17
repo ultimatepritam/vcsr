@@ -262,6 +262,116 @@ Project takeaway:
 - The verifier now has a more justified default training LR for future experiments.
 - Next best step is to use the `5e-5` checkpoint for verifier-ranked best-of-K experiments, while keeping the clean calibration protocol in the loop for threshold selection.
 
+### First Verifier-Ranked Best-of-K Pilot
+
+- Goal: run the first end-to-end VCSR ranking experiment that uses the selected
+  verifier checkpoint to rank multiple generated PDDL candidates and compare that
+  choice against simple non-verifier baselines.
+- Config: [configs/vcsr_bestofk_pilot.yaml](/e:/Engineering/vcsr/configs/vcsr_bestofk_pilot.yaml)
+- Entrypoint: [scripts/run_verifier_bestofk.py](/e:/Engineering/vcsr/scripts/run_verifier_bestofk.py)
+- Verifier source:
+  [results/verifier/best_current/selection.yaml](/e:/Engineering/vcsr/results/verifier/best_current/selection.yaml)
+- Output: [results/vcsr/bestofk_pilot](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot)
+- Status: completed first ranking-only pilot
+
+Pilot setup:
+
+- Planetarium `test` split only
+- In-domain rows only: `blocksworld` and `gripper`
+- Fixed sample count: `30` rows with seed `42`
+- Bedrock backend through the shared generation harness
+- Candidate counts evaluated: `K in {1, 4, 8}`
+- Policies compared:
+  - `greedy_first`
+  - `random_parseable`
+  - `verifier_ranked`
+
+Top-line results from
+[summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/summary.md)
+and
+[aggregate_metrics.json](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/aggregate_metrics.json):
+
+- `K=1`
+  - all policies coincide by construction
+  - parse rate: `0.9333`
+  - equivalence rate: `0.4333`
+- `K=4`
+  - `greedy_first`: parse `0.9333`, equiv `0.4333`
+  - `random_parseable`: parse `0.9667`, equiv `0.4333`
+  - `verifier_ranked`: parse `0.9667`, equiv `0.4333`
+  - oracle best-of-4 equivalence upper bound: `0.5667`
+- `K=8`
+  - `greedy_first`: parse `0.9333`, equiv `0.4333`
+  - `random_parseable`: parse `0.9667`, equiv `0.5000`
+  - `verifier_ranked`: parse `0.9667`, equiv `0.4667`
+  - oracle best-of-8 equivalence upper bound: `0.6000`
+
+Candidate-pool diagnostics:
+
+- At `K=8`, the generator produced on average:
+  - `7.6` parseable candidates per row
+  - `3.37` equivalent candidates per row
+- This means generation quality is not the main bottleneck on this pilot;
+  there is recoverable headroom in the candidate pool if ranking improves.
+
+Domain and slice observations:
+
+- All successful equivalence selections in this pilot came from `blocksworld`.
+- `gripper` had reasonable parseability, but `0` equivalent candidates for all
+  reported policies on this 30-row sample.
+- The verifier-ranked comparison should therefore be interpreted mainly as a
+  `blocksworld` ranking signal check, not yet as a full in-domain conclusion.
+
+Row-level ranking error analysis from
+[candidate_dump.jsonl](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/candidate_dump.jsonl):
+
+- At `K=8`, `18` of `30` rows had at least one parseable equivalent candidate
+  in the pool.
+- The verifier-selected candidate was equivalent on `14` of those `18` oracle-positive rows.
+- The verifier therefore missed `4` rows where a good candidate was available,
+  and all four misses were in `blocksworld`.
+- These misses were not "no-signal" failures. In each case, the verifier scored
+  a non-equivalent candidate slightly above an equivalent parseable candidate.
+
+Representative failure modes:
+
+- `blocksworld_swap_to_swap_blocks_list_10_3`
+  - verifier selected candidate `1` with score `0.3433` and `equivalent=false`
+  - candidate `7` was parseable and equivalent with score `0.3318`
+- `blocksworld_invert_to_invert_blocks_list_1_3_3_4_5`
+  - verifier scores were effectively tied around `0.9829`
+  - verifier selected non-equivalent candidate `0`
+  - equivalent candidates `1`, `2`, and `3` had the same rounded score
+- `blocksworld_invert_to_invert_blocks_list_1_1_1_5_5_5`
+  - verifier selected candidate `3` with score `0.5015` and `equivalent=false`
+  - candidate `6` was equivalent with score `0.4998`
+- `blocksworld_invert_to_invert_blocks_list_1_1_2_2_2_12`
+  - verifier selected candidate `1` with score `0.4810` and `equivalent=false`
+  - candidates `2` and `4` were equivalent with score `0.4563`
+
+Interpretation:
+
+- This pilot succeeded as an engineering milestone:
+  the full verifier-ranked best-of-K loop now runs end to end and produces
+  candidate-level and policy-level artifacts we can trust.
+- The current verifier is useful enough to improve selected parse rate relative
+  to greedy generation, but it is not yet a reliably superior ranker.
+- The key project result is nuanced:
+  verifier-ranked best-of-K did not clearly beat a simple `random_parseable`
+  baseline on this first pilot, even though the candidate pool contained enough
+  good options for a much stronger selector to do better.
+- That makes the next problem a ranking-quality problem, not a search-plumbing problem.
+
+Project takeaway:
+
+- We now have the right experiment harness for VCSR.
+- The selected verifier checkpoint is good enough to evaluate ranking policies,
+  but not yet good enough to claim strong best-of-K selection gains.
+- The next highest-value work is targeted rank-error analysis and verifier
+  improvement:
+  inspect near-miss rows, tighten supervision around semantically subtle
+  negatives, and then rerun the same best-of-K pilot before expanding scope.
+
 ## Recommended Next Entries
 
 - Threshold sweep on `results/verifier/full_run` validation scores

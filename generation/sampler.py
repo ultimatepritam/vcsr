@@ -28,6 +28,18 @@ logger = logging.getLogger(__name__)
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 
+def _get_env(*keys: str, default: str = "") -> str:
+    """Return the first non-empty environment variable from the given keys."""
+    for key in keys:
+        value = os.environ.get(key, "")
+        if value:
+            value = value.strip()
+            if any(ch.isspace() for ch in value):
+                value = value.split()[0]
+            return value
+    return default
+
+
 @dataclass
 class SamplerConfig:
     temperature: float = 0.8
@@ -152,7 +164,7 @@ class BedrockSampler(BaseSampler):
         model: Optional[str] = None,
         config: Optional[SamplerConfig] = None,
     ):
-        resolved_model = model or os.environ.get("BEDROCK_MODEL_ID", "")
+        resolved_model = model or _get_env("BEDROCK_MODEL_ID", "bedrock_model_id")
         if not resolved_model:
             raise ValueError(
                 "No Bedrock model ID. Set BEDROCK_MODEL_ID in .env or pass model=."
@@ -170,9 +182,9 @@ class BedrockSampler(BaseSampler):
         )
         self._client = boto3.client(
             "bedrock-runtime",
-            region_name=os.environ.get("AWS_REGION", "us-east-1"),
-            aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
-            aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
+            region_name=_get_env("AWS_REGION", default="us-east-1"),
+            aws_access_key_id=_get_env("AWS_ACCESS_KEY_ID"),
+            aws_secret_access_key=_get_env("AWS_SECRET_ACCESS_KEY"),
             config=boto_config,
         )
         logger.info(f"BedrockSampler initialized: model={self.model}")
