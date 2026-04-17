@@ -577,9 +577,74 @@ Project takeaway:
 - That evaluator is needed before deciding whether more verifier training data,
   larger sweeps, or a changed ranking objective actually improve downstream VCSR.
 
+### Fixed-Pool Replay Comparison Across Verifier Checkpoints
+
+- Goal: compare verifier checkpoints on the exact same cached candidate pool so
+  we can separate verifier ranking quality from generation randomness.
+- Entrypoint:
+  [scripts/replay_verifier_bestofk.py](/e:/Engineering/vcsr/scripts/replay_verifier_bestofk.py)
+- Source candidate pool:
+  [results/vcsr/bestofk_pilot/candidate_dump.jsonl](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/candidate_dump.jsonl)
+- Compared verifier selections:
+  - [results/verifier/best_current/selection.yaml](/e:/Engineering/vcsr/results/verifier/best_current/selection.yaml)
+  - [results/verifier/capacity_push/lr_2p0em05/selection.yaml](/e:/Engineering/vcsr/results/verifier/capacity_push/lr_2p0em05/selection.yaml)
+- Outputs:
+  - [results/vcsr/bestofk_pilot/replay_compare/replay_summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/replay_compare/replay_summary.md)
+  - [results/vcsr/bestofk_pilot/replay_compare/replay_summary.json](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/replay_compare/replay_summary.json)
+  - [results/vcsr/bestofk_pilot/replay_compare/replay_dump.jsonl](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/replay_compare/replay_dump.jsonl)
+- Status: completed
+
+Headline replay results from
+[replay_summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/replay_compare/replay_summary.md):
+
+- `K=1`
+  - all policies coincide at equivalence `0.4333`
+  - this is the expected sanity check and confirms the replay path is behaving
+    correctly
+- `K=4`
+  - for both compared verifiers:
+    - `greedy_first`: `0.4333`
+    - `random_parseable`: `0.4333`
+    - `verifier_ranked`: `0.4000`
+- `K=8`
+  - with `lr_5em05`:
+    - `greedy_first`: `0.4333`
+    - `random_parseable`: `0.5000`
+    - `verifier_ranked`: `0.4333`
+  - with `lr_2p0em05`:
+    - `greedy_first`: `0.4333`
+    - `random_parseable`: `0.5000`
+    - `verifier_ranked`: `0.4000`
+  - oracle best-of-8 upper bound on the fixed pool: `0.6000`
+
+Interpretation:
+
+- This is one of the most important project results so far because it removes
+  the main confound from earlier downstream comparisons.
+- The weak downstream result was not just a consequence of regenerated Bedrock
+  pools behaving differently across runs.
+- On the same candidate pool, verifier-ranked selection still fails to beat the
+  simple non-verifier baseline we care about.
+- The capacity-push verifier also does not rescue the ranking problem on this
+  pool, even though it looked slightly better on offline ranking metrics.
+- That means the central problem is now much clearer:
+  the verifier is not yet sufficiently aligned with the within-pool ranking task
+  that VCSR actually needs.
+
+Project takeaway:
+
+- Fixed-pool replay is no longer a missing tool; it is now a completed and
+  trusted part of the evaluation stack.
+- Generic verifier improvement on validation AUC is not enough by itself.
+- The next modeling step should focus on **ranking-aligned verifier training**:
+  more real candidate-pool hard negatives and acceptance based on replay wins,
+  not just offline metric gains.
+
 ## Recommended Next Entries
 
-- Fixed-pool replay comparison across verifier checkpoints
-- Ranking-aligned verifier training objective
-- Error analysis by domain, source, and natural-language style
-- Fresh held-out downstream evaluation after replay-based checkpoint selection
+- Ranking-aligned verifier training round built from larger real candidate pools
+- Replay-based comparison of the next hard-negative retrain against current best
+  checkpoints
+- Error analysis of replay failures by domain, style, and candidate type
+- Fresh held-out downstream best-of-K evaluation after replay-based checkpoint
+  selection
