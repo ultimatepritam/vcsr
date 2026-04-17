@@ -27,8 +27,11 @@ decisions:
 - Ranking-aligned verifier training is now validated as the right direction.
 - Round 2 is the first checkpoint that produces a real downstream replay win
   over the simple `random_parseable` baseline on the fixed `K=8` pool.
-- That win is still not robust across fresh generated pools, so robustness is
-  now the main bottleneck.
+- A later fresh end-to-end pool run with that verifier was weaker, but that
+  fresh run has **not** yet been analyzed through the same replay-controlled
+  comparison across checkpoints.
+- So the current concern is not that round 2 has been disproven, but that we do
+  not yet have enough controlled evidence to claim cross-pool robustness.
 
 That last point is the key update.
 We are no longer asking whether ranking-aligned training is worth trying.
@@ -48,7 +51,7 @@ replay now gives:
 - At `K=4`, ranking-aligned round 2 reaches `0.4667`.
 
 On the later fresh `50`-row round-2 pool rerun, the same round-2 verifier does
-not dominate:
+not dominate in the direct end-to-end run:
 
 - At `K=4`, `verifier_ranked` is `0.4800`, tied with `random_parseable`.
 - At `K=8`, `verifier_ranked` falls to `0.4200` versus `0.4400` for
@@ -58,6 +61,8 @@ This tells us two important things:
 
 - fixed-pool replay was the right diagnostic tool
 - ranking-aligned supervision is improving the downstream task we care about
+- we still need replay-style controlled analysis on newer pools before making
+  strong cross-pool claims
 - robustness across pools is still the central unsolved problem
 
 ## Main Conclusion
@@ -66,9 +71,9 @@ The next crucial project step is:
 
 - **robustness-focused ranking-aligned verifier round 3**
 
-Not because round 2 failed, but because it partially succeeded in the right
-place: it produced our best replay result so far and therefore justified
-doubling down in a more controlled, generalization-oriented way.
+Not because round 2 failed, but because it succeeded in the right place: it
+produced our best replay result so far and therefore justified doubling down in
+a more controlled, generalization-oriented way.
 
 The project bottleneck still looks like training-signal alignment rather than
 backbone choice or pure optimization budget, but now specifically in the form of
@@ -127,6 +132,8 @@ Success should mean:
 - verifier-ranked beats greedy and random-parseable on the same cached candidate
   pool
 - especially at `K=8`, where round 2 already produced a modest win
+- verifier improvements also survive replay-style evaluation on at least one
+  newer generated pool, not just the original pilot pool
 - with enough margin and stability to justify a fresh held-out downstream rerun
 
 ### Architecture Recommendation
@@ -147,7 +154,7 @@ backbone choice.
 
 - more generic epochs on the same current training data
 - larger-batch sweeps without more ranking-focused supervision
-- fresh regenerated best-of-K comparisons as the main decision criterion
+- fresh regenerated best-of-K comparisons alone as the main decision criterion
 - abstention policy work before the ranker itself is useful
 - architecture changes before we run a stronger robustness-focused round
 
@@ -171,7 +178,7 @@ at a larger scale a fair test.
 
 The project direction still looks viable, and the most important update is that
 we now have evidence of a real downstream replay win from ranking-aligned
-training.
+training on the fixed evaluation pool.
 
 Earlier, the main recommendation was:
 
@@ -182,7 +189,7 @@ The updated recommendation is:
 - keep the current verifier architecture family
 - treat ranking-aligned round 2 as the current best downstream checkpoint
 - run a robustness-focused round 3 on multiple real candidate pools
-- keep fixed-pool replay as the main downstream acceptance test
+- keep replay-controlled evaluation as the main downstream acceptance test
 
 That is the clearest path from our current state to the actual VCSR project
 goal.

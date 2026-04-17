@@ -872,10 +872,14 @@ Interpretation:
 - That means ranking-aligned training is no longer just directionally
   promising; it has now produced a real downstream win on the evaluation tool
   we trust most.
-- At the same time, the later fresh pool rerun shows the gain is still not
-  robust across generated candidate pools.
+- At the same time, the later fresh pool rerun is a caution signal:
+  in that direct end-to-end run, the same verifier does not dominate.
+- However, that newer pool has **not** yet gone through the same replay-style
+  controlled comparison across verifier checkpoints, so it should not be
+  over-interpreted as definitive evidence about robustness.
 - The project question is therefore no longer "does ranking-aligned training
-  help at all?" but "how do we make that help stable enough to trust?"
+  help at all?" but "can we reproduce the replay win on newer pools under the
+  same controlled evaluation?"
 
 Project takeaway:
 
@@ -884,8 +888,9 @@ Project takeaway:
 - The current best verifier for downstream replay is
   [results/verifier/ranking_aligned_round2/retrain_from_round1/selection.yaml](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round2/retrain_from_round1/selection.yaml).
 - The next step should focus on robustness:
-  more diverse ranking-aligned mining across multiple pools and strict replay
-  acceptance before spending on new end-to-end generation comparisons.
+  more diverse ranking-aligned mining across multiple pools and replay-style
+  controlled evaluation on newer pools before spending on new end-to-end
+  generation comparisons.
 
 ## Recommended Next Entries
 

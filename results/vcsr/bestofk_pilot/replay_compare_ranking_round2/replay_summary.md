@@ -2,7 +2,7 @@
 
 Source pool: `results\vcsr\bestofk_pilot\candidate_dump.jsonl`
 
-| Verifier | K | Policy | Parse | Equiv | Equiv|Parse | Avg Parseable | Avg Equivalent | Oracle Best-of-K |
+| Verifier | K | Policy | Parse | Equiv | Equiv / Parse | Avg Parseable | Avg Equivalent | Oracle Best-of-K |
 |---|---:|---|---:|---:|---:|---:|---:|---:|
 | lr_5em05 | 1 | greedy_first | 0.9333 | 0.4333 | 0.4643 | 0.93 | 0.43 | 0.4333 |
 | lr_5em05 | 1 | random_parseable | 0.9333 | 0.4333 | 0.4643 | 0.93 | 0.43 | 0.4333 |
