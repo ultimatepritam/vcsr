@@ -1,0 +1,42 @@
+experiment:
+  name: verifier_capacity_push_lr_5p0em05
+  seed: 42
+data:
+  train_jsonl: results/neggen/pilot/verifier_train.relabeled.jsonl
+  extra_train_jsonl: results/verifier/hardneg_round1/mined_examples.jsonl
+  val_fraction: 0.15
+  filter_unparseable: true
+model:
+  backbone: microsoft/deberta-v3-base
+  revision: refs/pr/14
+  max_seq_len: 512
+  dropout: 0.1
+training:
+  learning_rate: 5.0e-05
+  batch_size: 8
+  gradient_accumulation_steps: 16
+  epochs: 12
+  early_stopping_patience: 3
+  early_stopping_metric: val_auc
+  weight_decay: 0.01
+  warmup_ratio: 0.05
+  fp16: true
+  max_grad_norm: 1.0
+  dataloader_workers: 0
+evaluation:
+  eval_steps: 0
+  metrics:
+  - auc
+  - accuracy
+  - f1
+  - precision
+  - recall
+  per_source: true
+  per_domain: true
+output:
+  dir: results\verifier\capacity_push\lr_5p0em05
+  save_best_model: true
+  save_last_model: true
+logging:
+  wandb_project: null
+  log_every_n_steps: 1

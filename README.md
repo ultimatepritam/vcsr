@@ -77,6 +77,15 @@ python scripts/calibrate_verifier.py --config configs/verifier_full.yaml
 
 # 11. Optional: verifier LR sweep from configs/vcsr.yaml
 python scripts/run_verifier_lr_sweep.py
+
+# 12. Mine verifier misranking failures from the first Best-of-K pilot
+python scripts/mine_verifier_hard_negatives.py
+
+# 13. Retrain the verifier on the augmented dataset
+python scripts/train_verifier.py --config configs/verifier_hardneg_round1.yaml
+
+# 14. Capacity-push sweep on current hard-negative training setup
+python scripts/run_verifier_capacity_push.py
 ```
 
 ## Windows E: Drive Setup
@@ -135,10 +144,14 @@ separate calibration/evaluation protocol.
 Main verifier configs and scripts:
 
 - `configs/verifier_full.yaml`
+- `configs/verifier_hardneg_round1.yaml`
+- `configs/verifier_capacity_push.yaml`
 - `scripts/train_verifier.py`
 - `scripts/analyze_verifier.py`
 - `scripts/calibrate_verifier.py`
 - `scripts/run_verifier_lr_sweep.py`
+- `scripts/run_verifier_capacity_push.py`
+- `scripts/mine_verifier_hard_negatives.py`
 
 Current key verifier artifacts:
 
@@ -155,6 +168,19 @@ As of the current repo state, the selected best verifier comes from:
 - checkpoint: `results/verifier/lr_sweep/lr_5em05/best_model/model.pt`
 
 See `EXPERIMENTS.md` for the running experiment log and interpretation of these results.
+
+Development note:
+
+- `scripts/mine_verifier_hard_negatives.py` mines rows where the verifier-ranked
+  policy picked a wrong parseable candidate even though an equivalent candidate
+  existed in the same Best-of-K pool.
+- The script writes both a merged dataset and a focused
+  `results/verifier/hardneg_round1/mined_examples.jsonl` file.
+- `configs/verifier_hardneg_round1.yaml` uses the mined JSONL as
+  `extra_train_jsonl`, so those examples are appended to training while the base
+  validation split stays comparable.
+- Once we train on failures from `results/vcsr/bestofk_pilot/`, that pilot
+  should be treated as a development set rather than a fresh benchmark.
 
 ## External Tools
 

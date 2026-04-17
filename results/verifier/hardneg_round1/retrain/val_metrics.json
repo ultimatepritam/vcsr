@@ -1,0 +1,69 @@
+{
+  "auc": 0.7756672478540774,
+  "accuracy": 0.7285318559556787,
+  "f1": 0.4895833333333333,
+  "precision": 0.734375,
+  "recall": 0.3671875,
+  "n": 361,
+  "loss": 0.4981068709622259,
+  "per_source": {
+    "gold": {
+      "auc": 0.0,
+      "accuracy": 0.0,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 75
+    },
+    "llm_bedrock": {
+      "auc": 0.9390243902439025,
+      "accuracy": 0.835820895522388,
+      "f1": 0.8103448275862069,
+      "precision": 0.734375,
+      "recall": 0.9038461538461539,
+      "n": 134
+    },
+    "perturbation": {
+      "auc": 0.0,
+      "accuracy": 1.0,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 149
+    },
+    "bestofk_mined_positive": {
+      "auc": 0.0,
+      "accuracy": 0.0,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 1
+    },
+    "bestofk_mined_negative": {
+      "auc": 0.0,
+      "accuracy": 1.0,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 2
+    }
+  },
+  "per_domain": {
+    "gripper": {
+      "auc": 0.790948275862069,
+      "accuracy": 0.7819548872180451,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 133
+    },
+    "blocksworld": {
+      "auc": 0.7494714587737843,
+      "accuracy": 0.6973684210526315,
+      "f1": 0.5766871165644172,
+      "precision": 0.734375,
+      "recall": 0.47474747474747475,
+      "n": 228
+    }
+  }
+}

@@ -372,6 +372,166 @@ Project takeaway:
   inspect near-miss rows, tighten supervision around semantically subtle
   negatives, and then rerun the same best-of-K pilot before expanding scope.
 
+### Hard-Negative Mining + Verifier Retrain Round 1
+
+- Goal: turn concrete verifier misranking failures from the first best-of-K
+  pilot into targeted training signal and test whether the verifier improves as
+  a ranker-oriented classifier.
+- Mining script:
+  [scripts/mine_verifier_hard_negatives.py](/e:/Engineering/vcsr/scripts/mine_verifier_hard_negatives.py)
+- Retrain config:
+  [configs/verifier_hardneg_round1.yaml](/e:/Engineering/vcsr/configs/verifier_hardneg_round1.yaml)
+- Outputs:
+  - mined dataset root:
+    [results/verifier/hardneg_round1](/e:/Engineering/vcsr/results/verifier/hardneg_round1)
+  - corrected fixed-validation retrain:
+    [results/verifier/hardneg_round1/retrain_fixed_val](/e:/Engineering/vcsr/results/verifier/hardneg_round1/retrain_fixed_val)
+- Status: completed first hard-negative development round
+
+Method:
+
+- Start from the first verifier-ranked best-of-K pilot output:
+  [results/vcsr/bestofk_pilot/candidate_dump.jsonl](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/candidate_dump.jsonl)
+- Identify rows where:
+  - an equivalent parseable candidate existed in the `K=8` pool
+  - `verifier_ranked` selected a parseable non-equivalent candidate
+- Mine:
+  - one positive anchor from the highest-scoring equivalent candidate
+  - the verifier-selected wrong candidate
+  - additional parseable non-equivalent candidates that outranked the positive
+- Keep the original verifier validation split fixed by adding the mined rows as
+  `extra_train_jsonl` instead of resplitting a merged dataset
+
+Mining results from
+[results/verifier/hardneg_round1/mining_report.json](/e:/Engineering/vcsr/results/verifier/hardneg_round1/mining_report.json):
+
+- `30` pilot rows considered
+- `18` rows had at least one equivalent candidate in the `K=8` pool
+- `4` rows were verifier misses with a recoverable good candidate available
+- `12` mined training examples created:
+  - `4` positives
+  - `8` negatives
+- All mined examples came from `blocksworld`
+
+Retrain results from
+[val_metrics.json](/e:/Engineering/vcsr/results/verifier/hardneg_round1/retrain_fixed_val/val_metrics.json)
+compared against the previous selected verifier at
+[results/verifier/lr_sweep/lr_5em05/val_metrics.json](/e:/Engineering/vcsr/results/verifier/lr_sweep/lr_5em05/val_metrics.json):
+
+- Overall validation metrics:
+  - AUC: `0.7777 -> 0.7951`
+  - F1: `0.4787 -> 0.5388`
+  - Recall: `0.3750 -> 0.4917`
+  - Precision: `0.6618 -> 0.5960`
+  - Log loss: `0.4934 -> 0.4688`
+- Blocksworld slice:
+  - AUC: `0.7526 -> 0.7779`
+  - F1: `0.5696 -> 0.6243`
+  - Recall: `0.5000 -> 0.6556`
+- Gripper slice:
+  - AUC stayed similar: `0.7980 -> 0.7894`
+  - thresholded positive predictions are still weak at the default `0.5`
+
+Interpretation:
+
+- This is the first verifier-improvement round that is clearly motivated by
+  downstream VCSR failures rather than generic hyperparameter tuning.
+- The result is encouraging:
+  the verifier became meaningfully better on the fixed validation split,
+  especially in recall and on the `blocksworld` slice that dominated the pilot
+  ranking failures.
+- The price of the improvement is lower precision at the default threshold,
+  which is acceptable for ranking use but means calibration still matters.
+- The new training path is methodologically better than a naive merged retrain:
+  `extra_train_jsonl` preserves comparability of the base validation split.
+
+Important caveat:
+
+- Because the mined examples came from
+  [results/vcsr/bestofk_pilot](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot),
+  that 30-row pilot should now be treated as a development set.
+- Rerunning the same pilot is still useful as a development check, but it is no
+  longer a clean held-out evaluation for project claims.
+
+Project takeaway:
+
+- The hard-negative loop appears to be worth continuing.
+- We now have a stronger verifier candidate for ranking-focused follow-up work.
+- The next step should be:
+  rerun the best-of-K pilot with this new checkpoint as a development check, and
+  then create a fresh untouched evaluation sample before making stronger claims.
+
+### Verifier Capacity Push Sweep
+
+- Goal: test whether a larger effective batch and longer training budget can
+  improve verifier quality on the current hard-negative training setup without
+  changing the data distribution.
+- Config:
+  [configs/verifier_capacity_push.yaml](/e:/Engineering/vcsr/configs/verifier_capacity_push.yaml)
+- Runner:
+  [scripts/run_verifier_capacity_push.py](/e:/Engineering/vcsr/scripts/run_verifier_capacity_push.py)
+- Output root:
+  [results/verifier/capacity_push](/e:/Engineering/vcsr/results/verifier/capacity_push)
+- Status: completed
+
+Sweep design:
+
+- training data:
+  - base neggen JSONL
+  - plus `extra_train_jsonl` mined from the first best-of-K pilot
+- max epochs: `12`
+- early stopping patience: `3`
+- effective batch size: `128`
+  - `batch_size=8`
+  - `gradient_accumulation_steps=16`
+- learning rates:
+  - `2e-5`
+  - `5e-5`
+  - `7.5e-5`
+
+Results from
+[summary.md](/e:/Engineering/vcsr/results/verifier/capacity_push/summary.md):
+
+- `lr=2e-5`
+  - val AUC: `0.7972`
+  - val F1: `0.4762`
+  - eval raw AUC: `0.7975`
+  - best raw F1: `0.6561` at threshold `0.35`
+- `lr=5e-5`
+  - val AUC: `0.7915`
+  - val F1: `0.4742`
+  - eval raw AUC: `0.7964`
+  - best raw F1: `0.6667` at threshold `0.30`
+- `lr=7.5e-5`
+  - val AUC: `0.7815`
+  - val F1: `0.4809`
+  - eval raw AUC: `0.7926`
+  - best raw F1: `0.6595` at threshold `0.35`
+
+Interpretation:
+
+- The capacity push helped ranking metrics a little, but not dramatically.
+- `lr=2e-5` is now the best ranking-oriented result in this sweep by validation
+  AUC and clean evaluation raw AUC.
+- `lr=5e-5` gave the best thresholded clean-eval F1 in this sweep.
+- Compared with the earlier hard-negative retrain, this sweep did not produce a
+  clear win on default-threshold F1; its main benefit is modest ranking-quality
+  improvement, not a broad across-the-board jump.
+- This suggests the current bottleneck is still data quality and task alignment
+  more than raw optimization budget.
+
+Project takeaway:
+
+- Bigger machine budget is useful, but it is not a substitute for better
+  ranking-focused supervision.
+- For ranking-first downstream experiments, `capacity_push/lr_2p0em05` is a
+  reasonable candidate checkpoint.
+- For thresholded verifier evaluation, `capacity_push/lr_5p0em05` is also worth
+  keeping in mind because of its stronger best-threshold F1.
+- The next most informative experiment is still downstream:
+  rerun verifier-ranked best-of-K with the new capacity-push checkpoint and see
+  whether the small ranking gains translate into better candidate selection.
+
 ## Recommended Next Entries
 
 - Threshold sweep on `results/verifier/full_run` validation scores

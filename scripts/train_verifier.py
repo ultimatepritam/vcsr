@@ -21,7 +21,7 @@ import yaml
 import torch
 from transformers import AutoTokenizer
 
-from verifier.dataset import build_datasets, collate_fn
+from verifier.dataset import VerifierDataset, build_datasets, collate_fn, load_jsonl, split_by_template
 from verifier.evaluate import evaluate
 from verifier.model import VerifierModel
 from verifier.train import TrainConfig, train
@@ -73,16 +73,34 @@ def main():
 
     # Datasets
     jsonl_path = data_cfg.get("train_jsonl", "results/neggen/pilot/verifier_train.relabeled.jsonl")
+    extra_train_jsonl = data_cfg.get("extra_train_jsonl")
     val_fraction = data_cfg.get("val_fraction", 0.15)
+    filter_unparseable = data_cfg.get("filter_unparseable", True)
 
-    train_ds, val_ds, train_rows, val_rows = build_datasets(
-        jsonl_path=jsonl_path,
-        tokenizer=tokenizer,
-        max_length=max_seq_len,
-        val_fraction=val_fraction,
-        seed=seed,
-        filter_unparseable=data_cfg.get("filter_unparseable", True),
-    )
+    if extra_train_jsonl:
+        base_rows = load_jsonl(jsonl_path, filter_unparseable=filter_unparseable)
+        train_rows, val_rows = split_by_template(base_rows, val_fraction=val_fraction, seed=seed)
+        val_groups = {row.planetarium_name for row in val_rows}
+        extra_rows = load_jsonl(extra_train_jsonl, filter_unparseable=filter_unparseable)
+        extra_rows = [row for row in extra_rows if row.planetarium_name not in val_groups]
+        train_rows = train_rows + extra_rows
+        train_ds = VerifierDataset(train_rows, tokenizer, max_length=max_seq_len)
+        val_ds = VerifierDataset(val_rows, tokenizer, max_length=max_seq_len)
+        logger.info(
+            "Loaded base split plus extra training-only rows: base_train=%d extra_train=%d val=%d",
+            len(train_rows) - len(extra_rows),
+            len(extra_rows),
+            len(val_rows),
+        )
+    else:
+        train_ds, val_ds, train_rows, val_rows = build_datasets(
+            jsonl_path=jsonl_path,
+            tokenizer=tokenizer,
+            max_length=max_seq_len,
+            val_fraction=val_fraction,
+            seed=seed,
+            filter_unparseable=filter_unparseable,
+        )
     logger.info("Train: %d  Val: %d", len(train_ds), len(val_ds))
 
     # Dry-run: tiny subset
