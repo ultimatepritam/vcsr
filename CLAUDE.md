@@ -141,7 +141,9 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] **Calibration analysis with separate calibration/evaluation split** (`scripts/calibrate_verifier.py`, `results/verifier/full_run/calibration_report.json`)
 - [x] **Learning-rate sweep for verifier** (`results/verifier/lr_sweep/`)
 - [x] **Select current best verifier checkpoint** (`results/verifier/best_current/selection.yaml`)
-- [ ] **Use verifier in downstream best-of-K / abstention experiments**
+- [x] **Run first verifier-ranked best-of-K pilots**
+- [ ] **Isolate verifier impact with fixed-pool downstream evaluation**
+- [ ] **Move from pointwise verifier training toward ranking-aligned supervision**
 
 ### Phase 3: Search and Repair (Weeks 5-6)
 
@@ -156,10 +158,14 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Verifier-ranked best-of-K experiment** using the selected checkpoint in `results/verifier/best_current/selection.yaml`.
-2. **Val/test** evaluation using held-out Planetarium rows (template-hash splits); do **not** train on test.
-3. **Baselines:** greedy LLM, best-of-K random, planner-valid-only vs **verifier-ranked**.
-4. **Abstention operating-point study** using the clean calibration protocol and risk-coverage curves.
+1. **Fixed-pool replay evaluation for best-of-K**
+   Use cached candidate dumps and compare verifier policies on identical candidate pools.
+2. **Ranking-aligned verifier training**
+   Move beyond pure pointwise classification and teach the verifier which candidate should outrank another for the same NL input.
+3. **More candidate-pool hard negatives**
+   Keep mining subtle, parseable, semantically wrong negatives from real generation outputs.
+4. **Fresh held-out downstream evaluation**
+   Once we have a fixed-pool evaluator and an updated ranker, measure on untouched candidate pools before making stronger claims.
 
 ## Current Status Notes
 
@@ -168,7 +174,10 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - A completed verifier training run now exists under `results/verifier/full_run/`, along with threshold analysis and a cleaner calibration/evaluation report.
 - The LR sweep under `results/verifier/lr_sweep/` currently favors `lr=5e-5` as the best verifier checkpoint among the tested settings.
 - `results/verifier/best_current/selection.yaml` is the stable metadata record for the currently selected verifier artifact.
-- The main remaining gap is no longer verifier training itself; it is downstream integration into verifier-ranked search, abstention, and repair experiments.
+- We have now run first downstream verifier-ranked best-of-K pilots and verifier-improvement rounds (`hardneg_round1`, `capacity_push`).
+- The main uncertainty is no longer "can we train a verifier?" but "can a verifier actually improve downstream candidate selection?"
+- Because regenerated candidate pools confound downstream comparisons, the next crucial experiment is fixed-pool replay evaluation.
+- More verifier data and larger training runs may help, but they are not the central unanswered question anymore.
 
 ## Conventions
 

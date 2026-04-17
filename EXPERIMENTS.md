@@ -532,9 +532,54 @@ Project takeaway:
   rerun verifier-ranked best-of-K with the new capacity-push checkpoint and see
   whether the small ranking gains translate into better candidate selection.
 
+### Best-of-K Development Rerun with Capacity-Push Verifier
+
+- Goal: test whether the ranking-oriented winner from the capacity-push sweep
+  improves downstream best-of-K selection.
+- Config:
+  [configs/vcsr_bestofk_capacity_push_lr2.yaml](/e:/Engineering/vcsr/configs/vcsr_bestofk_capacity_push_lr2.yaml)
+- Verifier source:
+  [results/verifier/capacity_push/lr_2p0em05/selection.yaml](/e:/Engineering/vcsr/results/verifier/capacity_push/lr_2p0em05/selection.yaml)
+- Output:
+  [results/vcsr/bestofk_capacity_push_lr2](/e:/Engineering/vcsr/results/vcsr/bestofk_capacity_push_lr2)
+- Status: completed development rerun
+
+Headline results from
+[summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_capacity_push_lr2/summary.md):
+
+- `K=1`
+  - all policies coincide at equivalence `0.5333`
+- `K=4`
+  - `greedy_first`: `0.5333`
+  - `random_parseable`: `0.4333`
+  - `verifier_ranked`: `0.4000`
+- `K=8`
+  - `greedy_first`: `0.5333`
+  - `random_parseable`: `0.5000`
+  - `verifier_ranked`: `0.4333`
+  - oracle best-of-8 upper bound: `0.6000`
+
+Interpretation:
+
+- This rerun did **not** produce a downstream win for verifier-ranked selection.
+- However, it is not a clean controlled verifier comparison, because the
+  candidate pool was regenerated through Bedrock and changed substantially from
+  the first pilot.
+- In this rerun, parse rate rose to `1.0` for all policies and greedy `K=1`
+  performance improved markedly, which means the generator output distribution
+  shifted enough to confound the verifier comparison.
+
+Project takeaway:
+
+- We should stop over-interpreting reruns that regenerate candidate pools.
+- The project's key missing experimental tool is now clear:
+  **fixed-pool replay evaluation**.
+- That evaluator is needed before deciding whether more verifier training data,
+  larger sweeps, or a changed ranking objective actually improve downstream VCSR.
+
 ## Recommended Next Entries
 
-- Threshold sweep on `results/verifier/full_run` validation scores
-- Calibration experiment: temperature scaling vs isotonic
+- Fixed-pool replay comparison across verifier checkpoints
+- Ranking-aligned verifier training objective
 - Error analysis by domain, source, and natural-language style
-- First verifier-ranked best-of-K comparison against greedy and random-valid baselines
+- Fresh held-out downstream evaluation after replay-based checkpoint selection

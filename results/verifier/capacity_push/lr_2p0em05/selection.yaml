@@ -1,0 +1,22 @@
+selected_at: 2026-04-17
+selected_run: results\verifier\capacity_push\lr_2p0em05
+checkpoint_path: results\verifier\capacity_push\lr_2p0em05\best_model\model.pt
+training_history_path: results\verifier\capacity_push\lr_2p0em05\train_history.json
+val_metrics_path: results\verifier\capacity_push\lr_2p0em05\val_metrics.json
+calibration_report_path: results\verifier\capacity_push\lr_2p0em05\calibration_report.json
+
+selection_reason:
+  summary: Ranking-oriented winner from the verifier capacity-push sweep.
+  criteria:
+    - highest validation AUC in the capacity-push sweep
+    - highest clean evaluation raw AUC in the capacity-push sweep
+    - chosen as the first downstream best-of-K rerun candidate
+
+metrics_snapshot:
+  val_auc: 0.797204641350211
+  val_f1: 0.47619047619047616
+  eval_raw_auc: 0.7975455820476859
+  best_raw_f1: 0.656084656084656
+  best_raw_threshold: 0.35
+  best_temp_f1: 0.6526315789473685
+  best_temp_threshold: 0.3

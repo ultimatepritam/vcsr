@@ -28,9 +28,11 @@ tools/             External tool installs (Fast Downward, VAL)
 
 - Foundations and the negative-generation pilot are completed.
 - Verifier training is implemented and has been run successfully on the pilot dataset.
-- Clean calibration analysis and a small learning-rate sweep have also been completed.
+- Clean calibration analysis, hard-negative retraining, and a capacity-push sweep have also been completed.
 - The current selected verifier checkpoint is recorded in `results/verifier/best_current/selection.yaml`.
-- The main remaining gap is downstream integration into verifier-ranked best-of-K, abstention, and later repair experiments.
+- We have also completed first verifier-ranked best-of-K pilots.
+- The main open question is now downstream decision quality:
+  can a verifier actually improve candidate selection on a fixed candidate pool?
 
 ## Quick Start
 
@@ -86,6 +88,9 @@ python scripts/train_verifier.py --config configs/verifier_hardneg_round1.yaml
 
 # 14. Capacity-push sweep on current hard-negative training setup
 python scripts/run_verifier_capacity_push.py
+
+# 15. End-to-end verifier-ranked best-of-K pilot
+python scripts/run_verifier_bestofk.py --config configs/vcsr_bestofk_pilot.yaml
 ```
 
 ## Windows E: Drive Setup
@@ -181,6 +186,42 @@ Development note:
   validation split stays comparable.
 - Once we train on failures from `results/vcsr/bestofk_pilot/`, that pilot
   should be treated as a development set rather than a fresh benchmark.
+
+## Best-of-K Status
+
+Best-of-K experiment scripts and configs:
+
+- `scripts/run_verifier_bestofk.py`
+- `configs/vcsr_bestofk_pilot.yaml`
+- `configs/vcsr_bestofk_capacity_push_lr2.yaml`
+
+Key downstream artifacts:
+
+| Path | Description |
+|------|-------------|
+| `results/vcsr/bestofk_pilot/` | First verifier-ranked best-of-K pilot with the earlier selected verifier |
+| `results/vcsr/bestofk_capacity_push_lr2/` | Development rerun using the ranking-oriented winner from the capacity-push sweep |
+
+Current project conclusion from these pilots:
+
+- The verifier has real offline signal, but that signal has not yet translated into a robust downstream selection win.
+- Candidate generation quality is often good enough that a better selector should be able to do better.
+- Because candidate pools change between reruns, the next crucial project step is **fixed-pool replay evaluation**:
+  compare verifiers on the exact same cached candidate sets rather than regenerating candidates every time.
+
+## Recommended Next Step
+
+The highest-value next task is:
+
+- build a fixed candidate-pool replay evaluator for best-of-K outputs
+
+Why this matters:
+
+- It isolates verifier quality from generator randomness.
+- It tells us whether verifier improvements actually help selection on identical candidate pools.
+- It is the cleanest decision point for whether to keep scaling the current verifier approach or change direction.
+
+See `RECOMMENDATION.md` for the current project-level recommendation.
 
 ## External Tools
 
