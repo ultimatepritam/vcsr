@@ -749,10 +749,149 @@ Project takeaway:
   mine larger real candidate pools, widen the ranking-focused supervision, and
   keep using fixed-pool replay as the main decision test.
 
+### Ranking-Aligned Verifier Training Round 2
+
+- Goal: scale up the ranking-aligned training signal using a larger real
+  candidate pool, then test whether that stronger verifier finally improves
+  downstream fixed-pool replay enough to matter for the VCSR objective.
+- Pool-generation config:
+  [configs/vcsr_bestofk_ranking_round2_pool.yaml](/e:/Engineering/vcsr/configs/vcsr_bestofk_ranking_round2_pool.yaml)
+- Pool-generation output:
+  [results/vcsr/bestofk_ranking_round2_pool](/e:/Engineering/vcsr/results/vcsr/bestofk_ranking_round2_pool)
+- Mining script:
+  [scripts/mine_verifier_ranking_examples.py](/e:/Engineering/vcsr/scripts/mine_verifier_ranking_examples.py)
+- Training config:
+  [configs/verifier_ranking_aligned_round2.yaml](/e:/Engineering/vcsr/configs/verifier_ranking_aligned_round2.yaml)
+- Trained checkpoint:
+  [results/verifier/ranking_aligned_round2/retrain_from_round1](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round2/retrain_from_round1)
+- Replay comparison:
+  [results/vcsr/bestofk_pilot/replay_compare_ranking_round2](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/replay_compare_ranking_round2)
+- Status: completed
+
+Method:
+
+- Start from a larger in-domain best-of-K pool:
+  `50` `test` rows from `blocksworld` and `gripper`
+- Warm-start from the round-1 ranking-aligned verifier:
+  [results/verifier/ranking_aligned_round1/retrain_from_capacity_push/selection.yaml](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round1/retrain_from_capacity_push/selection.yaml)
+- Mine the same style of pool-conditioned positives and hard negatives, but from
+  the larger round-2 candidate dump
+- Keep the base verifier validation split fixed and inject the mined examples
+  through `extra_train_jsonl`
+- Repeat the mined set `4x` during training so the within-pool ranking signal is
+  strong relative to the base neggen data
+
+Important provenance note:
+
+- There are two distinct `bestofk_ranking_round2_pool` generation passes in the
+  development history.
+- The replayed round-2 verifier in
+  [results/verifier/ranking_aligned_round2/retrain_from_round1](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round2/retrain_from_round1)
+  was trained from the **earlier** round-2 pool generation.
+- The currently visible
+  [results/vcsr/bestofk_ranking_round2_pool](/e:/Engineering/vcsr/results/vcsr/bestofk_ranking_round2_pool)
+  artifacts come from a later clean rerun after proxy/logging fixes.
+- Because candidate generation is stochastic, those two pool runs should not be
+  treated as the same provenance source.
+- The downstream replay result below remains valid for the trained checkpoint,
+  but the current pool folder should not be described as the exact training
+  source for that already-trained verifier.
+
+Earlier round-2 mining results from
+[results/verifier/ranking_aligned_round2/mining_report.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round2/mining_report.json):
+
+- `50` rows considered
+- `50` rows had at least one parseable candidate in-pool
+- `30` rows had at least one equivalent candidate in-pool
+- `41` rows had parseable non-equivalent candidates in-pool
+- `11` rows were verifier misses with a recoverable equivalent candidate
+  available
+- `20` rows contributed negative-only mining examples
+- `102` mined examples created:
+  - `39` positives
+  - `63` negatives
+- By domain:
+  - `82` `blocksworld`
+  - `20` `gripper`
+
+Training results from
+[val_metrics.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round2/retrain_from_round1/val_metrics.json):
+
+- round-2 ranking-aligned retrain:
+  - val AUC: `0.8046`
+  - val F1: `0.4813`
+  - val precision: `0.6716`
+  - val recall: `0.3750`
+- compared with round 1:
+  - AUC improved slightly: `0.7995 -> 0.8046`
+  - thresholded metrics remained broadly similar
+
+Clean calibration results from
+[calibration_report.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round2/retrain_from_round1/calibration_report.json):
+
+- evaluation raw AUC: `0.8072`
+- best raw-threshold F1 on the untouched eval subset: `0.6667` at threshold
+  `0.40`
+
+Fixed-pool replay results from
+[replay_summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/replay_compare_ranking_round2/replay_summary.md):
+
+- `K=1`
+  - all policies still coincide at `0.4333`, as expected
+- `K=4`
+  - previous best-current verifier (`lr_5em05`): `0.4000`
+  - capacity-push verifier (`lr_2p0em05`): `0.4000`
+  - ranking-aligned round 1 (`retrain_from_capacity_push`): `0.4000`
+  - ranking-aligned round 2 (`retrain_from_round1`): `0.4667`
+- `K=8`
+  - previous best-current verifier (`lr_5em05`): `0.4333`
+  - capacity-push verifier (`lr_2p0em05`): `0.4000`
+  - ranking-aligned round 1 (`retrain_from_capacity_push`): `0.4667`
+  - ranking-aligned round 2 (`retrain_from_round1`): `0.5333`
+  - `random_parseable` baseline remained at `0.5000`
+  - oracle best-of-8 upper bound remained `0.6000`
+
+Later clean rerun of the round-2 pool from
+[summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_ranking_round2_pool/summary.md):
+
+- `K=4`
+  - `greedy_first`: `0.4600`
+  - `random_parseable`: `0.4800`
+  - `verifier_ranked`: `0.4800`
+- `K=8`
+  - `greedy_first`: `0.4600`
+  - `random_parseable`: `0.4400`
+  - `verifier_ranked`: `0.4200`
+
+Interpretation:
+
+- This is the strongest downstream verifier result we have so far on the fixed
+  replay benchmark.
+- Round 2 is the first verifier checkpoint to beat `random_parseable` on the
+  cached `K=8` pool, even if only modestly: `0.5333` versus `0.5000`.
+- That means ranking-aligned training is no longer just directionally
+  promising; it has now produced a real downstream win on the evaluation tool
+  we trust most.
+- At the same time, the later fresh pool rerun shows the gain is still not
+  robust across generated candidate pools.
+- The project question is therefore no longer "does ranking-aligned training
+  help at all?" but "how do we make that help stable enough to trust?"
+
+Project takeaway:
+
+- Ranking-aligned training is now the leading modeling direction by direct
+  downstream evidence.
+- The current best verifier for downstream replay is
+  [results/verifier/ranking_aligned_round2/retrain_from_round1/selection.yaml](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round2/retrain_from_round1/selection.yaml).
+- The next step should focus on robustness:
+  more diverse ranking-aligned mining across multiple pools and strict replay
+  acceptance before spending on new end-to-end generation comparisons.
+
 ## Recommended Next Entries
 
-- Ranking-aligned verifier training round 2 built from larger real candidate pools
-- Replay-based comparison of round 2 against current best checkpoints
+- Robustness-focused ranking-aligned verifier round 3 built from multiple real
+  candidate pools
+- Replay-based comparison of round 3 against the new round-2 best checkpoint
 - Error analysis of replay failures by domain, style, and candidate type
 - Fresh held-out downstream best-of-K evaluation after replay-based checkpoint
   selection

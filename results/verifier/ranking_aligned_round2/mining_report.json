@@ -1,0 +1,1165 @@
+{
+  "inputs": {
+    "candidate_dump": "results\\vcsr\\bestofk_ranking_round2_pool\\candidate_dump.jsonl",
+    "run_config": "results\\vcsr\\bestofk_ranking_round2_pool\\run_config.yaml",
+    "base_jsonl": "results\\neggen\\pilot\\verifier_train.relabeled.jsonl",
+    "k": 8,
+    "max_positives_per_row": 2,
+    "max_negatives_per_row": 4,
+    "include_negative_only_rows": true,
+    "max_negative_only_per_row": 1
+  },
+  "summary": {
+    "rows_considered": 50,
+    "rows_with_parseable_pool": 50,
+    "rows_with_positive_pool": 30,
+    "rows_with_negative_pool": 41,
+    "rows_with_verifier_miss": 11,
+    "rows_with_negative_only_mining": 20,
+    "mined_examples_total": 102,
+    "mined_positive_examples": 39,
+    "mined_negative_examples": 63,
+    "new_examples_added_to_augmented_train": 102,
+    "augmented_train_total": 2497
+  },
+  "by_source": {
+    "bestofk_ranking_negative": 43,
+    "bestofk_ranking_positive": 39,
+    "bestofk_ranking_negative_only": 20
+  },
+  "by_domain": {
+    "blocksworld": 82,
+    "gripper": 20
+  },
+  "by_style": {
+    "abstract/abstract": 75,
+    "explicit/explicit": 27
+  },
+  "row_details": [
+    {
+      "row_index": 0,
+      "planetarium_name": "blocksworld_swap_to_swap_blocks_list_10_3",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 0,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        0,
+        4,
+        6
+      ],
+      "available_negative_indices": [
+        5,
+        7,
+        3,
+        1,
+        2
+      ],
+      "chosen_positive_indices": [
+        0,
+        4
+      ],
+      "chosen_negative_indices": [
+        5,
+        7,
+        3,
+        1
+      ],
+      "best_positive_score": 0.7958984375
+    },
+    {
+      "row_index": 1,
+      "planetarium_name": "blocksworld_swap_to_swap_blocks_list_16_7",
+      "domain": "blocksworld",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 0,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "available_negative_indices": [],
+      "chosen_positive_indices": [
+        0,
+        1
+      ],
+      "chosen_negative_indices": [],
+      "best_positive_score": 0.65966796875
+    },
+    {
+      "row_index": 2,
+      "planetarium_name": "blocksworld_swap_to_swap_blocks_list_9_15",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 3,
+      "verifier_selected_wrong": true,
+      "available_positive_indices": [
+        2,
+        0,
+        1,
+        4,
+        5,
+        6,
+        7
+      ],
+      "available_negative_indices": [
+        3
+      ],
+      "chosen_positive_indices": [
+        2,
+        0
+      ],
+      "chosen_negative_indices": [
+        3
+      ],
+      "best_positive_score": 0.59375
+    },
+    {
+      "row_index": 3,
+      "planetarium_name": "blocksworld_swap_to_swap_blocks_list_15_10",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 5,
+      "verifier_selected_wrong": true,
+      "available_positive_indices": [
+        2,
+        4,
+        6,
+        0,
+        1,
+        7
+      ],
+      "available_negative_indices": [
+        5,
+        3
+      ],
+      "chosen_positive_indices": [
+        2,
+        4
+      ],
+      "chosen_negative_indices": [
+        5,
+        3
+      ],
+      "best_positive_score": 0.826171875
+    },
+    {
+      "row_index": 4,
+      "planetarium_name": "blocksworld_swap_to_swap_blocks_list_9_17",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 0,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        0,
+        2,
+        7,
+        5,
+        6,
+        1,
+        4
+      ],
+      "available_negative_indices": [
+        3
+      ],
+      "chosen_positive_indices": [
+        0,
+        2
+      ],
+      "chosen_negative_indices": [
+        3
+      ],
+      "best_positive_score": 0.63818359375
+    },
+    {
+      "row_index": 5,
+      "planetarium_name": "blocksworld_swap_to_swap_blocks_list_6_24",
+      "domain": "blocksworld",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 4,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        4,
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        0
+      ],
+      "available_negative_indices": [],
+      "chosen_positive_indices": [
+        4,
+        1
+      ],
+      "chosen_negative_indices": [],
+      "best_positive_score": 0.328125
+    },
+    {
+      "row_index": 6,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_3_10",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 7,
+      "verifier_selected_wrong": true,
+      "available_positive_indices": [
+        6
+      ],
+      "available_negative_indices": [
+        7,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "chosen_positive_indices": [
+        6
+      ],
+      "chosen_negative_indices": [
+        7,
+        0,
+        1,
+        2
+      ],
+      "best_positive_score": 0.298583984375
+    },
+    {
+      "row_index": 7,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_2_2_2_3_3",
+      "domain": "blocksworld",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 0,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "available_negative_indices": [],
+      "chosen_positive_indices": [
+        0,
+        1
+      ],
+      "chosen_negative_indices": [],
+      "best_positive_score": 0.93505859375
+    },
+    {
+      "row_index": 8,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_4_5_5",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 5,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        5,
+        0,
+        4,
+        6,
+        7,
+        1
+      ],
+      "available_negative_indices": [
+        2,
+        3
+      ],
+      "chosen_positive_indices": [
+        5,
+        0
+      ],
+      "chosen_negative_indices": [
+        2,
+        3
+      ],
+      "best_positive_score": 0.425048828125
+    },
+    {
+      "row_index": 9,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_2_3_8",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 0,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        0,
+        4,
+        5
+      ],
+      "available_negative_indices": [
+        1,
+        2,
+        3,
+        6,
+        7
+      ],
+      "chosen_positive_indices": [
+        0,
+        4
+      ],
+      "chosen_negative_indices": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "best_positive_score": 0.38818359375
+    },
+    {
+      "row_index": 10,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_2_5_5",
+      "domain": "blocksworld",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 0,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        4,
+        7
+      ],
+      "available_negative_indices": [],
+      "chosen_positive_indices": [
+        0,
+        1
+      ],
+      "chosen_negative_indices": [],
+      "best_positive_score": 0.92578125
+    },
+    {
+      "row_index": 11,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_2_3_3_3",
+      "domain": "blocksworld",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 0,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "available_negative_indices": [],
+      "chosen_positive_indices": [
+        0,
+        1
+      ],
+      "chosen_negative_indices": [],
+      "best_positive_score": 0.9375
+    },
+    {
+      "row_index": 12,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_2_2_2_2_2_3",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 7,
+      "verifier_selected_wrong": true,
+      "available_positive_indices": [
+        1
+      ],
+      "available_negative_indices": [
+        7,
+        6,
+        4,
+        3,
+        0
+      ],
+      "chosen_positive_indices": [
+        1
+      ],
+      "chosen_negative_indices": [
+        7,
+        6,
+        4,
+        3
+      ],
+      "best_positive_score": 0.38720703125
+    },
+    {
+      "row_index": 13,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_3_3_4_5",
+      "domain": "blocksworld",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 5,
+      "verifier_selected_wrong": true,
+      "available_positive_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7
+      ],
+      "available_negative_indices": [
+        5
+      ],
+      "chosen_positive_indices": [
+        0,
+        1
+      ],
+      "chosen_negative_indices": [
+        5
+      ],
+      "best_positive_score": 0.90869140625
+    },
+    {
+      "row_index": 14,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_6_10",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 6,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        6,
+        3,
+        4,
+        1,
+        2,
+        7,
+        5
+      ],
+      "available_negative_indices": [
+        0
+      ],
+      "chosen_positive_indices": [
+        6,
+        3
+      ],
+      "chosen_negative_indices": [
+        0
+      ],
+      "best_positive_score": 0.41552734375
+    },
+    {
+      "row_index": 15,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_2_2_2_4_5",
+      "domain": "blocksworld",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 0,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "available_negative_indices": [],
+      "chosen_positive_indices": [
+        0,
+        1
+      ],
+      "chosen_negative_indices": [],
+      "best_positive_score": 0.9287109375
+    },
+    {
+      "row_index": 16,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_2_2_4_9",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 5,
+      "verifier_selected_wrong": true,
+      "available_positive_indices": [
+        0,
+        3,
+        2,
+        6
+      ],
+      "available_negative_indices": [
+        5,
+        7,
+        1,
+        4
+      ],
+      "chosen_positive_indices": [
+        0,
+        3
+      ],
+      "chosen_negative_indices": [
+        5,
+        7,
+        1,
+        4
+      ],
+      "best_positive_score": 0.31591796875
+    },
+    {
+      "row_index": 17,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_5_5_5",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 6,
+      "verifier_selected_wrong": true,
+      "available_positive_indices": [
+        4,
+        0,
+        5,
+        2,
+        3,
+        1
+      ],
+      "available_negative_indices": [
+        6,
+        7
+      ],
+      "chosen_positive_indices": [
+        4,
+        0
+      ],
+      "chosen_negative_indices": [
+        6,
+        7
+      ],
+      "best_positive_score": 0.349609375
+    },
+    {
+      "row_index": 18,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_5_5_5",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 3,
+      "verifier_selected_wrong": true,
+      "available_positive_indices": [
+        1
+      ],
+      "available_negative_indices": [
+        3,
+        0,
+        4,
+        5,
+        7,
+        6
+      ],
+      "chosen_positive_indices": [
+        1
+      ],
+      "chosen_negative_indices": [
+        3,
+        0,
+        4,
+        5
+      ],
+      "best_positive_score": 0.347412109375
+    },
+    {
+      "row_index": 19,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_1_1_1_2_3_7",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 0,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "available_negative_indices": [],
+      "chosen_positive_indices": [
+        0,
+        1
+      ],
+      "chosen_negative_indices": [],
+      "best_positive_score": 0.389404296875
+    },
+    {
+      "row_index": 20,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_3_16",
+      "domain": "blocksworld",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 0,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        0,
+        1,
+        3,
+        5,
+        6,
+        7
+      ],
+      "available_negative_indices": [
+        2,
+        4
+      ],
+      "chosen_positive_indices": [
+        0,
+        1
+      ],
+      "chosen_negative_indices": [
+        2,
+        4
+      ],
+      "best_positive_score": 0.87646484375
+    },
+    {
+      "row_index": 21,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_9_9",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 0,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        0,
+        1,
+        4,
+        6,
+        7,
+        2,
+        3,
+        5
+      ],
+      "available_negative_indices": [],
+      "chosen_positive_indices": [
+        0,
+        1
+      ],
+      "chosen_negative_indices": [],
+      "best_positive_score": 0.390869140625
+    },
+    {
+      "row_index": 22,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_2_15",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 1,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "available_negative_indices": [
+        0
+      ],
+      "chosen_positive_indices": [
+        1,
+        2
+      ],
+      "chosen_negative_indices": [
+        0
+      ],
+      "best_positive_score": 0.39697265625
+    },
+    {
+      "row_index": 23,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_2_2_2_12",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 2,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        2,
+        3,
+        5,
+        6
+      ],
+      "available_negative_indices": [
+        1,
+        0,
+        7,
+        4
+      ],
+      "chosen_positive_indices": [
+        2,
+        3
+      ],
+      "chosen_negative_indices": [
+        1,
+        0,
+        7,
+        4
+      ],
+      "best_positive_score": 0.39013671875
+    },
+    {
+      "row_index": 24,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_3_3_3_3_6",
+      "domain": "blocksworld",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 1,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        0,
+        3
+      ],
+      "available_negative_indices": [],
+      "chosen_positive_indices": [
+        1,
+        2
+      ],
+      "chosen_negative_indices": [],
+      "best_positive_score": 0.93310546875
+    },
+    {
+      "row_index": 25,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_1_2_2_3_4_4",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 3,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        3,
+        5
+      ],
+      "available_negative_indices": [
+        7,
+        0,
+        1,
+        2,
+        4,
+        6
+      ],
+      "chosen_positive_indices": [
+        3,
+        5
+      ],
+      "chosen_negative_indices": [
+        7,
+        0,
+        1,
+        2
+      ],
+      "best_positive_score": 0.38916015625
+    },
+    {
+      "row_index": 26,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_2_2_3_3_3_3_4",
+      "domain": "blocksworld",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 0,
+      "verifier_selected_wrong": true,
+      "available_positive_indices": [
+        2,
+        4,
+        6
+      ],
+      "available_negative_indices": [
+        0,
+        1,
+        3,
+        5,
+        7
+      ],
+      "chosen_positive_indices": [
+        2,
+        4
+      ],
+      "chosen_negative_indices": [
+        0,
+        1,
+        3,
+        5
+      ],
+      "best_positive_score": 0.93798828125
+    },
+    {
+      "row_index": 27,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_2_3_3_3_3_3",
+      "domain": "blocksworld",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 0,
+      "verifier_selected_wrong": true,
+      "available_positive_indices": [
+        1,
+        2,
+        3,
+        5,
+        7
+      ],
+      "available_negative_indices": [
+        0,
+        4,
+        6
+      ],
+      "chosen_positive_indices": [
+        1,
+        2
+      ],
+      "chosen_negative_indices": [
+        0,
+        4,
+        6
+      ],
+      "best_positive_score": 0.94287109375
+    },
+    {
+      "row_index": 28,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_4_17",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 2,
+      "verifier_selected_wrong": false,
+      "available_positive_indices": [
+        2,
+        5,
+        6,
+        7
+      ],
+      "available_negative_indices": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "chosen_positive_indices": [
+        2,
+        5
+      ],
+      "chosen_negative_indices": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "best_positive_score": 0.38134765625
+    },
+    {
+      "row_index": 29,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_2_2_4_14",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "positive_pool",
+      "verifier_selected_index": 1,
+      "verifier_selected_wrong": true,
+      "available_positive_indices": [
+        0
+      ],
+      "available_negative_indices": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        5
+      ],
+      "chosen_positive_indices": [
+        0
+      ],
+      "chosen_negative_indices": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "best_positive_score": 0.30224609375
+    },
+    {
+      "row_index": 30,
+      "planetarium_name": "gripper_holding_to_focus_min_balls_in_grippers_1_1_1_0_0_balls_in_rooms_4_0",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        0
+      ]
+    },
+    {
+      "row_index": 31,
+      "planetarium_name": "gripper_holding_to_drop_and_pickup_balls_in_grippers_1_1_1_1_1_balls_in_rooms_0_0_0_0_0_0_0",
+      "domain": "gripper",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        0
+      ]
+    },
+    {
+      "row_index": 32,
+      "planetarium_name": "gripper_swap_to_swap_balls_in_grippers_0_0_balls_in_rooms_1_11",
+      "domain": "gripper",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        6
+      ]
+    },
+    {
+      "row_index": 33,
+      "planetarium_name": "gripper_n_room_distributed_to_focus_min_balls_in_grippers_0_0_balls_in_rooms_1_2_3_5_5",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        3
+      ]
+    },
+    {
+      "row_index": 34,
+      "planetarium_name": "gripper_juggle_to_juggle_balls_in_grippers_1_1_balls_in_rooms_7_0",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        1
+      ]
+    },
+    {
+      "row_index": 35,
+      "planetarium_name": "gripper_juggle_to_juggle_balls_in_grippers_1_1_0_0_balls_in_rooms_1_0_0",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        6
+      ]
+    },
+    {
+      "row_index": 36,
+      "planetarium_name": "gripper_juggle_to_juggle_balls_in_grippers_1_1_0_0_balls_in_rooms_3_0_0_0",
+      "domain": "gripper",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        0
+      ]
+    },
+    {
+      "row_index": 37,
+      "planetarium_name": "gripper_juggle_to_juggle_balls_in_grippers_1_1_0_0_0_0_balls_in_rooms_4_0_0_0_0",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        7
+      ]
+    },
+    {
+      "row_index": 38,
+      "planetarium_name": "gripper_juggle_to_juggle_balls_in_grippers_1_1_1_0_0_0_balls_in_rooms_5_0",
+      "domain": "gripper",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        0
+      ]
+    },
+    {
+      "row_index": 39,
+      "planetarium_name": "gripper_juggle_to_juggle_balls_in_grippers_1_1_1_0_0_0_balls_in_rooms_2_0_0",
+      "domain": "gripper",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        0
+      ]
+    },
+    {
+      "row_index": 40,
+      "planetarium_name": "gripper_juggle_to_juggle_balls_in_grippers_1_1_1_0_0_0_0_balls_in_rooms_4_0",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        1
+      ]
+    },
+    {
+      "row_index": 41,
+      "planetarium_name": "gripper_juggle_to_juggle_balls_in_grippers_1_1_1_1_1_0_0_balls_in_rooms_7",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        0
+      ]
+    },
+    {
+      "row_index": 42,
+      "planetarium_name": "gripper_juggle_to_juggle_balls_in_grippers_1_1_1_0_0_0_0_0_0_balls_in_rooms_5_0_0",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        4
+      ]
+    },
+    {
+      "row_index": 43,
+      "planetarium_name": "gripper_juggle_to_juggle_balls_in_grippers_1_1_1_1_0_0_0_0_0_0_balls_in_rooms_6",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        6
+      ]
+    },
+    {
+      "row_index": 44,
+      "planetarium_name": "gripper_juggle_to_juggle_balls_in_grippers_1_1_1_1_1_0_0_0_0_0_balls_in_rooms_5_0_0_0",
+      "domain": "gripper",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        0
+      ]
+    },
+    {
+      "row_index": 45,
+      "planetarium_name": "gripper_juggle_to_juggle_balls_in_grippers_1_1_1_1_1_0_0_0_0_0_balls_in_rooms_0_0_0_0_0",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        2
+      ]
+    },
+    {
+      "row_index": 46,
+      "planetarium_name": "gripper_holding_to_drop_and_pickup_balls_in_grippers_1_1_balls_in_rooms_2_0_0",
+      "domain": "gripper",
+      "style": "explicit/explicit",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        0
+      ]
+    },
+    {
+      "row_index": 47,
+      "planetarium_name": "gripper_holding_to_drop_and_pickup_balls_in_grippers_1_1_0_balls_in_rooms_1_0",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        2
+      ]
+    },
+    {
+      "row_index": 48,
+      "planetarium_name": "gripper_n_room_distributed_to_focus_min_balls_in_grippers_0_0_balls_in_rooms_1_3_3_3_3_6",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        2
+      ]
+    },
+    {
+      "row_index": 49,
+      "planetarium_name": "gripper_holding_to_drop_and_pickup_balls_in_grippers_1_1_1_1_balls_in_rooms_3_0_0_0_0_0",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "k": 8,
+      "pool_type": "negative_only_pool",
+      "chosen_negative_indices": [
+        2
+      ]
+    }
+  ]
+}

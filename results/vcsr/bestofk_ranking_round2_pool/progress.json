@@ -1,10 +1,10 @@
 {
   "total_rows": 50,
-  "completed_rows": 0,
-  "remaining_rows": 50,
-  "elapsed_sec": 0.001134634017944336,
-  "avg_sec_per_row": null,
-  "eta_sec": null,
-  "current_row_name": "blocksworld_swap_to_swap_blocks_list_10_3",
-  "current_domain": "blocksworld"
+  "completed_rows": 50,
+  "remaining_rows": 0,
+  "elapsed_sec": 1314.562216758728,
+  "avg_sec_per_row": 26.29124433517456,
+  "eta_sec": 0.0,
+  "current_row_name": "gripper_holding_to_drop_and_pickup_balls_in_grippers_1_1_1_1_balls_in_rooms_3_0_0_0_0_0",
+  "current_domain": "gripper"
 }
