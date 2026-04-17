@@ -10,6 +10,7 @@ import logging
 import os
 import random
 import sys
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -108,6 +109,55 @@ def _policy_markdown(summary: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _configure_file_logging(output_dir: Path) -> Path:
+    log_path = output_dir / "progress.log"
+    resolved = str(log_path.resolve())
+    root_logger = logging.getLogger()
+    for handler in root_logger.handlers:
+        if isinstance(handler, logging.FileHandler) and getattr(handler, "baseFilename", "") == resolved:
+            return log_path
+
+    file_handler = logging.FileHandler(log_path, mode="w", encoding="utf-8")
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s"))
+    root_logger.addHandler(file_handler)
+    return log_path
+
+
+def _flush_all_logs() -> None:
+    for handler in logging.getLogger().handlers:
+        try:
+            handler.flush()
+        except Exception:
+            pass
+
+
+def _write_progress_snapshot(
+    output_dir: Path,
+    *,
+    total_rows: int,
+    completed_rows: int,
+    started_at: float,
+    current_row_name: str = "",
+    current_domain: str = "",
+) -> None:
+    elapsed_sec = max(0.0, time.time() - started_at)
+    avg_sec_per_row = elapsed_sec / max(1, completed_rows) if completed_rows else None
+    eta_sec = avg_sec_per_row * max(0, total_rows - completed_rows) if avg_sec_per_row is not None else None
+    snapshot = {
+        "total_rows": total_rows,
+        "completed_rows": completed_rows,
+        "remaining_rows": max(0, total_rows - completed_rows),
+        "elapsed_sec": elapsed_sec,
+        "avg_sec_per_row": avg_sec_per_row,
+        "eta_sec": eta_sec,
+        "current_row_name": current_row_name,
+        "current_domain": current_domain,
+    }
+    with open(output_dir / "progress.json", "w", encoding="utf-8") as f:
+        json.dump(snapshot, f, indent=2)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run verifier-ranked best-of-K pilot")
     parser.add_argument("--config", type=str, default="configs/vcsr_bestofk_pilot.yaml")
@@ -129,6 +179,7 @@ def main() -> None:
 
     output_dir = Path(out_cfg.get("dir", "results/vcsr/bestofk_pilot"))
     output_dir.mkdir(parents=True, exist_ok=True)
+    log_path = _configure_file_logging(output_dir)
 
     with open(output_dir / "run_config.yaml", "w", encoding="utf-8") as f:
         yaml.dump(cfg, f, default_flow_style=False, sort_keys=False)
@@ -155,6 +206,8 @@ def main() -> None:
         indices.sort()
         rows = [rows[i] for i in indices]
     logger.info("Pilot rows selected: %d", len(rows))
+    logger.info("Live progress log: %s", log_path)
+    _flush_all_logs()
 
     sampler = MultiSampler(
         backend_specs=gen_cfg.get("backends", [{"type": "bedrock", "K": 8}]),
@@ -192,42 +245,69 @@ def main() -> None:
     pool_parseable_counts: dict[int, list[int]] = {k: [] for k in k_values}
     pool_equiv_counts: dict[int, list[int]] = {k: [] for k in k_values}
     pool_oracle_best: dict[int, list[int]] = {k: [] for k in k_values}
+    started_at = time.time()
+    _write_progress_snapshot(
+        output_dir,
+        total_rows=len(rows),
+        completed_rows=0,
+        started_at=started_at,
+    )
 
-    for row_idx, row in enumerate(rows):
-        nl = row["natural_language"]
-        gold_pddl = row["problem_pddl"]
-        is_placeholder = bool(row.get("is_placeholder", 0))
+    candidate_dump_path = output_dir / "candidate_dump.jsonl"
+    with open(candidate_dump_path, "w", encoding="utf-8") as candidate_dump_file:
+        for row_idx, row in enumerate(rows):
+            row_start = time.time()
+            nl = row["natural_language"]
+            gold_pddl = row["problem_pddl"]
+            is_placeholder = bool(row.get("is_placeholder", 0))
+            row_name = row["name"]
+            logger.info(
+                "Row %d/%d start: %s [%s]",
+                row_idx + 1,
+                len(rows),
+                row_name,
+                row["domain"],
+            )
+            _flush_all_logs()
+            _write_progress_snapshot(
+                output_dir,
+                total_rows=len(rows),
+                completed_rows=row_idx,
+                started_at=started_at,
+                current_row_name=row_name,
+                current_domain=row["domain"],
+            )
 
-        samples = sampler.sample(natural_language=nl, domain=row["domain"])
-        samples = samples[:max_k]
+            samples = sampler.sample(natural_language=nl, domain=row["domain"])
+            samples = samples[:max_k]
 
-        all_scores = [None] * len(samples)
-        parseable_pairs = []
-        parseable_indices = []
-        eval_results = []
+            all_scores = [None] * len(samples)
+            parseable_pairs = []
+            parseable_indices = []
+            eval_results = []
 
-        for i, sample in enumerate(samples):
-            parseable = _try_parse_pddl(sample.extracted_pddl)
-            if parseable:
-                res = check_equivalence_lightweight(
-                    gold_pddl,
-                    sample.extracted_pddl,
-                    is_placeholder=is_placeholder,
-                )
-                parseable_pairs.append((nl, sample.extracted_pddl))
-                parseable_indices.append(i)
-            else:
-                res = EvalResult(parseable=False, equivalent=False, error=sample.error or "parse_failed")
-            eval_results.append(res)
+            for i, sample in enumerate(samples):
+                parseable = _try_parse_pddl(sample.extracted_pddl)
+                if parseable:
+                    res = check_equivalence_lightweight(
+                        gold_pddl,
+                        sample.extracted_pddl,
+                        is_placeholder=is_placeholder,
+                    )
+                    parseable_pairs.append((nl, sample.extracted_pddl))
+                    parseable_indices.append(i)
+                else:
+                    res = EvalResult(parseable=False, equivalent=False, error=sample.error or "parse_failed")
+                eval_results.append(res)
 
-        if parseable_pairs:
-            scores = scorer.score_pairs(parseable_pairs, batch_size=scoring_batch_size)
-            for idx, score in zip(parseable_indices, scores):
-                all_scores[idx] = score
+            if parseable_pairs:
+                scores = scorer.score_pairs(parseable_pairs, batch_size=scoring_batch_size)
+                for idx, score in zip(parseable_indices, scores):
+                    all_scores[idx] = score
 
-        for i, (sample, res) in enumerate(zip(samples, eval_results)):
-            candidate_dump.append(
-                {
+            row_candidate_records = []
+            for i, (sample, res) in enumerate(zip(samples, eval_results)):
+                record = {
                     "row_index": row_idx,
                     "planetarium_name": row["name"],
                     "domain": row["domain"],
@@ -244,42 +324,43 @@ def main() -> None:
                     "equivalent": res.equivalent,
                     "verifier_score": all_scores[i],
                 }
-            )
+                row_candidate_records.append(record)
+                candidate_dump.append(record)
+                candidate_dump_file.write(json.dumps(record) + "\n")
 
-        for k in k_values:
-            subset_results = eval_results[:k]
-            subset_scores = all_scores[:k]
-            candidate_records = [
-                CandidateRecord(
-                    index=i,
-                    parseable=subset_results[i].parseable,
-                    equivalent=subset_results[i].equivalent,
-                    verifier_score=subset_scores[i],
-                )
-                for i in range(k)
-            ]
-
-            pool_parseable_counts[k].append(sum(1 for r in subset_results if r.parseable))
-            pool_equiv_counts[k].append(sum(1 for r in subset_results if r.equivalent))
-            pool_oracle_best[k].append(1 if any(r.equivalent for r in subset_results) else 0)
-
-            rng = random.Random(seed + row_idx * 1000 + k)
-            selections = {
-                "greedy_first": greedy_first(candidate_records),
-                "random_parseable": random_parseable(candidate_records, rng),
-                "verifier_ranked": verifier_ranked(candidate_records),
-            }
-
-            for policy_name, selection in selections.items():
-                if selection.selected_index is None:
-                    selected_results[(k, policy_name)].append(
-                        EvalResult(parseable=False, equivalent=False, error=selection.reason)
+            for k in k_values:
+                subset_results = eval_results[:k]
+                subset_scores = all_scores[:k]
+                candidate_records = [
+                    CandidateRecord(
+                        index=i,
+                        parseable=subset_results[i].parseable,
+                        equivalent=subset_results[i].equivalent,
+                        verifier_score=subset_scores[i],
                     )
-                else:
-                    selected_results[(k, policy_name)].append(subset_results[selection.selected_index])
+                    for i in range(k)
+                ]
 
-                candidate_dump.append(
-                    {
+                pool_parseable_counts[k].append(sum(1 for r in subset_results if r.parseable))
+                pool_equiv_counts[k].append(sum(1 for r in subset_results if r.equivalent))
+                pool_oracle_best[k].append(1 if any(r.equivalent for r in subset_results) else 0)
+
+                rng = random.Random(seed + row_idx * 1000 + k)
+                selections = {
+                    "greedy_first": greedy_first(candidate_records),
+                    "random_parseable": random_parseable(candidate_records, rng),
+                    "verifier_ranked": verifier_ranked(candidate_records),
+                }
+
+                for policy_name, selection in selections.items():
+                    if selection.selected_index is None:
+                        selected_results[(k, policy_name)].append(
+                            EvalResult(parseable=False, equivalent=False, error=selection.reason)
+                        )
+                    else:
+                        selected_results[(k, policy_name)].append(subset_results[selection.selected_index])
+
+                    record = {
                         "row_index": row_idx,
                         "planetarium_name": row["name"],
                         "domain": row["domain"],
@@ -290,7 +371,37 @@ def main() -> None:
                         "selected_index": selection.selected_index,
                         "selection_reason": selection.reason,
                     }
-                )
+                    candidate_dump.append(record)
+                    candidate_dump_file.write(json.dumps(record) + "\n")
+
+            candidate_dump_file.flush()
+            row_parseable = sum(1 for r in eval_results if r.parseable)
+            row_equiv = sum(1 for r in eval_results if r.equivalent)
+            elapsed_row = time.time() - row_start
+            elapsed_total = time.time() - started_at
+            avg_sec_per_row = elapsed_total / max(1, row_idx + 1)
+            eta_sec = avg_sec_per_row * max(0, len(rows) - (row_idx + 1))
+            logger.info(
+                "Row %d/%d done: parseable=%d/%d equivalent=%d/%d row_time=%.1fs elapsed=%.1fs eta=%.1fs",
+                row_idx + 1,
+                len(rows),
+                row_parseable,
+                len(samples),
+                row_equiv,
+                len(samples),
+                elapsed_row,
+                elapsed_total,
+                eta_sec,
+            )
+            _flush_all_logs()
+            _write_progress_snapshot(
+                output_dir,
+                total_rows=len(rows),
+                completed_rows=row_idx + 1,
+                started_at=started_at,
+                current_row_name=row_name,
+                current_domain=row["domain"],
+            )
 
     for k in k_values:
         k_key = str(k)
@@ -324,13 +435,10 @@ def main() -> None:
         json.dump(summary, f, indent=2)
     with open(output_dir / "summary.md", "w", encoding="utf-8") as f:
         f.write(_policy_markdown(summary))
-    with open(output_dir / "candidate_dump.jsonl", "w", encoding="utf-8") as f:
-        for row in candidate_dump:
-            f.write(json.dumps(row) + "\n")
-
     logger.info("Saved aggregate metrics to %s", output_dir / "aggregate_metrics.json")
-    logger.info("Saved candidate dump to %s", output_dir / "candidate_dump.jsonl")
+    logger.info("Saved candidate dump to %s", candidate_dump_path)
     logger.info("Saved markdown summary to %s", output_dir / "summary.md")
+    _flush_all_logs()
 
 
 if __name__ == "__main__":

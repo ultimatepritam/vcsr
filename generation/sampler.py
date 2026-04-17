@@ -28,6 +28,26 @@ logger = logging.getLogger(__name__)
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 
+def _clear_proxy_env() -> None:
+    """Remove proxy variables that can break local Bedrock calls on this machine."""
+    proxy_keys = (
+        "HTTP_PROXY",
+        "HTTPS_PROXY",
+        "ALL_PROXY",
+        "NO_PROXY",
+        "http_proxy",
+        "https_proxy",
+        "all_proxy",
+        "no_proxy",
+    )
+    cleared = []
+    for key in proxy_keys:
+        if os.environ.pop(key, None) is not None:
+            cleared.append(key)
+    if cleared:
+        logger.info("Cleared proxy env vars for generation: %s", ", ".join(cleared))
+
+
 def _get_env(*keys: str, default: str = "") -> str:
     """Return the first non-empty environment variable from the given keys."""
     for key in keys:
@@ -95,7 +115,24 @@ class BaseSampler(ABC):
 
         results = []
         for i in range(K):
+            logger.info(
+                "%s candidate %d/%d start (model=%s, domain=%s)",
+                self.backend_name,
+                i + 1,
+                K,
+                self.model,
+                domain or "unknown",
+            )
             result = self._sample_one(prompt, attempt_idx=i)
+            status = "ok" if not result.error else f"error={result.error}"
+            logger.info(
+                "%s candidate %d/%d done in %.1fs (%s)",
+                self.backend_name,
+                i + 1,
+                K,
+                result.latency_sec,
+                status,
+            )
             results.append(result)
 
         self.config.temperature = temp_backup
@@ -121,10 +158,26 @@ class BaseSampler(ABC):
         last_error = None
         for attempt in range(self.config.retry_attempts):
             try:
+                logger.info(
+                    "%s request start (sample=%d attempt=%d/%d)",
+                    self.backend_name,
+                    attempt_idx + 1,
+                    attempt + 1,
+                    self.config.retry_attempts,
+                )
                 t0 = time.time()
                 raw = self._call_llm(prompt, system=SYSTEM_PROMPT)
                 latency = time.time() - t0
                 pddl = extract_pddl_from_response(raw)
+                logger.info(
+                    "%s request success (sample=%d attempt=%d/%d latency=%.1fs extracted_chars=%d)",
+                    self.backend_name,
+                    attempt_idx + 1,
+                    attempt + 1,
+                    self.config.retry_attempts,
+                    latency,
+                    len(pddl or ""),
+                )
                 return SampleResult(
                     raw_response=raw,
                     extracted_pddl=pddl,
@@ -164,6 +217,7 @@ class BedrockSampler(BaseSampler):
         model: Optional[str] = None,
         config: Optional[SamplerConfig] = None,
     ):
+        _clear_proxy_env()
         resolved_model = model or _get_env("BEDROCK_MODEL_ID", "bedrock_model_id")
         if not resolved_model:
             raise ValueError(
