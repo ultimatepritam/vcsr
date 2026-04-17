@@ -1,22 +1,22 @@
-selected_at: 2026-04-17
-selected_run: results\verifier\lr_sweep\lr_5em05
-checkpoint_path: results\verifier\lr_sweep\lr_5em05\best_model\model.pt
-training_history_path: results\verifier\lr_sweep\lr_5em05\train_history.json
-val_metrics_path: results\verifier\lr_sweep\lr_5em05\val_metrics.json
-calibration_report_path: results\verifier\lr_sweep\lr_5em05\calibration_report.json
+selected_at: 2026-04-18
+selected_run: results\verifier\ranking_aligned_round2\retrain_from_round1
+checkpoint_path: results\verifier\ranking_aligned_round2\retrain_from_round1\best_model\model.pt
+training_history_path: results\verifier\ranking_aligned_round2\retrain_from_round1\train_history.json
+val_metrics_path: results\verifier\ranking_aligned_round2\retrain_from_round1\val_metrics.json
+calibration_report_path: results\verifier\ranking_aligned_round2\retrain_from_round1\calibration_report.json
 
 selection_reason:
-  summary: Best current verifier checkpoint from the LR sweep.
+  summary: Frozen current baseline verifier checkpoint after ranking-aligned round 2.
   criteria:
-    - highest validation AUC among the tested learning rates
-    - highest clean evaluation raw AUC under the separate calibration/evaluation protocol
-    - highest best-threshold F1 on the untouched evaluation subset
+    - best downstream replay result on the original fixed pilot pool
+    - still the strongest verifier checkpoint on the newer replay-tested round-2 pool
+    - chosen as the project baseline for future robustness-focused verifier work
 
 metrics_snapshot:
-  val_auc: 0.7777074542897329
-  val_f1: 0.4787234042553192
-  eval_raw_auc: 0.7929172510518934
-  best_raw_f1: 0.6630434782608695
-  best_raw_threshold: 0.25
-  best_temp_f1: 0.6630434782608695
+  val_auc: 0.8045830400289386
+  val_f1: 0.48128342245989303
+  eval_raw_auc: 0.8071749650698603
+  best_raw_f1: 0.6666666666666666
+  best_raw_threshold: 0.4
+  best_temp_f1: 0.6595744680851063
   best_temp_threshold: 0.3

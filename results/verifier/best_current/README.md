@@ -9,24 +9,26 @@ evaluation runs.
 
 ## Selected Run
 
-- Run: `results/verifier/lr_sweep/lr_5em05`
-- Checkpoint: `results/verifier/lr_sweep/lr_5em05/best_model/model.pt`
+- Run: `results/verifier/ranking_aligned_round2/retrain_from_round1`
+- Checkpoint: `results/verifier/ranking_aligned_round2/retrain_from_round1/best_model/model.pt`
 - Metadata: `results/verifier/best_current/selection.yaml`
 - Selection basis:
-  - highest validation AUC among the tested learning rates
-  - best clean evaluation raw AUC under the calibration protocol
-  - best best-threshold F1 on the untouched evaluation subset
+  - best downstream replay result on the original fixed pilot pool
+  - strongest verifier checkpoint on the newer replay-tested round-2 pool
+  - frozen as the project baseline for future robustness-focused verifier work
 
 ## Related Artifacts
 
 - Training history:
-  [train_history.json](/e:/Engineering/vcsr/results/verifier/lr_sweep/lr_5em05/train_history.json)
+  [train_history.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round2/retrain_from_round1/train_history.json)
 - Validation metrics:
-  [val_metrics.json](/e:/Engineering/vcsr/results/verifier/lr_sweep/lr_5em05/val_metrics.json)
+  [val_metrics.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round2/retrain_from_round1/val_metrics.json)
 - Clean calibration report:
-  [calibration_report.json](/e:/Engineering/vcsr/results/verifier/lr_sweep/lr_5em05/calibration_report.json)
-- Sweep summary:
-  [summary.json](/e:/Engineering/vcsr/results/verifier/lr_sweep/summary.json)
+  [calibration_report.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round2/retrain_from_round1/calibration_report.json)
+- Fixed-pool replay on original pilot pool:
+  [replay_summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/replay_compare_ranking_round2/replay_summary.md)
+- Replay on newer round-2 pool:
+  [replay_summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_ranking_round2_pool/replay_compare/replay_summary.md)
 
 ## Note
 
