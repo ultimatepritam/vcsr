@@ -1,0 +1,9 @@
+{
+    "pid":  16712,
+    "started_at":  "2026-04-19T18:52:46",
+    "output_dir":  "results/vcsr/bestofk_round3_holdout_eval",
+    "stdout_log":  "results\\vcsr\\bestofk_round3_holdout_eval\\run_stdout.log",
+    "progress_log":  "results\\vcsr\\bestofk_round3_holdout_eval\\progress.log",
+    "progress_json":  "results\\vcsr\\bestofk_round3_holdout_eval\\progress.json",
+    "command":  ".\\.venv\\Scripts\\python.exe -u scripts/run_verifier_bestofk.py --config configs/vcsr_bestofk_round3_holdout_eval.yaml"
+}

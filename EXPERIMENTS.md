@@ -1031,13 +1031,105 @@ Project takeaway:
   held-out best-of-K evaluation and then decide whether we need a still larger
   round 4 or a different ranking objective.
 
+### Fresh Held-Out End-to-End Best-of-K Evaluation with Frozen Round 3
+
+- Goal: test whether the replay-selected round-3 verifier improves the actual
+  end-to-end VCSR decision loop on a fresh held-out run, rather than only on
+  cached replay pools.
+- Config:
+  [configs/vcsr_bestofk_round3_holdout_eval.yaml](/e:/Engineering/vcsr/configs/vcsr_bestofk_round3_holdout_eval.yaml)
+- Output:
+  [results/vcsr/bestofk_round3_holdout_eval](/e:/Engineering/vcsr/results/vcsr/bestofk_round3_holdout_eval)
+- Verifier source:
+  [results/verifier/best_current/selection.yaml](/e:/Engineering/vcsr/results/verifier/best_current/selection.yaml)
+- Status: completed
+
+Setup:
+
+- Fresh `test` split run on `blocksworld` and `gripper`
+- Seed `48`, deliberately outside the round-3 pool generation seeds
+- `50` evaluated rows
+- Bedrock generation with `K=8`
+- Policies compared:
+  - `greedy_first`
+  - `random_parseable`
+  - `verifier_ranked`
+
+Headline results from
+[summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_round3_holdout_eval/summary.md)
+and
+[aggregate_metrics.json](/e:/Engineering/vcsr/results/vcsr/bestofk_round3_holdout_eval/aggregate_metrics.json):
+
+- `K=1`
+  - all policies coincide at equivalence `0.4400`
+- `K=4`
+  - `greedy_first`: parse `0.9400`, equiv `0.4400`
+  - `random_parseable`: parse `1.0000`, equiv `0.4400`
+  - `verifier_ranked`: parse `1.0000`, equiv `0.4200`
+  - oracle best-of-4 upper bound: `0.5200`
+- `K=8`
+  - `greedy_first`: parse `0.9400`, equiv `0.4400`
+  - `random_parseable`: parse `1.0000`, equiv `0.3800`
+  - `verifier_ranked`: parse `1.0000`, equiv `0.4600`
+  - oracle best-of-8 upper bound: `0.5400`
+
+Important slice observations:
+
+- `K=8` is the meaningful downstream win:
+  round 3 beats both baselines on this fresh held-out run.
+- `K=4` remains unstable:
+  verifier-ranked underperforms both `greedy_first` and `random_parseable`.
+- The held-out gain is concentrated in `blocksworld`.
+- `gripper` again contributes parseable candidates but no equivalent selected
+  outputs for the reported policies on this sample.
+- Style breakdown remains asymmetric:
+  `explicit/explicit` rows are much stronger than `abstract/abstract` rows.
+
+Candidate-pool diagnostics:
+
+- At `K=8`, the generator produced on average:
+  - `7.58` parseable candidates per row
+  - `3.34` equivalent candidates per row
+- Oracle best-of-8 is `0.5400`, so there is still useful but now narrower
+  headroom above the verifier's `0.4600`
+
+Compact row-level interpretation:
+
+- The fresh held-out run does **not** show a universal verifier win.
+- Instead, it shows a more realistic and still encouraging shape:
+  - at small `K`, ranking noise can still outweigh verifier benefit
+  - at larger `K`, the verifier is now able to recover extra value from the
+    candidate pool that greedy decoding misses
+- That is exactly the regime where best-of-K selection is supposed to matter.
+
+Interpretation:
+
+- This run is more mixed than the replay comparisons, but still positive for the
+  project direction.
+- The key success is that the replay-selected round-3 verifier does translate
+  into a fresh end-to-end `K=8` improvement over both simple baselines.
+- That means the project is no longer relying only on replay evidence:
+  we now have a real held-out end-to-end result pointing in the same direction.
+- The remaining weakness at `K=4` suggests the verifier is not yet a uniformly
+  better selector, and that some within-pool misrankings remain unresolved.
+
+Project takeaway:
+
+- Round 3 has now passed the most important test so far:
+  replay wins were not just artifacts of cached pool evaluation.
+- The verifier is beginning to create real downstream value at the larger `K`
+  setting that matters most for best-of-K selection.
+- The next best step is targeted error analysis of the remaining `K=4` and
+  `K=8` misses, followed by deciding whether we need:
+  - a modest round 4 focused on those residual failure modes, or
+  - a shift to a more explicitly ranking-oriented loss.
+
 ## Recommended Next Entries
 
-- Fresh held-out downstream best-of-K evaluation using the frozen round-3
-  verifier baseline
 - Error analysis of remaining replay failures by domain, style, and candidate
   type
-- Optional round-4 ranking-aligned verifier only if fresh held-out downstream
-  evaluation shows the gap to oracle is still material
+- Error analysis of fresh held-out end-to-end failures at `K=4` and `K=8`
+- Optional round-4 ranking-aligned verifier only if the held-out gap to oracle
+  still looks worth the extra data-generation spend
 - Selective prediction / abstention experiments once the ranker baseline is
   locked

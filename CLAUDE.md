@@ -145,7 +145,9 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] **Isolate verifier impact with fixed-pool downstream evaluation**
 - [x] **Move from pointwise verifier training toward ranking-aligned supervision**
 - [x] **Freeze ranking-aligned round 2 as the current downstream baseline**
-- [ ] **Run robustness-focused multi-pool ranking-aligned round 3**
+- [x] **Run robustness-focused multi-pool ranking-aligned round 3**
+- [x] **Promote round 3 to `best_current` based on replay wins**
+- [x] **Run fresh held-out end-to-end best-of-K evaluation with frozen round 3**
 
 ### Phase 3: Search and Repair (Weeks 5-6)
 
@@ -160,26 +162,36 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Multi-pool ranking-aligned round 3**
-   Generate multiple immutable new best-of-K pools, mine them into one merged round-3 dataset, and warm-start from the frozen round-2 baseline.
-2. **Replay-first acceptance**
-   Judge round 3 primarily by replay wins on both cached holdout pools:
-   `results/vcsr/bestofk_pilot/` and `results/vcsr/bestofk_ranking_round2_pool/`.
+1. **Targeted error analysis on the held-out run**
+   Use `results/vcsr/bestofk_round3_holdout_eval/` to identify the remaining
+   `K=4` and `K=8` within-pool ranking failures, especially in
+   `abstract/abstract` `blocksworld` rows.
+2. **Replay remains the checkpoint-selection rule**
+   Continue to judge new verifier checkpoints primarily by replay on the cached
+   pools under `results/vcsr/bestofk_pilot/` and
+   `results/vcsr/bestofk_ranking_round2_pool/`, not by offline AUC alone.
 3. **Preserve provenance**
    Never reuse pool output directories; every long-running generation or training run must have its own output directory and visible `progress.log`.
-4. **Only then do fresh held-out end-to-end evaluation**
-   Do not spend on a new held-out end-to-end run until replay wins are stable on more than one cached pool.
+4. **Decide between focused round 4 vs. stronger ranking objective**
+   Only run another verifier-training round if the held-out miss analysis
+   suggests more multi-pool mining is likely to help; otherwise consider a more
+   explicit pairwise/listwise ranking objective.
 
 ## Current Status Notes
 
 - The negative-generation pilot under `results/neggen/pilot/` is the completed data milestone for Phase 2.
 - `results/verifier/pilot/` should still be treated as dry-run / debugging output from the earlier smoke-test stage.
 - A completed verifier training run now exists under `results/verifier/full_run/`, along with threshold analysis and a cleaner calibration/evaluation report.
-- We have now completed fixed-pool replay on two cached pools and verified that the ranking-aligned round-2 checkpoint is the current best downstream verifier.
-- `results/verifier/best_current/selection.yaml` now points to `results/verifier/ranking_aligned_round2/retrain_from_round1`.
+- We have now completed fixed-pool replay on two cached pools and verified that the ranking-aligned round-3 checkpoint is the current best downstream verifier.
+- `results/verifier/best_current/selection.yaml` now points to `results/verifier/ranking_aligned_round3/retrain_from_round2_multipool`.
+- The fresh held-out end-to-end run under `results/vcsr/bestofk_round3_holdout_eval/` is also complete.
+- That held-out run is mixed but encouraging:
+  - at `K=8`, `verifier_ranked` beats both `greedy_first` and `random_parseable`
+  - at `K=4`, `verifier_ranked` still regresses
 - The main uncertainty is no longer "can a verifier help downstream selection?" It can.
-- The main uncertainty is now robustness: can the replay gain from round 2 be reproduced across independently generated pools with clearer margins?
-- Round 3 should therefore vary training-signal diversity, not backbone choice or generic optimization budget.
+- The main uncertainty is now which residual miss pattern matters most:
+  whether a focused round 4 can fix the remaining within-pool errors, or
+  whether the next improvement requires a more explicitly ranking-oriented loss.
 
 ## Long-Run Visibility Rule
 
