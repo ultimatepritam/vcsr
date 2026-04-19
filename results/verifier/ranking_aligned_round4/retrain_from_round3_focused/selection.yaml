@@ -1,0 +1,23 @@
+selected_at: '2026-04-19'
+selected_run: results\verifier\ranking_aligned_round4\retrain_from_round3_focused
+checkpoint_path: results\verifier\ranking_aligned_round4\retrain_from_round3_focused\best_model\model.pt
+training_history_path: results\verifier\ranking_aligned_round4\retrain_from_round3_focused\train_history.json
+val_metrics_path: results\verifier\ranking_aligned_round4\retrain_from_round3_focused\val_metrics.json
+calibration_report_path: results\verifier\ranking_aligned_round4\retrain_from_round3_focused\calibration_report.json
+selection_reason:
+  summary: Focused round-4 verifier fine-tune warm-started from the frozen round-3
+    baseline and trained only on held-out oracle-positive misranking rows from the
+    failure-analysis gate.
+  criteria:
+  - mined 9 held-out oracle-positive verifier-miss cases from results/vcsr/bestofk_round3_holdout_eval/failure_analysis/failure_cases.jsonl
+  - focused on blocksworld rows with equivalent candidates in-pool but incorrect verifier
+    ranking
+  - intended for fixed-pool replay against round 3 before any promotion decision
+metrics_snapshot:
+  val_auc: 0.8076300984528832
+  val_f1: 0.4756756756756757
+  eval_raw_auc: 0.7934081346423563
+  best_raw_f1: 0.6739130434782609
+  best_raw_threshold: 0.3
+  best_temp_f1: 0.6739130434782609
+  best_temp_threshold: 0.35
