@@ -1,0 +1,9 @@
+﻿{
+    "pid":  13756,
+    "started_at":  "2026-04-19T22:13:59",
+    "output_dir":  "results/vcsr/bestofk_round4_holdout_eval_clean",
+    "stdout_log":  "results\\\\vcsr\\\\bestofk_round4_holdout_eval_clean\\\\run_stdout.log",
+    "progress_log":  "results\\\\vcsr\\\\bestofk_round4_holdout_eval_clean\\\\progress.log",
+    "progress_json":  "results\\\\vcsr\\\\bestofk_round4_holdout_eval_clean\\\\progress.json",
+    "command":  ".\\\\.venv\\\\Scripts\\\\python.exe -u scripts/run_verifier_bestofk.py --config configs/vcsr_bestofk_round3_holdout_eval.yaml --output_dir results/vcsr/bestofk_round4_holdout_eval_clean --selection_metadata results/verifier/ranking_aligned_round4/retrain_from_round3_focused/selection.yaml"
+}

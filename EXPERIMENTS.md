@@ -1124,12 +1124,168 @@ Project takeaway:
   - a modest round 4 focused on those residual failure modes, or
   - a shift to a more explicitly ranking-oriented loss.
 
+### Held-Out Failure Analysis and Round-4 Decision Gate
+
+- Goal: turn the frozen round-3 held-out artifacts into a decision-quality
+  recommendation about whether the next step should be a focused round 4 or a
+  more explicit ranking objective.
+- Entrypoint:
+  [scripts/analyze_bestofk_failures.py](/e:/Engineering/vcsr/scripts/analyze_bestofk_failures.py)
+- Inputs:
+  - [results/vcsr/bestofk_round3_holdout_eval/candidate_dump.jsonl](/e:/Engineering/vcsr/results/vcsr/bestofk_round3_holdout_eval/candidate_dump.jsonl)
+  - [results/vcsr/bestofk_round3_holdout_eval/aggregate_metrics.json](/e:/Engineering/vcsr/results/vcsr/bestofk_round3_holdout_eval/aggregate_metrics.json)
+- Outputs:
+  - [results/vcsr/bestofk_round3_holdout_eval/failure_analysis/failure_summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_round3_holdout_eval/failure_analysis/failure_summary.md)
+  - [results/vcsr/bestofk_round3_holdout_eval/failure_analysis/failure_summary.json](/e:/Engineering/vcsr/results/vcsr/bestofk_round3_holdout_eval/failure_analysis/failure_summary.json)
+  - [results/vcsr/bestofk_round3_holdout_eval/failure_analysis/failure_cases.jsonl](/e:/Engineering/vcsr/results/vcsr/bestofk_round3_holdout_eval/failure_analysis/failure_cases.jsonl)
+  - [results/vcsr/bestofk_round3_holdout_eval/failure_analysis/decision_recommendation.md](/e:/Engineering/vcsr/results/vcsr/bestofk_round3_holdout_eval/failure_analysis/decision_recommendation.md)
+- Status: completed
+
+Key findings:
+
+- `50` total held-out rows
+- oracle-positive rows:
+  - `26` at `K=4`
+  - `27` at `K=8`
+- oracle-positive verifier misses:
+  - `5` at `K=4`
+  - `4` at `K=8`
+- all oracle-positive verifier misses came from `blocksworld`
+- most misses were concentrated in `abstract/abstract`
+- most residual score gaps were small to moderate rather than huge
+
+Decision:
+
+- The resulting recommendation was `focused_round4`, not an immediate switch to
+  pairwise/listwise training.
+- The reason was that the remaining misses looked like concentrated within-pool
+  ordering mistakes, not total semantic blindness.
+
+Project takeaway:
+
+- The failure-analysis gate did its job.
+- It justified a small, targeted round-4 mining pass instead of another blind
+  broad retrain.
+
+### Focused Round-4 Verifier Training
+
+- Goal: test whether a small held-out-failure-focused correction pass can
+  improve the downstream selector without changing the backbone.
+- Mining script:
+  [scripts/prepare_ranking_round4_dataset.py](/e:/Engineering/vcsr/scripts/prepare_ranking_round4_dataset.py)
+- Training config:
+  [configs/verifier_ranking_aligned_round4.yaml](/e:/Engineering/vcsr/configs/verifier_ranking_aligned_round4.yaml)
+- Run artifacts:
+  - [results/verifier/ranking_aligned_round4](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round4)
+  - [results/verifier/ranking_aligned_round4/retrain_from_round3_focused](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round4/retrain_from_round3_focused)
+- Selection metadata:
+  [results/verifier/ranking_aligned_round4/retrain_from_round3_focused/selection.yaml](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round4/retrain_from_round3_focused/selection.yaml)
+- Status: completed, but not yet promoted
+
+Focused mining results from
+[mining_report.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round4/mining_report.json):
+
+- `9` targeted failure cases selected from the held-out analysis
+- `5` unique target rows
+- `22` deduped mined examples kept
+- `7` positives
+- `15` negatives
+- all mined rows from `blocksworld`
+- style mix:
+  - `19` `abstract/abstract`
+  - `3` `explicit/explicit`
+
+Training and calibration results from
+[val_metrics.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round4/retrain_from_round3_focused/val_metrics.json)
+and
+[calibration_report.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round4/retrain_from_round3_focused/calibration_report.json):
+
+- validation AUC: `0.8076`
+- validation F1: `0.4757`
+- clean evaluation raw AUC: `0.7934`
+- best raw-threshold F1 on the untouched eval subset: `0.6739` at threshold `0.30`
+
+Replay on the frozen held-out candidate pool from
+[replay_summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_round3_holdout_eval/replay_compare_round3_vs_round4_focused/replay_summary.md):
+
+- `K=4`
+  - round 3 `verifier_ranked`: `0.4200`
+  - round 4 `verifier_ranked`: `0.5000`
+- `K=8`
+  - round 3 `verifier_ranked`: `0.4400`
+  - round 4 `verifier_ranked`: `0.4600`
+
+Interpretation:
+
+- Round 4 was a real verifier improvement over round 3.
+- The focused failure-mining idea was worth doing.
+- Replay improved enough to justify a fresh end-to-end held-out check.
+
+Project takeaway:
+
+- Round 4 became the leading provisional verifier candidate.
+- But replay alone was not enough to justify immediate promotion.
+
+### Fresh Held-Out End-to-End Best-of-K Evaluation with Focused Round 4
+
+- Goal: test whether the focused round-4 verifier can beat the frozen round-3
+  verifier and simple baselines on a fresh end-to-end held-out run.
+- Config lineage:
+  [configs/vcsr_bestofk_round3_holdout_eval.yaml](/e:/Engineering/vcsr/configs/vcsr_bestofk_round3_holdout_eval.yaml)
+  with explicit selection override to
+  [results/verifier/ranking_aligned_round4/retrain_from_round3_focused/selection.yaml](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round4/retrain_from_round3_focused/selection.yaml)
+- Output:
+  [results/vcsr/bestofk_round4_holdout_eval_clean](/e:/Engineering/vcsr/results/vcsr/bestofk_round4_holdout_eval_clean)
+- Status: completed
+
+Headline results from
+[summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_round4_holdout_eval_clean/summary.md)
+and
+[aggregate_metrics.json](/e:/Engineering/vcsr/results/vcsr/bestofk_round4_holdout_eval_clean/aggregate_metrics.json):
+
+- `K=1`
+  - all policies coincide at equivalence `0.4600`
+- `K=4`
+  - `greedy_first`: parse `0.9600`, equiv `0.4600`
+  - `random_parseable`: parse `1.0000`, equiv `0.4200`
+  - `verifier_ranked`: parse `1.0000`, equiv `0.4400`
+  - oracle best-of-4 upper bound: `0.5200`
+- `K=8`
+  - `greedy_first`: parse `0.9600`, equiv `0.4600`
+  - `random_parseable`: parse `1.0000`, equiv `0.5000`
+  - `verifier_ranked`: parse `1.0000`, equiv `0.4800`
+  - oracle best-of-8 upper bound: `0.5400`
+
+Direct comparison against the frozen round-3 held-out run:
+
+- `K=4` `verifier_ranked`: `0.4200 -> 0.4400`
+- `K=8` `verifier_ranked`: `0.4600 -> 0.4800`
+
+Interpretation:
+
+- Round 4 improved over round 3 on the fresh held-out run at both `K=4` and
+  `K=8`.
+- But it still did **not** clearly win the overall selector comparison:
+  - it lost to `greedy_first` at `K=4` (`0.4400 < 0.4600`)
+  - it lost to `random_parseable` at `K=8` (`0.4800 < 0.5000`)
+- The gaps are small, but that is exactly why this run should be interpreted as
+  promising rather than decisive.
+
+Project takeaway:
+
+- Round 4 is the strongest provisional verifier candidate so far.
+- It should **not** yet replace round 3 as the official `best_current`
+  checkpoint based on this single fresh sample.
+- The next best step is repeated fresh held-out evaluation across several seeds,
+  not immediate promotion and not another blind retrain.
+
 ## Recommended Next Entries
 
-- Error analysis of remaining replay failures by domain, style, and candidate
-  type
-- Error analysis of fresh held-out end-to-end failures at `K=4` and `K=8`
-- Optional round-4 ranking-aligned verifier only if the held-out gap to oracle
-  still looks worth the extra data-generation spend
-- Selective prediction / abstention experiments once the ranker baseline is
-  locked
+- Repeated fresh held-out evaluation for round 3 vs round 4 across several
+  seeds
+- Promotion decision only after repeated held-out evidence, not after one
+  50-row sample
+- If round 4 remains too close to `greedy_first` and `random_parseable`,
+  explicit pairwise/listwise ranking-objective experiments
+- Selective prediction / abstention experiments only after the ranker baseline
+  is actually stable

@@ -28,11 +28,11 @@ tools/             External tool installs (Fast Downward, VAL)
 
 - Foundations and the negative-generation pilot are completed.
 - Verifier training is implemented and has been run successfully on the pilot dataset.
-- Clean calibration analysis, hard-negative retraining, ranking-aligned retraining, and a capacity-push sweep have also been completed.
+- Clean calibration analysis, hard-negative retraining, ranking-aligned retraining, a capacity-push sweep, held-out failure analysis, and a focused round-4 verifier pass have also been completed.
 - The current selected verifier checkpoint is recorded in `results/verifier/best_current/selection.yaml`.
-- We have also completed verifier-ranked best-of-K pilots and replay-controlled evaluation on two cached pools.
+- We have also completed verifier-ranked best-of-K pilots, replay-controlled evaluation on multiple cached pools, and fresh held-out end-to-end runs.
 - The main open question is now robustness:
-  can the round-2 replay gain be reproduced consistently across independently generated pools?
+  can the round-4 gain hold consistently across repeated fresh held-out runs strongly enough to justify promotion over round 3 and simple baselines?
 
 ## Quick Start
 
@@ -100,6 +100,15 @@ python scripts/prepare_ranking_round3_dataset.py --pool_dir results/vcsr/round3_
 
 # 18. Round-3 verifier retrain with visible file logging
 python scripts/train_verifier.py --config configs/verifier_ranking_aligned_round3.yaml
+
+# 19. Focused round-4 dataset from held-out failure analysis
+python scripts/prepare_ranking_round4_dataset.py
+
+# 20. Round-4 focused verifier retrain
+python scripts/train_verifier.py --config configs/verifier_ranking_aligned_round4.yaml
+
+# 21. Fresh held-out evaluation with an explicit verifier selection
+python scripts/run_verifier_bestofk.py --config configs/vcsr_bestofk_round3_holdout_eval.yaml --output_dir results/vcsr/bestofk_round4_holdout_eval_clean --selection_metadata results/verifier/ranking_aligned_round4/retrain_from_round3_focused/selection.yaml
 ```
 
 ## Windows E: Drive Setup
@@ -180,13 +189,23 @@ Current key verifier artifacts:
 | `results/verifier/full_run/` | First completed verifier training run |
 | `results/verifier/lr_sweep/` | LR sweep runs plus aggregate summaries |
 | `results/verifier/ranking_aligned_round1/` | First ranking-aligned verifier retrain from cached candidate-pool supervision |
-| `results/verifier/ranking_aligned_round2/` | Current best downstream verifier plus calibration and replay-backed selection |
+| `results/verifier/ranking_aligned_round2/` | Earlier replay-backed downstream verifier |
+| `results/verifier/ranking_aligned_round3/` | Current frozen official verifier baseline selected from multi-pool replay wins |
+| `results/verifier/ranking_aligned_round4/` | Focused held-out-failure correction pass; improved but still provisional |
 | `results/verifier/best_current/selection.yaml` | Stable metadata record for the current best verifier checkpoint |
 
 As of the current repo state, the selected best verifier comes from:
 
-- run: `results/verifier/ranking_aligned_round2/retrain_from_round1`
-- checkpoint: `results/verifier/ranking_aligned_round2/retrain_from_round1/best_model/model.pt`
+- run: `results/verifier/ranking_aligned_round3/retrain_from_round2_multipool`
+- checkpoint: `results/verifier/ranking_aligned_round3/retrain_from_round2_multipool/best_model/model.pt`
+
+There is also a newer provisional candidate under:
+
+- `results/verifier/ranking_aligned_round4/retrain_from_round3_focused`
+
+Round 4 improved round 3 on replay and on one fresh held-out run, but it has
+not yet been promoted because it still lost to `greedy_first` at `K=4` and to
+`random_parseable` at `K=8` on that fresh sample.
 
 See `EXPERIMENTS.md` for the running experiment log and interpretation of these results.
 
@@ -222,26 +241,30 @@ Key downstream artifacts:
 | `results/vcsr/bestofk_capacity_push_lr2/` | Development rerun using the ranking-oriented winner from the capacity-push sweep |
 | `results/vcsr/bestofk_pilot/replay_compare_ranking_round2/` | Fixed-pool replay showing the strongest round-2 win on the original pilot pool |
 | `results/vcsr/bestofk_ranking_round2_pool/` | Newer 50-row cached pool plus controlled replay across verifier checkpoints |
+| `results/vcsr/bestofk_round3_holdout_eval/` | Fresh held-out end-to-end run with frozen round 3 |
+| `results/vcsr/bestofk_round4_holdout_eval_clean/` | Fresh held-out end-to-end run with focused round 4 |
 
 Current project conclusion from these pilots:
 
-- The verifier has real offline signal and the ranking-aligned round-2 checkpoint is the current best downstream selector.
-- On the original fixed pilot pool, round 2 beats `random_parseable` at `K=8` (`0.5333` vs `0.5000`).
-- On the newer replay-tested round-2 pool, round 2 is still the strongest verifier checkpoint, but only ties `greedy_first` at `K=8` (`0.4600`) and ties `random_parseable` at `K=4` (`0.4800`).
+- The verifier has real offline signal and ranking-aligned training has improved downstream ranking quality.
+- Round 3 remains the official frozen baseline because it was the strongest replay-backed checkpoint.
+- Round 4 is the leading provisional candidate:
+  it improved over round 3 on replay and also improved fresh held-out `verifier_ranked` from `0.42 -> 0.44` at `K=4` and `0.46 -> 0.48` at `K=8`.
+- But round 4 still lost to `greedy_first` at `K=4` (`0.44 < 0.46`) and to `random_parseable` at `K=8` (`0.48 < 0.50`) on that fresh 50-row held-out sample.
 - Candidate generation quality is often good enough that a better selector should still be able to do better:
-  oracle remains `0.6000` on the original pool and `0.6200` on the newer pool.
+  oracle remains `0.5200` to `0.6200` across the development and held-out pools.
 
 ## Recommended Next Step
 
 The highest-value next task is:
 
-- run a robustness-focused multi-pool ranking-aligned round 3
+- run a small repeated fresh held-out evaluation comparing round 3, round 4, `greedy_first`, and `random_parseable`
 
 Why this matters:
 
-- It keeps the round-2 verifier frozen as the project baseline.
-- It uses multiple immutable new pools to reduce dependence on any one especially helpful or unhelpful mined pool.
-- It accepts a new checkpoint only if replay wins hold on more than one cached pool.
+- It keeps round 3 frozen as the official baseline until promotion is justified.
+- It prevents us from over-interpreting a one-row difference on a single 50-row held-out sample.
+- It tells us whether round 4 is actually stable enough to promote, or whether the next step should be an explicit ranking-objective change.
 
 See `RECOMMENDATION.md` for the current project-level recommendation.
 

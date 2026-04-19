@@ -148,6 +148,9 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] **Run robustness-focused multi-pool ranking-aligned round 3**
 - [x] **Promote round 3 to `best_current` based on replay wins**
 - [x] **Run fresh held-out end-to-end best-of-K evaluation with frozen round 3**
+- [x] **Run held-out failure analysis and focused round-4 mining**
+- [x] **Train focused ranking-aligned round 4 from the frozen round-3 baseline**
+- [x] **Run fresh held-out end-to-end best-of-K evaluation with focused round 4**
 
 ### Phase 3: Search and Repair (Weeks 5-6)
 
@@ -162,36 +165,32 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Targeted error analysis on the held-out run**
-   Use `results/vcsr/bestofk_round3_holdout_eval/` to identify the remaining
-   `K=4` and `K=8` within-pool ranking failures, especially in
-   `abstract/abstract` `blocksworld` rows.
+1. **Repeated fresh held-out comparison before promotion**
+   Compare round 3, round 4, `greedy_first`, and `random_parseable` on several
+   fresh held-out seeds before changing `best_current`.
 2. **Replay remains the checkpoint-selection rule**
-   Continue to judge new verifier checkpoints primarily by replay on the cached
-   pools under `results/vcsr/bestofk_pilot/` and
-   `results/vcsr/bestofk_ranking_round2_pool/`, not by offline AUC alone.
+   Continue to judge new verifier checkpoints primarily by replay on cached
+   pools, not by offline AUC alone.
 3. **Preserve provenance**
-   Never reuse pool output directories; every long-running generation or training run must have its own output directory and visible `progress.log`.
-4. **Decide between focused round 4 vs. stronger ranking objective**
-   Only run another verifier-training round if the held-out miss analysis
-   suggests more multi-pool mining is likely to help; otherwise consider a more
-   explicit pairwise/listwise ranking objective.
+   Never reuse pool output directories; every long-running generation or
+   training run must have its own output directory and visible `progress.log`.
+4. **Escalate only if repeated held-out checks stay ambiguous**
+   If round 4 remains too close to simple baselines after repeated fresh
+   held-out evaluation, move next to an explicit pairwise/listwise ranking
+   objective rather than another blind pointwise retrain.
 
 ## Current Status Notes
 
 - The negative-generation pilot under `results/neggen/pilot/` is the completed data milestone for Phase 2.
 - `results/verifier/pilot/` should still be treated as dry-run / debugging output from the earlier smoke-test stage.
 - A completed verifier training run now exists under `results/verifier/full_run/`, along with threshold analysis and a cleaner calibration/evaluation report.
-- We have now completed fixed-pool replay on two cached pools and verified that the ranking-aligned round-3 checkpoint is the current best downstream verifier.
+- We have now completed fixed-pool replay on multiple cached pools and verified that the ranking-aligned round-3 checkpoint is the current official best downstream verifier.
 - `results/verifier/best_current/selection.yaml` now points to `results/verifier/ranking_aligned_round3/retrain_from_round2_multipool`.
-- The fresh held-out end-to-end run under `results/vcsr/bestofk_round3_holdout_eval/` is also complete.
-- That held-out run is mixed but encouraging:
-  - at `K=8`, `verifier_ranked` beats both `greedy_first` and `random_parseable`
-  - at `K=4`, `verifier_ranked` still regresses
+- The fresh held-out end-to-end runs under `results/vcsr/bestofk_round3_holdout_eval/` and `results/vcsr/bestofk_round4_holdout_eval_clean/` are complete.
+- Round 4 improved over round 3 on replay and also improved fresh held-out `verifier_ranked` at both `K=4` and `K=8`.
+- But round 4 still lost to `greedy_first` at `K=4` and to `random_parseable` at `K=8` on the fresh 50-row held-out sample.
 - The main uncertainty is no longer "can a verifier help downstream selection?" It can.
-- The main uncertainty is now which residual miss pattern matters most:
-  whether a focused round 4 can fix the remaining within-pool errors, or
-  whether the next improvement requires a more explicitly ranking-oriented loss.
+- The main uncertainty is now whether round 4 is stable enough to promote, or whether the next improvement requires repeated held-out confirmation and then a stronger ranking objective.
 
 ## Long-Run Visibility Rule
 
