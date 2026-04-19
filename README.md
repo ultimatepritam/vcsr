@@ -31,8 +31,10 @@ tools/             External tool installs (Fast Downward, VAL)
 - Clean calibration analysis, hard-negative retraining, ranking-aligned retraining, a capacity-push sweep, held-out failure analysis, and a focused round-4 verifier pass have also been completed.
 - The current selected verifier checkpoint is recorded in `results/verifier/best_current/selection.yaml`.
 - We have also completed verifier-ranked best-of-K pilots, replay-controlled evaluation on multiple cached pools, and fresh held-out end-to-end runs.
+- We have now also completed a repeated fresh held-out comparison across seeds `48`, `49`, and `50`.
 - The main open question is now robustness:
-  can the round-4 gain hold consistently across repeated fresh held-out runs strongly enough to justify promotion over round 3 and simple baselines?
+  how should we interpret promotion now that round 4 has the strongest repeated
+  end-to-end evidence at `K=8`, while `K=4` remains much closer to a tie?
 
 ## Quick Start
 
@@ -109,6 +111,9 @@ python scripts/train_verifier.py --config configs/verifier_ranking_aligned_round
 
 # 21. Fresh held-out evaluation with an explicit verifier selection
 python scripts/run_verifier_bestofk.py --config configs/vcsr_bestofk_round3_holdout_eval.yaml --output_dir results/vcsr/bestofk_round4_holdout_eval_clean --selection_metadata results/verifier/ranking_aligned_round4/retrain_from_round3_focused/selection.yaml
+
+# 22. Repeated fresh held-out comparison across multiple seeds
+python scripts/run_multiseed_holdout_compare.py --config configs/vcsr_multiseed_holdout_compare.yaml
 ```
 
 ## Windows E: Drive Setup
@@ -191,7 +196,7 @@ Current key verifier artifacts:
 | `results/verifier/ranking_aligned_round1/` | First ranking-aligned verifier retrain from cached candidate-pool supervision |
 | `results/verifier/ranking_aligned_round2/` | Earlier replay-backed downstream verifier |
 | `results/verifier/ranking_aligned_round3/` | Current frozen official verifier baseline selected from multi-pool replay wins |
-| `results/verifier/ranking_aligned_round4/` | Focused held-out-failure correction pass; improved but still provisional |
+| `results/verifier/ranking_aligned_round4/` | Focused held-out-failure correction pass; strongest downstream candidate after the multi-seed held-out gate |
 | `results/verifier/best_current/selection.yaml` | Stable metadata record for the current best verifier checkpoint |
 
 As of the current repo state, the selected best verifier comes from:
@@ -204,8 +209,27 @@ There is also a newer provisional candidate under:
 - `results/verifier/ranking_aligned_round4/retrain_from_round3_focused`
 
 Round 4 improved round 3 on replay and on one fresh held-out run, but it has
-not yet been promoted because it still lost to `greedy_first` at `K=4` and to
-`random_parseable` at `K=8` on that fresh sample.
+not yet been promoted in the repo metadata because the current `best_current`
+pointer still reflects the replay-selected round-3 baseline.
+
+We now also have a repeated fresh held-out comparison under:
+
+- `results/vcsr/multiseed_holdout_compare/`
+
+That multi-seed gate strengthens the case for round 4:
+
+- mean round-3 `verifier_ranked`
+  - `K=4`: `0.4000`
+  - `K=8`: `0.4000`
+- mean round-4 `verifier_ranked`
+  - `K=4`: `0.4000`
+  - `K=8`: `0.4267`
+- seed-wise head-to-head
+  - `K=4`: win / loss / tie = `1 / 1 / 1`
+  - `K=8`: win / loss / tie = `2 / 0 / 1`
+
+So the strongest current downstream case for round 4 is specifically at
+best-of-`8`, not as a claim that it cleanly dominates every setting.
 
 See `EXPERIMENTS.md` for the running experiment log and interpretation of these results.
 
@@ -243,6 +267,7 @@ Key downstream artifacts:
 | `results/vcsr/bestofk_ranking_round2_pool/` | Newer 50-row cached pool plus controlled replay across verifier checkpoints |
 | `results/vcsr/bestofk_round3_holdout_eval/` | Fresh held-out end-to-end run with frozen round 3 |
 | `results/vcsr/bestofk_round4_holdout_eval_clean/` | Fresh held-out end-to-end run with focused round 4 |
+| `results/vcsr/multiseed_holdout_compare/` | Repeated fresh held-out round-3 vs round-4 comparison across seeds `48`, `49`, `50` |
 
 Current project conclusion from these pilots:
 
@@ -251,20 +276,26 @@ Current project conclusion from these pilots:
 - Round 4 is the leading provisional candidate:
   it improved over round 3 on replay and also improved fresh held-out `verifier_ranked` from `0.42 -> 0.44` at `K=4` and `0.46 -> 0.48` at `K=8`.
 - But round 4 still lost to `greedy_first` at `K=4` (`0.44 < 0.46`) and to `random_parseable` at `K=8` (`0.48 < 0.50`) on that fresh 50-row held-out sample.
+- The new repeated fresh held-out comparison strengthens the round-4 case:
+  at `K=8`, round 4 now shows a positive mean verifier-ranked gain over round 3
+  (`0.4000 -> 0.4267`) with seed-wise results `2` wins, `1` tie, `0` losses.
+- At `K=4`, the repeated fresh held-out comparison is effectively a tie:
+  both rounds average `0.4000` verifier-ranked equivalence.
 - Candidate generation quality is often good enough that a better selector should still be able to do better:
   oracle remains `0.5200` to `0.6200` across the development and held-out pools.
 
 ## Recommended Next Step
 
-The highest-value next task is:
+The highest-value next task is now:
 
-- run a small repeated fresh held-out evaluation comparing round 3, round 4, `greedy_first`, and `random_parseable`
+- make the round-4 promotion decision explicit in repo metadata and write-up,
+  with wording that matches the actual evidence
 
 Why this matters:
 
-- It keeps round 3 frozen as the official baseline until promotion is justified.
-- It prevents us from over-interpreting a one-row difference on a single 50-row held-out sample.
-- It tells us whether round 4 is actually stable enough to promote, or whether the next step should be an explicit ranking-objective change.
+- The multi-seed gate has been run, so the uncertainty is now interpretive rather than missing-data.
+- The strongest positive evidence is at `K=8`, and the docs should say that plainly.
+- If we decide not to promote yet, the next experiment should be a stronger ranking objective rather than another blind retrain.
 
 See `RECOMMENDATION.md` for the current project-level recommendation.
 

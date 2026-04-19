@@ -151,6 +151,7 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] **Run held-out failure analysis and focused round-4 mining**
 - [x] **Train focused ranking-aligned round 4 from the frozen round-3 baseline**
 - [x] **Run fresh held-out end-to-end best-of-K evaluation with focused round 4**
+- [x] **Run repeated fresh held-out comparison for round 3 vs round 4**
 
 ### Phase 3: Search and Repair (Weeks 5-6)
 
@@ -165,19 +166,20 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Repeated fresh held-out comparison before promotion**
-   Compare round 3, round 4, `greedy_first`, and `random_parseable` on several
-   fresh held-out seeds before changing `best_current`.
+1. **Promotion decision after the multi-seed gate**
+   Decide whether to promote round 4 with explicit `K=8`-first wording, or keep
+   round 3 frozen until a later checkpoint wins more cleanly at both `K=4` and
+   `K=8`.
 2. **Replay remains the checkpoint-selection rule**
    Continue to judge new verifier checkpoints primarily by replay on cached
    pools, not by offline AUC alone.
 3. **Preserve provenance**
    Never reuse pool output directories; every long-running generation or
    training run must have its own output directory and visible `progress.log`.
-4. **Escalate only if repeated held-out checks stay ambiguous**
-   If round 4 remains too close to simple baselines after repeated fresh
-   held-out evaluation, move next to an explicit pairwise/listwise ranking
-   objective rather than another blind pointwise retrain.
+4. **Escalate only if the promotion story remains too mixed**
+   If round 4 still looks too close to simple baselines, especially at `K=4`,
+   move next to an explicit pairwise/listwise ranking objective rather than
+   another blind pointwise retrain.
 
 ## Current Status Notes
 
@@ -189,8 +191,14 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - The fresh held-out end-to-end runs under `results/vcsr/bestofk_round3_holdout_eval/` and `results/vcsr/bestofk_round4_holdout_eval_clean/` are complete.
 - Round 4 improved over round 3 on replay and also improved fresh held-out `verifier_ranked` at both `K=4` and `K=8`.
 - But round 4 still lost to `greedy_first` at `K=4` and to `random_parseable` at `K=8` on the fresh 50-row held-out sample.
+- We have now also completed the repeated fresh held-out comparison under `results/vcsr/multiseed_holdout_compare/`.
+- That multi-seed gate shows the strongest new round-4 evidence at `K=8`:
+  mean `verifier_ranked` equivalence improves from `0.4000` to `0.4267`, with
+  seed-wise results `2` wins, `1` tie, `0` losses.
+- At `K=4`, the same gate is effectively tied:
+  mean `verifier_ranked` equivalence is `0.4000` for both round 3 and round 4.
 - The main uncertainty is no longer "can a verifier help downstream selection?" It can.
-- The main uncertainty is now whether round 4 is stable enough to promote, or whether the next improvement requires repeated held-out confirmation and then a stronger ranking objective.
+- The main uncertainty is now how aggressively to promote round 4 in repo metadata and paper framing, given that the strongest gain is at `K=8` and the `K=4` story remains mixed.
 
 ## Long-Run Visibility Rule
 

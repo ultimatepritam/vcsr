@@ -1,0 +1,9 @@
+{
+  "total_runs": 6,
+  "completed_runs": 6,
+  "remaining_runs": 0,
+  "elapsed_sec": 7741.593101739883,
+  "avg_sec_per_run": 1290.2655169566472,
+  "eta_sec": 0.0,
+  "current_label": "round4_focused/seed_50"
+}

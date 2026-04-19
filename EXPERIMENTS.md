@@ -1279,13 +1279,70 @@ Project takeaway:
 - The next best step is repeated fresh held-out evaluation across several seeds,
   not immediate promotion and not another blind retrain.
 
+### Repeated Fresh Held-Out Comparison for Round 3 vs Round 4
+
+- Goal: decide whether the focused round-4 verifier is strong enough to justify
+  promotion once we stop relying on a single fresh 50-row held-out sample.
+- Harness:
+  [scripts/run_multiseed_holdout_compare.py](/e:/Engineering/vcsr/scripts/run_multiseed_holdout_compare.py)
+- Config:
+  [configs/vcsr_multiseed_holdout_compare.yaml](/e:/Engineering/vcsr/configs/vcsr_multiseed_holdout_compare.yaml)
+- Output:
+  [results/vcsr/multiseed_holdout_compare](/e:/Engineering/vcsr/results/vcsr/multiseed_holdout_compare)
+- Status: completed
+
+Headline results from
+[comparison_summary.md](/e:/Engineering/vcsr/results/vcsr/multiseed_holdout_compare/comparison_summary.md)
+and
+[comparison_summary.json](/e:/Engineering/vcsr/results/vcsr/multiseed_holdout_compare/comparison_summary.json):
+
+- Seeds evaluated: `48`, `49`, `50`
+- Rows per run: `50`
+- Proxy-cleared OpenRouter path used for stable generation
+
+Mean `verifier_ranked` equivalence:
+
+- round 3
+  - `K=4`: `0.4000`
+  - `K=8`: `0.4000`
+- round 4
+  - `K=4`: `0.4000`
+  - `K=8`: `0.4267`
+
+Seed-wise head-to-head for `verifier_ranked`:
+
+- `K=4`
+  - round 4 wins: `1`
+  - round 3 wins: `1`
+  - ties: `1`
+- `K=8`
+  - round 4 wins: `2`
+  - round 3 wins: `0`
+  - ties: `1`
+
+Interpretation:
+
+- The repeated held-out gate strengthens the round-4 case in a meaningful way.
+- The strongest and cleanest new evidence is at `K=8`.
+- `K=4` remains mixed enough that we should not oversell round 4 as a
+  universally dominant selector.
+- This is a more credible promotion signal than the earlier single-seed held-out
+  run, because it repeats the same end-to-end protocol across multiple fresh
+  seeds.
+
+Project takeaway:
+
+- Round 4 is now the strongest end-to-end verifier candidate so far.
+- The promotion case is strongest if the project emphasis is best-of-`8`
+  ranking.
+- The repo still keeps round 3 as the official `best_current` pointer until we
+  explicitly change that metadata.
+
 ## Recommended Next Entries
 
-- Repeated fresh held-out evaluation for round 3 vs round 4 across several
-  seeds
-- Promotion decision only after repeated held-out evidence, not after one
-  50-row sample
-- If round 4 remains too close to `greedy_first` and `random_parseable`,
-  explicit pairwise/listwise ranking-objective experiments
+- Promotion decision on whether to keep round 3 frozen or move `best_current`
+  to round 4 with explicit `K=8`-first wording
+- If round 4 still feels too mixed for promotion, explicit pairwise/listwise
+  ranking-objective experiments
 - Selective prediction / abstention experiments only after the ranker baseline
   is actually stable

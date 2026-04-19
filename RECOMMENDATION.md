@@ -1,8 +1,9 @@
 # Recommendation
 
 This document captures the current project-level recommendation for VCSR after
-the first verifier-ranked best-of-K pilot, fixed-pool replay evaluation, and
-four ranking-aligned verifier training rounds.
+the first verifier-ranked best-of-K pilot, fixed-pool replay evaluation, four
+ranking-aligned verifier training rounds, and the first repeated fresh
+held-out multi-seed comparison.
 
 ## Goal
 
@@ -31,7 +32,11 @@ decisions:
   it found concentrated `blocksworld`, mostly `abstract/abstract`,
   within-pool misranking errors rather than diffuse failure.
 - Focused round 4 improved the verifier over round 3 on replay and on the fresh
-  held-out run, but not enough to clearly dominate simple baselines.
+  held-out run.
+- The repeated fresh held-out comparison makes the round-4 case materially
+  stronger:
+  the cleanest gain is now at `K=8`, while `K=4` remains closer to a tie than
+  to a decisive win.
 
 ## Key Evidence
 
@@ -59,67 +64,80 @@ Fresh end-to-end held-out comparison:
   - `K=8` `random_parseable`: `0.5000`
   - `K=8` `verifier_ranked`: `0.4800`
 
+Repeated fresh held-out comparison across seeds `48`, `49`, and `50` from
+[results/vcsr/multiseed_holdout_compare/comparison_summary.md](/E:/Engineering/vcsr/results/vcsr/multiseed_holdout_compare/comparison_summary.md):
+
+- Round 3 mean `verifier_ranked`
+  - `K=4`: `0.4000`
+  - `K=8`: `0.4000`
+- Round 4 mean `verifier_ranked`
+  - `K=4`: `0.4000`
+  - `K=8`: `0.4267`
+- Head-to-head by seed
+  - `K=4`: round 4 win / loss / tie = `1 / 1 / 1`
+  - `K=8`: round 4 win / loss / tie = `2 / 0 / 1`
+
 This tells us three important things:
 
 - round 4 is a real model improvement over round 3
-- the improvement is still small enough that simple baselines can trade places
-  with it on one 50-row held-out sample
-- replay is still the right checkpoint-selection tool, but fresh held-out runs
-  are now close enough that we need repeated held-out evidence before promotion
+- the strongest and most repeatable downstream gain is now at `K=8`
+- `K=4` is still not a clean promotion story; it looks approximately tied on
+  the current multi-seed gate
+- replay is still the right checkpoint-selection tool, but we now also have a
+  more credible fresh held-out signal for promotion decisions
 
 ## Main Conclusion
 
-Round 4 is promising, but not decisive.
+Round 4 is now the stronger end-to-end candidate, but the promotion story is
+still asymmetric across `K`.
 
 My current judgment is:
 
-- **do not promote round 4 to `best_current` yet**
-- **treat round 4 as the leading provisional candidate**
-- **run a small repeated fresh held-out evaluation before changing the official
-  baseline**
+- **keep round 3 as the current frozen `best_current` until we explicitly
+  change the pointer**
+- **treat round 4 as the strongest downstream candidate so far**
+- **interpret the promotion case as strongest for `K=8`, not as a universal
+  across-the-board win**
 
 Why:
 
 - round 4 improved the verifier at both `K=4` and `K=8` relative to round 3
-- but on the fresh held-out run it still lost to `greedy_first` at `K=4`
-- and it also lost to `random_parseable` at `K=8`
-- both gaps are small, but that is exactly the point:
-  if the selector were already robust, it should not still be this close to
-  those baselines
+- the repeated held-out comparison now shows a clear mean gain at `K=8`
+- the repeated held-out comparison does **not** show a clear mean gain at `K=4`
+- so round 4 looks promotion-worthy if our project emphasis is best-of-`8`
+  ranking, but not yet as a claim that the selector is uniformly dominant
 
 So the project bottleneck is no longer "can we make the verifier better?".
 We already did.
-The bottleneck is now "is the gain stable enough across fresh pools to justify
-promotion and paper-facing claims?".
+The bottleneck is now "how narrowly and honestly do we frame the gain in the
+paper and the repo decision?".
 
 ## Recommendation
 
 ### Highest-Priority Next Step
 
-Run a **small multi-seed fresh held-out comparison** before promoting round 4.
+Make the promotion decision explicit and consistent across the repo.
 
-Compare on new held-out runs:
+The repeated fresh held-out comparison has now been completed, so the next
+practical step is no longer "run the gate" but rather:
 
-- `greedy_first`
-- `random_parseable`
-- round 3 `verifier_ranked`
-- round 4 `verifier_ranked`
-
-Use the same generation budget and evaluation protocol as the current held-out
-run, but repeat over several seeds instead of relying on one 50-row sample.
+- either promote round 4 with explicit wording that the strongest evidence is at
+  `K=8`
+- or keep round 3 frozen if we want to require a cleaner `K=4` win before any
+  promotion
 
 ### Promotion Rule
 
-Promote round 4 only if repeated fresh held-out evaluation shows:
+My recommendation after the completed multi-seed gate:
 
-- round 4 beats round 3 on average at `K=8`
-- round 4 does not continue to lose materially to `greedy_first` at `K=4`
-- round 4 is at least competitive with, and ideally clearly above,
-  `random_parseable` at `K=8`
+- promote round 4 **if** the project's current end-to-end emphasis is verifier
+  selection at `K=8`
+- keep the documentation explicit that `K=4` remains mixed and should not be
+  oversold
 
-If those conditions hold, then promotion is justified.
-If not, round 4 should remain a useful intermediate result rather than the new
-official baseline.
+If we do not want a `K=8`-weighted promotion rule, then we should keep round 3
+as the official baseline until a later checkpoint wins more cleanly at both
+`K=4` and `K=8`.
 
 ### Modeling Recommendation
 
@@ -132,9 +150,9 @@ DeBERTa is still a reasonable verifier backbone for this phase because:
 - the current evidence still points more strongly to ranking robustness than to
   a hard capacity ceiling
 
-If repeated fresh held-out checks still show the verifier hovering near
-`greedy_first` and `random_parseable`, then the next real escalation should be
-an objective change, not an architecture change:
+If future fresh held-out checks still show the verifier hovering near
+`greedy_first` and `random_parseable`, especially at `K=4`, then the next real
+escalation should be an objective change, not an architecture change:
 
 - pairwise ranking loss
 - listwise ranking supervision
@@ -142,7 +160,7 @@ an objective change, not an architecture change:
 
 ## What We Should Not Over-Prioritize Right Now
 
-- promoting round 4 purely because it improved over round 3 once
+- promoting round 4 while claiming the selector is now uniformly robust
 - replacing replay with offline AUC as the main checkpoint-selection criterion
 - treating a 1-row difference on a 50-row held-out sample as decisive
 - generic extra epochs on the same data without stronger evaluation
@@ -150,7 +168,7 @@ an objective change, not an architecture change:
 
 ## Bottom Line
 
-My view is cautiously optimistic.
+My view is now cautiously positive.
 
 Round 4 is not a failure.
 It moved the verifier in the right direction:
@@ -158,15 +176,16 @@ It moved the verifier in the right direction:
 - better replay performance
 - better offline validation AUC
 - better fresh held-out `verifier_ranked` than round 3 at both `K=4` and `K=8`
+- a repeated multi-seed held-out win pattern at `K=8`
 
 But it still did not clear the bar of being obviously better than simple
-baselines on the fresh held-out run.
+baselines at every `K` we care about.
 
 So the clearest path from here is:
 
-- keep round 3 as the official frozen `best_current`
-- treat round 4 as the provisional best candidate
-- run repeated fresh held-out evaluation to decide promotion
-- if the gain is not stable, move next to a stronger ranking objective
+- either promote round 4 with a precise `K=8`-first interpretation
+- or keep round 3 as the official frozen `best_current` until we require a
+  cleaner all-around win
+- in either case, if the next gain stalls, move to a stronger ranking objective
 
 That is the most defensible next step for the project and the paper.
