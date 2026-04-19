@@ -305,11 +305,17 @@ class OpenRouterSampler(BaseSampler):
 
     def __init__(
         self,
-        model: str = "meta-llama/llama-3-8b-instruct",
+        model: Optional[str] = None,
         config: Optional[SamplerConfig] = None,
     ):
-        super().__init__(model, config)
-        api_key = os.environ.get("OPENROUTER_API_KEY", "")
+        resolved_model = model or _get_env("OPENROUTER_MODEL_ID", "openrouter_model_id")
+        if not resolved_model:
+            raise ValueError(
+                "No OpenRouter model ID. Set OPENROUTER_MODEL_ID in .env or pass model=."
+            )
+        super().__init__(resolved_model, config)
+
+        api_key = _get_env("OPENROUTER_API_KEY")
         if not api_key:
             raise ValueError("No OPENROUTER_API_KEY found in .env")
 
