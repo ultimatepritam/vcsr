@@ -1,0 +1,9 @@
+{
+    "pid":  23028,
+    "started_at":  "2026-04-19T18:30:55",
+    "output_dir":  "results/verifier/ranking_aligned_round3/retrain_from_round2_multipool",
+    "stdout_log":  "results\\verifier\\ranking_aligned_round3\\retrain_from_round2_multipool\\calibration_stdout.log",
+    "calibration_report":  "results\\verifier\\ranking_aligned_round3\\retrain_from_round2_multipool\\calibration_report.json",
+    "calibration_scores":  "results\\verifier\\ranking_aligned_round3\\retrain_from_round2_multipool\\calibration_eval_scores.jsonl",
+    "command":  ".\\.venv\\Scripts\\python.exe -u scripts/calibrate_verifier.py --config configs/verifier_ranking_aligned_round3.yaml"
+}

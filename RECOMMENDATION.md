@@ -2,7 +2,7 @@
 
 This document captures the current project-level recommendation for VCSR after
 the first verifier-ranked best-of-K pilot, fixed-pool replay evaluation, and
-two ranking-aligned verifier training rounds.
+three ranking-aligned verifier training rounds.
 
 ## Goal
 
@@ -25,20 +25,19 @@ decisions:
 - Generic verifier improvements on validation AUC alone do not guarantee better
   downstream ranking.
 - Ranking-aligned verifier training is now validated as the right direction.
-- Round 2 is the first checkpoint that produces a real downstream replay win
-  over the simple `random_parseable` baseline on the fixed `K=8` pool.
-- Replay-controlled evaluation on a newer pool now shows the same round-2
-  checkpoint is still the best verifier among the tested choices there.
-- But that newer-pool result is weaker than the original fixed-pool win:
-  round 2 ties `greedy_first` at `K=8` and ties `random_parseable` at `K=4`
-  instead of clearly outperforming both.
-- So the current concern is no longer lack of controlled evidence; it is that
-  the replay win is real but not yet consistently reproducible across pools.
+- Round 3 now beats the frozen round-2 verifier on the stronger 50-row replay
+  pool at both `K=4` and `K=8`.
+- Round 3 also improves `K=4` and matches the prior best `K=8` result on the
+  original 30-row fixed pilot pool.
+- The most important lesson from this round is that downstream replay improved
+  even though the old offline verifier validation AUC did not.
+- So the project now has a better downstream verifier checkpoint and a much more
+  trustworthy model-selection principle: replay beats offline AUC.
 
 That last point is the key update.
-We are no longer asking whether ranking-aligned training is worth trying.
-We now know it can work downstream, but we also know the current gains are not
-yet stable enough across pools.
+We are no longer asking whether ranking-aligned training can produce a useful
+verifier. We now have evidence that it can, and that the new round-3 checkpoint
+is the right baseline for the next real VCSR phase.
 
 ## Key Evidence
 
@@ -46,22 +45,18 @@ On the cached `results/vcsr/bestofk_pilot/candidate_dump.jsonl` pool, fixed-pool
 replay now gives:
 
 - At `K=8`, `random_parseable` reaches `0.5000` equivalence.
-- At `K=8`, the original best-current verifier (`lr_5em05`) reaches `0.4333`.
-- At `K=8`, the capacity-push verifier (`lr_2p0em05`) reaches `0.4000`.
-- At `K=8`, ranking-aligned round 1 reaches `0.4667`.
 - At `K=8`, ranking-aligned round 2 reaches `0.5333`.
+- At `K=8`, ranking-aligned round 3 also reaches `0.5333`.
 - At `K=4`, ranking-aligned round 2 reaches `0.4667`.
-
-On the original cached pilot pool, round 2 is the best result so far:
-
-- At `K=8`, round 2 reaches `0.5333` versus `0.5000` for `random_parseable`.
+- At `K=4`, ranking-aligned round 3 reaches `0.5000`.
 
 On the newer cached round-2 pool under replay-controlled comparison:
 
-- At `K=4`, round 2 reaches `0.4800`, tying `random_parseable` and beating the
-  earlier verifier checkpoints.
-- At `K=8`, round 2 reaches `0.4600`, tying `greedy_first`, beating
-  `random_parseable` at `0.4400`, and beating the earlier verifier checkpoints.
+- At `K=4`, round 2 reaches `0.4800`.
+- At `K=4`, round 3 reaches `0.5200`.
+- At `K=8`, round 2 reaches `0.4600`.
+- At `K=8`, round 3 reaches `0.5400`.
+- At `K=8`, `random_parseable` is only `0.4400`.
 - Oracle on that newer pool is `0.6200`, so there is still substantial room to
   improve ranking quality.
 
@@ -69,80 +64,72 @@ This tells us two important things:
 
 - fixed-pool replay was the right diagnostic tool
 - ranking-aligned supervision is improving the downstream task we care about
-- round 2 is the current best verifier on both replay-tested pools
-- robustness across pools is still the central unsolved problem because the size
-  of the win changes meaningfully from pool to pool
+- round 3 is now the current best verifier on both replay-tested pools
+- there is still headroom to oracle, but the project now has a genuine
+  downstream-positive baseline rather than only a directionally promising one
 
 ## Main Conclusion
 
 The next crucial project step is:
 
-- **robustness-focused ranking-aligned verifier round 3**
+- **freeze round 3 as the default verifier and run a fresh held-out end-to-end
+  VCSR evaluation**
 
-Not because round 2 failed, but because it succeeded in the right place: it
-produced our best replay result so far and therefore justified doubling down in
-a more controlled, generalization-oriented way.
+Not because verifier research is done, but because the replay evidence is now
+good enough that the best way to learn more is to use this stronger checkpoint
+in the actual downstream VCSR loop.
 
-The project bottleneck still looks like training-signal alignment rather than
-backbone choice or pure optimization budget, but now specifically in the form of
-cross-pool robustness and dependence on the quality of mined candidate pools.
+The project bottleneck is no longer "can we build a useful verifier?".
+It is now "how much end-to-end gain do we get from this better verifier, and
+what gap to oracle remains after we use it properly?"
 
 ## Why This Is The Right Next Step
 
-The current verifier is still being asked to perform a harder deployment-time
-decision than its original training data emphasized:
+The current verifier is finally strong enough that the next question should be
+about end-to-end leverage, not just verifier-only iteration.
+
+The verifier is still being asked to perform a harder deployment-time decision
+than its original training data emphasized:
 
 - training mostly teaches pointwise good-vs-bad discrimination
 - deployment requires choosing the best candidate within a pool of plausible,
   parseable options for the same NL input
 
-The first ranking-aligned round moved the replay result in the correct
-direction:
-
-- more pool-based positives
-- more parseable near-miss negatives
-- warm-starting from the best ranking-oriented checkpoint
-
-That is exactly the kind of improvement signal we wanted to see.
-It means the approach is not misguided; it is just not yet strong enough.
+Round 3 shows the approach is not only directionally correct.
+It is now producing the best downstream replay results we have seen so far.
 
 ## Recommendation
 
 ### Highest-Priority Modeling Task
 
-Run a stronger **ranking-aligned verifier round 3** built from multiple real
-candidate pools.
+Run a fresh **held-out end-to-end verifier-ranked best-of-K evaluation** using
+the frozen round-3 checkpoint as the default verifier.
 
-That round should:
+That evaluation should:
 
-- mine substantially more best-of-K candidate pools than any single earlier
-  round
-- combine examples from multiple independently generated pools rather than
-  trusting one pool's failure pattern
-- include more rows with equivalent candidates and more rows with parseable-only
-  negative pools
-- keep multiple equivalent positives per row when available
-- keep high-scoring parseable non-equivalent negatives from the same pool
-- continue to emphasize verifier-selected wrong candidates and near-miss
-  outranking negatives
-- likely repeat or otherwise upweight the pool-mined data relative to the base
-  neggen set
+- keep round 3 fixed as the selected verifier
+- use a fresh held-out pool or held-out end-to-end generation slice
+- report the same policy comparisons:
+  `greedy_first`, `random_parseable`, `verifier_ranked`
+- focus on whether the replay gains translate into a cleaner downstream win
+- preserve artifact discipline so the run can become a paper-facing result later
 
-This is still the most justified next modeling bet.
+This is now the highest-value next experiment.
 
 ### Acceptance Criterion
 
-Judge the next verifier primarily by **fixed-pool replay**, not by validation AUC
-alone.
+Judge the next end-to-end milestone primarily by **downstream equivalence rate**
+with round 3 frozen, while continuing to use fixed-pool replay as the model
+selection guardrail.
 
 Success should mean:
 
-- verifier-ranked beats greedy and random-parseable on the same cached candidate
-  pool
-- especially at `K=8`, where round 2 already produced a modest win
-- verifier improvements also survive replay-style evaluation on newer generated
-  pools with a clearer margin than the current tie-level behavior
-- with enough margin and stability to justify a fresh held-out downstream rerun
+- verifier-ranked beats greedy and simple non-verifier baselines on a fresh
+  held-out downstream run
+- the round-3 replay gains are not just replay artifacts but actually carry into
+  end-to-end use
+- remaining failures are concentrated enough to justify either:
+  more pool mining, or a stronger ranking objective, rather than broad confusion
 
 ### Architecture Recommendation
 
@@ -162,42 +149,44 @@ backbone choice.
 
 - more generic epochs on the same current training data
 - larger-batch sweeps without more ranking-focused supervision
-- fresh regenerated best-of-K comparisons alone as the main decision criterion
 - abstention policy work before the ranker itself is useful
 - architecture changes before we run a stronger robustness-focused round
+- replacing replay with offline AUC as the main selection criterion
 
 These may become important later, but they are not the central unknown today.
 
-## If Round 3 Still Fails
+## If The Fresh End-to-End Run Is Still Weak
 
-If a stronger robustness-focused round still does not produce a stable replay
-win, then we should
-consider a deeper shift:
+If the fresh end-to-end run still underwhelms despite round 3 being the best
+replay checkpoint, then we should consider a deeper shift:
 
 - explicit pairwise or listwise ranking objectives
 - larger verifier backbones
 - structure-aware scoring features
 - hybrid ranking approaches beyond plain pointwise classification
 
-That would be a justified escalation only after we give ranking-aligned training
-at a larger scale a fair test.
+That would then be a justified escalation, because we will have already shown
+that multi-pool ranking-aligned pointwise training has taken us meaningfully,
+but not all the way, toward the project goal.
 
 ## Bottom Line
 
-The project direction still looks viable, and the most important update is that
-we now have evidence that ranking-aligned round 2 is the best verifier on both
-replay-tested pools, even though the strength of the win is not yet stable.
+The project direction looks genuinely promising now.
+The most important update is that ranking-aligned round 3 is the best verifier
+on both replay-tested pools, and it won the stronger 50-row pool by a
+meaningful margin.
 
 Earlier, the main recommendation was:
 
-- move toward ranking-aligned supervision
+- move toward ranking-aligned supervision and test it with replay
 
 The updated recommendation is:
 
 - keep the current verifier architecture family
-- treat ranking-aligned round 2 as the current best downstream checkpoint
-- run a robustness-focused round 3 on multiple real candidate pools
-- keep replay-controlled evaluation as the main downstream acceptance test
+- treat ranking-aligned round 3 as the current best downstream checkpoint
+- freeze it as `best_current`
+- run a fresh held-out end-to-end VCSR evaluation with this verifier
+- keep replay-controlled evaluation as the main checkpoint-selection test
 
 That is the clearest path from our current state to the actual VCSR project
 goal.

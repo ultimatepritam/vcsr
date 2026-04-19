@@ -9,26 +9,27 @@ evaluation runs.
 
 ## Selected Run
 
-- Run: `results/verifier/ranking_aligned_round2/retrain_from_round1`
-- Checkpoint: `results/verifier/ranking_aligned_round2/retrain_from_round1/best_model/model.pt`
+- Run: `results/verifier/ranking_aligned_round3/retrain_from_round2_multipool`
+- Checkpoint: `results/verifier/ranking_aligned_round3/retrain_from_round2_multipool/best_model/model.pt`
 - Metadata: `results/verifier/best_current/selection.yaml`
 - Selection basis:
-  - best downstream replay result on the original fixed pilot pool
-  - strongest verifier checkpoint on the newer replay-tested round-2 pool
-  - frozen as the project baseline for future robustness-focused verifier work
+  - improved fixed-pool replay on the original 30-row pilot pool at `K=4`
+  - matched the previous best `K=8` result on the original pilot pool
+  - beat the round-2 baseline on the stronger 50-row replay pool at both `K=4` and `K=8`
+  - frozen as the project baseline for the next end-to-end VCSR phase
 
 ## Related Artifacts
 
 - Training history:
-  [train_history.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round2/retrain_from_round1/train_history.json)
+  [train_history.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round3/retrain_from_round2_multipool/train_history.json)
 - Validation metrics:
-  [val_metrics.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round2/retrain_from_round1/val_metrics.json)
+  [val_metrics.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round3/retrain_from_round2_multipool/val_metrics.json)
 - Clean calibration report:
-  [calibration_report.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round2/retrain_from_round1/calibration_report.json)
-- Fixed-pool replay on original pilot pool:
-  [replay_summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/replay_compare_ranking_round2/replay_summary.md)
-- Replay on newer round-2 pool:
-  [replay_summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_ranking_round2_pool/replay_compare/replay_summary.md)
+  [calibration_report.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round3/retrain_from_round2_multipool/calibration_report.json)
+- Fixed-pool replay on original pilot pool against round 2:
+  [replay_summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/replay_compare_round2_vs_round3_multipool/replay_summary.md)
+- Replay on stronger 50-row round-2 pool against round 2:
+  [replay_summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_ranking_round2_pool/replay_compare_round2_vs_round3_multipool/replay_summary.md)
 
 ## Note
 

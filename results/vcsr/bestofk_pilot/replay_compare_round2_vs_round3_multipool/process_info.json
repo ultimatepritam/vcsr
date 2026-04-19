@@ -1,0 +1,9 @@
+{
+    "pid":  8004,
+    "started_at":  "2026-04-19T18:31:39",
+    "output_dir":  "results/vcsr/bestofk_pilot/replay_compare_round2_vs_round3_multipool",
+    "stdout_log":  "results\\vcsr\\bestofk_pilot\\replay_compare_round2_vs_round3_multipool\\replay_stdout.log",
+    "replay_summary":  "results\\vcsr\\bestofk_pilot\\replay_compare_round2_vs_round3_multipool\\replay_summary.json",
+    "replay_markdown":  "results\\vcsr\\bestofk_pilot\\replay_compare_round2_vs_round3_multipool\\replay_summary.md",
+    "command":  ".\\.venv\\Scripts\\python.exe -u scripts/replay_verifier_bestofk.py --candidate_dump results/vcsr/bestofk_pilot/candidate_dump.jsonl --selection results/verifier/ranking_aligned_round2/retrain_from_round1/selection.yaml --selection results/verifier/ranking_aligned_round3/retrain_from_round2_multipool/selection.yaml --output_dir results/vcsr/bestofk_pilot/replay_compare_round2_vs_round3_multipool"
+}

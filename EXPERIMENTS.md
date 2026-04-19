@@ -915,11 +915,129 @@ Project takeaway:
   on replay wins that hold on more than one cached pool before spending on new
   end-to-end generation comparisons.
 
+### Ranking-Aligned Verifier Training Round 3 (Multi-Pool)
+
+- Goal: test whether a larger, more robust multi-pool ranking-aligned training
+  set can turn the promising round-2 replay win into a more credible and more
+  reproducible downstream result.
+- Pool-generation config:
+  [configs/vcsr_bestofk_round3_pool.yaml](/e:/Engineering/vcsr/configs/vcsr_bestofk_round3_pool.yaml)
+- Pool-generation outputs:
+  - [results/vcsr/round3_pool_seed43](/e:/Engineering/vcsr/results/vcsr/round3_pool_seed43)
+  - [results/vcsr/round3_pool_seed44](/e:/Engineering/vcsr/results/vcsr/round3_pool_seed44)
+  - [results/vcsr/round3_pool_seed45](/e:/Engineering/vcsr/results/vcsr/round3_pool_seed45)
+  - [results/vcsr/round3_pool_seed46](/e:/Engineering/vcsr/results/vcsr/round3_pool_seed46)
+  - [results/vcsr/round3_pool_seed47](/e:/Engineering/vcsr/results/vcsr/round3_pool_seed47)
+- Dataset preparation:
+  [scripts/prepare_ranking_round3_dataset.py](/e:/Engineering/vcsr/scripts/prepare_ranking_round3_dataset.py)
+- Training config:
+  [configs/verifier_ranking_aligned_round3.yaml](/e:/Engineering/vcsr/configs/verifier_ranking_aligned_round3.yaml)
+- Trained checkpoint:
+  [results/verifier/ranking_aligned_round3/retrain_from_round2_multipool](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round3/retrain_from_round2_multipool)
+- Replay comparisons:
+  - [results/vcsr/bestofk_pilot/replay_compare_round2_vs_round3_multipool](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/replay_compare_round2_vs_round3_multipool)
+  - [results/vcsr/bestofk_ranking_round2_pool/replay_compare_round2_vs_round3_multipool](/e:/Engineering/vcsr/results/vcsr/bestofk_ranking_round2_pool/replay_compare_round2_vs_round3_multipool)
+- Status: completed and promoted to `best_current`
+
+Method:
+
+- Freeze round 2 as the warm-start baseline:
+  [results/verifier/ranking_aligned_round2/retrain_from_round1/selection.yaml](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round2/retrain_from_round1/selection.yaml)
+- Generate five independent in-domain `K=8` pools over `blocksworld` and
+  `gripper`, each with `50` test rows.
+- Mine pool-conditioned positives and hard negatives across all five pools.
+- Deduplicate the mined rows and append them as train-only extra supervision.
+- Keep the base verifier validation split fixed.
+- Calibrate the resulting checkpoint and judge it primarily by fixed-pool replay
+  against the frozen round-2 verifier.
+
+Multi-pool mining results from
+[results/verifier/ranking_aligned_round3/mining_report.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round3/mining_report.json)
+and
+[augmented_train_stats.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round3/augmented_train_stats.json):
+
+- `5` pool runs merged
+- `411` raw mined examples before dedup
+- `409` deduped mined examples kept
+- `159` positives
+- `250` negatives
+- `2804` total rows in the augmented training set
+- effective round-3 train size during retrain: `3674` rows after `extra_train_repeat: 4`
+
+Training and calibration results from
+[val_metrics.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round3/retrain_from_round2_multipool/val_metrics.json)
+and
+[calibration_report.json](/e:/Engineering/vcsr/results/verifier/ranking_aligned_round3/retrain_from_round2_multipool/calibration_report.json):
+
+- validation AUC: `0.7945`
+- validation F1: `0.4656`
+- clean evaluation raw AUC: `0.7759`
+- best raw-threshold F1 on the untouched eval subset: `0.6630` at threshold `0.35`
+- best temperature-scaled F1 on the untouched eval subset: `0.6630` at threshold `0.40`
+
+Important offline interpretation:
+
+- Round 3 did **not** improve the old offline verifier validation AUC versus
+  round 2.
+- That matters because it reinforces a core project lesson:
+  offline verifier metrics alone are not enough to decide checkpoint quality for
+  VCSR.
+
+Fixed-pool replay on the original 30-row pilot pool from
+[replay_summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/replay_compare_round2_vs_round3_multipool/replay_summary.md):
+
+- `K=4`
+  - round 2 `verifier_ranked`: `0.4667`
+  - round 3 `verifier_ranked`: `0.5000`
+- `K=8`
+  - round 2 `verifier_ranked`: `0.5333`
+  - round 3 `verifier_ranked`: `0.5333`
+
+Fixed-pool replay on the stronger 50-row round-2 pool from
+[replay_summary.md](/e:/Engineering/vcsr/results/vcsr/bestofk_ranking_round2_pool/replay_compare_round2_vs_round3_multipool/replay_summary.md):
+
+- `K=4`
+  - round 2 `verifier_ranked`: `0.4800`
+  - round 3 `verifier_ranked`: `0.5200`
+  - `random_parseable`: `0.4800`
+  - oracle best-of-4 upper bound: `0.5600`
+- `K=8`
+  - round 2 `verifier_ranked`: `0.4600`
+  - round 3 `verifier_ranked`: `0.5400`
+  - `random_parseable`: `0.4400`
+  - oracle best-of-8 upper bound: `0.6200`
+
+Interpretation:
+
+- This is the strongest and most encouraging verifier result in the project so
+  far.
+- The multi-pool round-3 checkpoint is the first verifier to look clearly
+  better than round 2 on the stronger 50-row fixed replay pool.
+- It also preserves the earlier progress on the original pilot pool, improving
+  `K=4` and matching the prior best `K=8` result.
+- The key lesson is now much sharper:
+  downstream replay can improve even when offline validation AUC does not.
+- That means the project finally has what it needed most:
+  a verifier checkpoint whose value is supported by the task-level metric we
+  actually care about.
+
+Project takeaway:
+
+- Round 3 should now be treated as the frozen `best_current` verifier.
+- This is a real optimism point for the project because the ranking-aligned
+  direction has now produced a stronger and more reproducible downstream gain.
+- The next best step is no longer "prove the verifier can help at all."
+- The next best step is to exploit this better verifier in a fresh end-to-end
+  held-out best-of-K evaluation and then decide whether we need a still larger
+  round 4 or a different ranking objective.
+
 ## Recommended Next Entries
 
-- Robustness-focused ranking-aligned verifier round 3 built from multiple real
-  candidate pools
-- Replay-based comparison of round 3 against the new round-2 best checkpoint
-- Error analysis of replay failures by domain, style, and candidate type
-- Fresh held-out downstream best-of-K evaluation after replay-based checkpoint
-  selection
+- Fresh held-out downstream best-of-K evaluation using the frozen round-3
+  verifier baseline
+- Error analysis of remaining replay failures by domain, style, and candidate
+  type
+- Optional round-4 ranking-aligned verifier only if fresh held-out downstream
+  evaluation shows the gap to oracle is still material
+- Selective prediction / abstention experiments once the ranker baseline is
+  locked

@@ -1,0 +1,22 @@
+selected_at: 2026-04-19
+selected_run: results\verifier\ranking_aligned_round3\retrain_from_round2_multipool
+checkpoint_path: results\verifier\ranking_aligned_round3\retrain_from_round2_multipool\best_model\model.pt
+training_history_path: results\verifier\ranking_aligned_round3\retrain_from_round2_multipool\train_history.json
+val_metrics_path: results\verifier\ranking_aligned_round3\retrain_from_round2_multipool\val_metrics.json
+calibration_report_path: results\verifier\ranking_aligned_round3\retrain_from_round2_multipool\calibration_report.json
+
+selection_reason:
+  summary: Third ranking-aligned verifier fine-tune warm-started from the frozen round-2 baseline and trained on a merged five-pool mining set.
+  criteria:
+    - mined ranking-aligned positives and negatives from results/vcsr/round3_pool_seed43 through results/vcsr/round3_pool_seed47
+    - warm-started from results/verifier/ranking_aligned_round2/retrain_from_round1
+    - intended for downstream fixed-pool replay evaluation before any baseline promotion decision
+
+metrics_snapshot:
+  val_auc: 0.7945323488045006
+  val_f1: 0.4656084656084656
+  eval_raw_auc: 0.7759467040673211
+  best_raw_f1: 0.6630434782608695
+  best_raw_threshold: 0.35
+  best_temp_f1: 0.6630434782608695
+  best_temp_threshold: 0.4
