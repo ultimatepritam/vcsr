@@ -142,8 +142,10 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] **Learning-rate sweep for verifier** (`results/verifier/lr_sweep/`)
 - [x] **Select current best verifier checkpoint** (`results/verifier/best_current/selection.yaml`)
 - [x] **Run first verifier-ranked best-of-K pilots**
-- [ ] **Isolate verifier impact with fixed-pool downstream evaluation**
-- [ ] **Move from pointwise verifier training toward ranking-aligned supervision**
+- [x] **Isolate verifier impact with fixed-pool downstream evaluation**
+- [x] **Move from pointwise verifier training toward ranking-aligned supervision**
+- [x] **Freeze ranking-aligned round 2 as the current downstream baseline**
+- [ ] **Run robustness-focused multi-pool ranking-aligned round 3**
 
 ### Phase 3: Search and Repair (Weeks 5-6)
 
@@ -158,26 +160,33 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Fixed-pool replay evaluation for best-of-K**
-   Use cached candidate dumps and compare verifier policies on identical candidate pools.
-2. **Ranking-aligned verifier training**
-   Move beyond pure pointwise classification and teach the verifier which candidate should outrank another for the same NL input.
-3. **More candidate-pool hard negatives**
-   Keep mining subtle, parseable, semantically wrong negatives from real generation outputs.
-4. **Fresh held-out downstream evaluation**
-   Once we have a fixed-pool evaluator and an updated ranker, measure on untouched candidate pools before making stronger claims.
+1. **Multi-pool ranking-aligned round 3**
+   Generate multiple immutable new best-of-K pools, mine them into one merged round-3 dataset, and warm-start from the frozen round-2 baseline.
+2. **Replay-first acceptance**
+   Judge round 3 primarily by replay wins on both cached holdout pools:
+   `results/vcsr/bestofk_pilot/` and `results/vcsr/bestofk_ranking_round2_pool/`.
+3. **Preserve provenance**
+   Never reuse pool output directories; every long-running generation or training run must have its own output directory and visible `progress.log`.
+4. **Only then do fresh held-out end-to-end evaluation**
+   Do not spend on a new held-out end-to-end run until replay wins are stable on more than one cached pool.
 
 ## Current Status Notes
 
 - The negative-generation pilot under `results/neggen/pilot/` is the completed data milestone for Phase 2.
 - `results/verifier/pilot/` should still be treated as dry-run / debugging output from the earlier smoke-test stage.
 - A completed verifier training run now exists under `results/verifier/full_run/`, along with threshold analysis and a cleaner calibration/evaluation report.
-- The LR sweep under `results/verifier/lr_sweep/` currently favors `lr=5e-5` as the best verifier checkpoint among the tested settings.
-- `results/verifier/best_current/selection.yaml` is the stable metadata record for the currently selected verifier artifact.
-- We have now run first downstream verifier-ranked best-of-K pilots and verifier-improvement rounds (`hardneg_round1`, `capacity_push`).
-- The main uncertainty is no longer "can we train a verifier?" but "can a verifier actually improve downstream candidate selection?"
-- Because regenerated candidate pools confound downstream comparisons, the next crucial experiment is fixed-pool replay evaluation.
-- More verifier data and larger training runs may help, but they are not the central unanswered question anymore.
+- We have now completed fixed-pool replay on two cached pools and verified that the ranking-aligned round-2 checkpoint is the current best downstream verifier.
+- `results/verifier/best_current/selection.yaml` now points to `results/verifier/ranking_aligned_round2/retrain_from_round1`.
+- The main uncertainty is no longer "can a verifier help downstream selection?" It can.
+- The main uncertainty is now robustness: can the replay gain from round 2 be reproduced across independently generated pools with clearer margins?
+- Round 3 should therefore vary training-signal diversity, not backbone choice or generic optimization budget.
+
+## Long-Run Visibility Rule
+
+- Any long-running generation, mining, or training job must write visible file-based progress artifacts.
+- For pool generation, use output directories that contain at least `progress.log` and `progress.json`.
+- For verifier training, use output directories that contain `progress.log` and `progress.json` in addition to normal model and metrics artifacts.
+- Do not rely on hidden shell output alone for expensive jobs.
 
 ## Conventions
 

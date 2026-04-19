@@ -28,11 +28,11 @@ tools/             External tool installs (Fast Downward, VAL)
 
 - Foundations and the negative-generation pilot are completed.
 - Verifier training is implemented and has been run successfully on the pilot dataset.
-- Clean calibration analysis, hard-negative retraining, and a capacity-push sweep have also been completed.
+- Clean calibration analysis, hard-negative retraining, ranking-aligned retraining, and a capacity-push sweep have also been completed.
 - The current selected verifier checkpoint is recorded in `results/verifier/best_current/selection.yaml`.
-- We have also completed first verifier-ranked best-of-K pilots.
-- The main open question is now downstream decision quality:
-  can a verifier actually improve candidate selection on a fixed candidate pool?
+- We have also completed verifier-ranked best-of-K pilots and replay-controlled evaluation on two cached pools.
+- The main open question is now robustness:
+  can the round-2 replay gain be reproduced consistently across independently generated pools?
 
 ## Quick Start
 
@@ -91,6 +91,15 @@ python scripts/run_verifier_capacity_push.py
 
 # 15. End-to-end verifier-ranked best-of-K pilot
 python scripts/run_verifier_bestofk.py --config configs/vcsr_bestofk_pilot.yaml
+
+# 16. Replay verifier checkpoints on a fixed cached pool
+python scripts/replay_verifier_bestofk.py --candidate_dump results/vcsr/bestofk_pilot/candidate_dump.jsonl --selection results/verifier/best_current/selection.yaml
+
+# 17. Prepare merged multi-pool round-3 mining data
+python scripts/prepare_ranking_round3_dataset.py --pool_dir results/vcsr/round3_pool_seed43 --pool_dir results/vcsr/round3_pool_seed44 --include_negative_only_rows
+
+# 18. Round-3 verifier retrain with visible file logging
+python scripts/train_verifier.py --config configs/verifier_ranking_aligned_round3.yaml
 ```
 
 ## Windows E: Drive Setup
@@ -151,12 +160,17 @@ Main verifier configs and scripts:
 - `configs/verifier_full.yaml`
 - `configs/verifier_hardneg_round1.yaml`
 - `configs/verifier_capacity_push.yaml`
+- `configs/verifier_ranking_aligned_round1.yaml`
+- `configs/verifier_ranking_aligned_round2.yaml`
+- `configs/verifier_ranking_aligned_round3.yaml`
 - `scripts/train_verifier.py`
 - `scripts/analyze_verifier.py`
 - `scripts/calibrate_verifier.py`
 - `scripts/run_verifier_lr_sweep.py`
 - `scripts/run_verifier_capacity_push.py`
 - `scripts/mine_verifier_hard_negatives.py`
+- `scripts/mine_verifier_ranking_examples.py`
+- `scripts/prepare_ranking_round3_dataset.py`
 
 Current key verifier artifacts:
 
@@ -165,12 +179,14 @@ Current key verifier artifacts:
 | `results/verifier/pilot/` | Earlier dry-run / smoke-test outputs |
 | `results/verifier/full_run/` | First completed verifier training run |
 | `results/verifier/lr_sweep/` | LR sweep runs plus aggregate summaries |
+| `results/verifier/ranking_aligned_round1/` | First ranking-aligned verifier retrain from cached candidate-pool supervision |
+| `results/verifier/ranking_aligned_round2/` | Current best downstream verifier plus calibration and replay-backed selection |
 | `results/verifier/best_current/selection.yaml` | Stable metadata record for the current best verifier checkpoint |
 
 As of the current repo state, the selected best verifier comes from:
 
-- run: `results/verifier/lr_sweep/lr_5em05`
-- checkpoint: `results/verifier/lr_sweep/lr_5em05/best_model/model.pt`
+- run: `results/verifier/ranking_aligned_round2/retrain_from_round1`
+- checkpoint: `results/verifier/ranking_aligned_round2/retrain_from_round1/best_model/model.pt`
 
 See `EXPERIMENTS.md` for the running experiment log and interpretation of these results.
 
@@ -192,8 +208,11 @@ Development note:
 Best-of-K experiment scripts and configs:
 
 - `scripts/run_verifier_bestofk.py`
+- `scripts/replay_verifier_bestofk.py`
 - `configs/vcsr_bestofk_pilot.yaml`
 - `configs/vcsr_bestofk_capacity_push_lr2.yaml`
+- `configs/vcsr_bestofk_ranking_round2_pool.yaml`
+- `configs/vcsr_bestofk_round3_pool.yaml`
 
 Key downstream artifacts:
 
@@ -201,25 +220,28 @@ Key downstream artifacts:
 |------|-------------|
 | `results/vcsr/bestofk_pilot/` | First verifier-ranked best-of-K pilot with the earlier selected verifier |
 | `results/vcsr/bestofk_capacity_push_lr2/` | Development rerun using the ranking-oriented winner from the capacity-push sweep |
+| `results/vcsr/bestofk_pilot/replay_compare_ranking_round2/` | Fixed-pool replay showing the strongest round-2 win on the original pilot pool |
+| `results/vcsr/bestofk_ranking_round2_pool/` | Newer 50-row cached pool plus controlled replay across verifier checkpoints |
 
 Current project conclusion from these pilots:
 
-- The verifier has real offline signal, but that signal has not yet translated into a robust downstream selection win.
-- Candidate generation quality is often good enough that a better selector should be able to do better.
-- Because candidate pools change between reruns, the next crucial project step is **fixed-pool replay evaluation**:
-  compare verifiers on the exact same cached candidate sets rather than regenerating candidates every time.
+- The verifier has real offline signal and the ranking-aligned round-2 checkpoint is the current best downstream selector.
+- On the original fixed pilot pool, round 2 beats `random_parseable` at `K=8` (`0.5333` vs `0.5000`).
+- On the newer replay-tested round-2 pool, round 2 is still the strongest verifier checkpoint, but only ties `greedy_first` at `K=8` (`0.4600`) and ties `random_parseable` at `K=4` (`0.4800`).
+- Candidate generation quality is often good enough that a better selector should still be able to do better:
+  oracle remains `0.6000` on the original pool and `0.6200` on the newer pool.
 
 ## Recommended Next Step
 
 The highest-value next task is:
 
-- build a fixed candidate-pool replay evaluator for best-of-K outputs
+- run a robustness-focused multi-pool ranking-aligned round 3
 
 Why this matters:
 
-- It isolates verifier quality from generator randomness.
-- It tells us whether verifier improvements actually help selection on identical candidate pools.
-- It is the cleanest decision point for whether to keep scaling the current verifier approach or change direction.
+- It keeps the round-2 verifier frozen as the project baseline.
+- It uses multiple immutable new pools to reduce dependence on any one especially helpful or unhelpful mined pool.
+- It accepts a new checkpoint only if replay wins hold on more than one cached pool.
 
 See `RECOMMENDATION.md` for the current project-level recommendation.
 

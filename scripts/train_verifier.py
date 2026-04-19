@@ -33,6 +33,21 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def _configure_file_logging(output_dir: Path) -> Path:
+    log_path = output_dir / "progress.log"
+    resolved = str(log_path.resolve())
+    root_logger = logging.getLogger()
+    for handler in root_logger.handlers:
+        if isinstance(handler, logging.FileHandler) and getattr(handler, "baseFilename", "") == resolved:
+            return log_path
+
+    file_handler = logging.FileHandler(log_path, mode="w", encoding="utf-8")
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s"))
+    root_logger.addHandler(file_handler)
+    return log_path
+
+
 def main():
     parser = argparse.ArgumentParser(description="Train VCSR semantic verifier")
     parser.add_argument("--config", type=str, default="configs/verifier.yaml")
@@ -51,6 +66,11 @@ def main():
     eval_cfg = cfg.get("evaluation", {})
     out_cfg = cfg.get("output", {})
     log_cfg = cfg.get("logging", {})
+    output_dir = out_cfg.get("dir", "results/verifier/pilot")
+    out_path = Path(output_dir)
+    out_path.mkdir(parents=True, exist_ok=True)
+    log_path = _configure_file_logging(out_path)
+    logger.info("Live training log: %s", log_path)
 
     revision = model_cfg.get("revision")
     backbone = model_cfg.get("backbone", "microsoft/deberta-v3-base")
@@ -147,7 +167,6 @@ def main():
     logger.info("Parameters: %s total, %s trainable", f"{n_params:,}", f"{n_trainable:,}")
 
     # Training config
-    output_dir = out_cfg.get("dir", "results/verifier/pilot")
     tc = TrainConfig(
         learning_rate=train_cfg.get("learning_rate", 2e-5),
         weight_decay=train_cfg.get("weight_decay", 0.01),
@@ -178,8 +197,6 @@ def main():
     )
 
     # Save training history
-    out_path = Path(output_dir)
-    out_path.mkdir(parents=True, exist_ok=True)
     with open(out_path / "train_history.json", "w") as f:
         json.dump(state.history, f, indent=2)
 

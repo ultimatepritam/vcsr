@@ -94,7 +94,7 @@ def _policy_markdown(summary: dict) -> str:
     lines = [
         "# Verifier-Ranked Best-of-K Pilot",
         "",
-        "| K | Policy | Parse | Equiv | Equiv|Parse | Avg Parseable | Avg Equivalent | Oracle Best-of-K |",
+        "| K | Policy | Parse | Equiv | Equiv / Parse | Avg Parseable | Avg Equivalent | Oracle Best-of-K |",
         "|---|---|---:|---:|---:|---:|---:|---:|",
     ]
     for k_key, block in summary["comparisons"].items():
@@ -163,10 +163,20 @@ def main() -> None:
     parser.add_argument("--config", type=str, default="configs/vcsr_bestofk_pilot.yaml")
     parser.add_argument("--max_rows", type=int, default=None)
     parser.add_argument("--k_values", type=int, nargs="*", default=None)
+    parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--output_dir", type=str, default=None)
+    parser.add_argument("--selection_metadata", type=str, default=None)
     args = parser.parse_args()
 
     with open(args.config, encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
+
+    if args.seed is not None:
+        cfg.setdefault("experiment", {})["seed"] = int(args.seed)
+    if args.output_dir:
+        cfg.setdefault("output", {})["dir"] = args.output_dir
+    if args.selection_metadata:
+        cfg.setdefault("verifier", {})["selection_metadata"] = args.selection_metadata
 
     seed = cfg.get("experiment", {}).get("seed", 42)
     random.seed(seed)

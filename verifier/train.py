@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import logging
 import math
+import json
 import sys
 import time
 from dataclasses import dataclass, field
@@ -32,6 +33,38 @@ def _flush_logs():
         h.flush()
     sys.stdout.flush()
     sys.stderr.flush()
+
+
+def _write_progress_snapshot(
+    output_dir: Path,
+    *,
+    status: str,
+    started_at: float,
+    epoch: int,
+    total_epochs: int,
+    global_step: int,
+    total_opt_steps: int,
+    best_metric: float,
+    best_epoch: int,
+    patience_counter: int,
+    current_train_loss: float | None = None,
+    current_val_metrics: dict | None = None,
+) -> None:
+    snapshot = {
+        "status": status,
+        "elapsed_sec": max(0.0, time.time() - started_at),
+        "epoch": epoch,
+        "total_epochs": total_epochs,
+        "global_step": global_step,
+        "total_optimizer_steps": total_opt_steps,
+        "best_metric": best_metric,
+        "best_epoch": best_epoch,
+        "patience_counter": patience_counter,
+        "current_train_loss": current_train_loss,
+        "current_val_metrics": current_val_metrics,
+    }
+    with open(output_dir / "progress.json", "w", encoding="utf-8") as f:
+        json.dump(snapshot, f, indent=2)
 
 
 @dataclass
@@ -138,6 +171,19 @@ def train(
     scaler = GradScaler("cuda", enabled=use_amp)
 
     state = TrainState()
+    started_at = time.time()
+    _write_progress_snapshot(
+        output_dir,
+        status="starting",
+        started_at=started_at,
+        epoch=0,
+        total_epochs=config.epochs,
+        global_step=0,
+        total_opt_steps=total_opt_steps,
+        best_metric=state.best_metric,
+        best_epoch=state.best_epoch,
+        patience_counter=state.patience_counter,
+    )
 
     logger.info(
         "Each epoch: %d batches → ~%d optimizer steps (accum=%d). First progress line was slow before; now logs every %d step(s).",
@@ -163,6 +209,18 @@ def train(
             config.epochs,
             batches_per_epoch,
             opt_steps_per_epoch,
+        )
+        _write_progress_snapshot(
+            output_dir,
+            status="epoch_start",
+            started_at=started_at,
+            epoch=epoch,
+            total_epochs=config.epochs,
+            global_step=state.global_step,
+            total_opt_steps=total_opt_steps,
+            best_metric=state.best_metric,
+            best_epoch=state.best_epoch,
+            patience_counter=state.patience_counter,
         )
         _flush_logs()
 
@@ -240,6 +298,21 @@ def train(
 
         record = {"epoch": epoch, "train_loss": avg_loss, **{f"val_{k}": v for k, v in metrics.items() if isinstance(v, (int, float))}}
         state.history.append(record)
+        _write_progress_snapshot(
+            output_dir,
+            status="epoch_evaluated",
+            started_at=started_at,
+            epoch=epoch,
+            total_epochs=config.epochs,
+            global_step=state.global_step,
+            total_opt_steps=total_opt_steps,
+            best_metric=state.best_metric,
+            best_epoch=state.best_epoch,
+            patience_counter=state.patience_counter,
+            current_train_loss=avg_loss,
+            current_val_metrics={k: v for k, v in metrics.items() if isinstance(v, (int, float))},
+        )
+        _flush_logs()
 
         if wandb_run:
             wandb_run.log({f"val/{k}": v for k, v in metrics.items() if isinstance(v, (int, float))}, step=state.global_step)
@@ -264,7 +337,38 @@ def train(
             )
             if state.patience_counter >= config.early_stopping_patience:
                 logger.info("Early stopping triggered.")
+                _write_progress_snapshot(
+                    output_dir,
+                    status="early_stopped",
+                    started_at=started_at,
+                    epoch=epoch,
+                    total_epochs=config.epochs,
+                    global_step=state.global_step,
+                    total_opt_steps=total_opt_steps,
+                    best_metric=state.best_metric,
+                    best_epoch=state.best_epoch,
+                    patience_counter=state.patience_counter,
+                    current_train_loss=avg_loss,
+                    current_val_metrics={k: v for k, v in metrics.items() if isinstance(v, (int, float))},
+                )
+                _flush_logs()
                 break
+
+        _write_progress_snapshot(
+            output_dir,
+            status="epoch_finalized",
+            started_at=started_at,
+            epoch=epoch,
+            total_epochs=config.epochs,
+            global_step=state.global_step,
+            total_opt_steps=total_opt_steps,
+            best_metric=state.best_metric,
+            best_epoch=state.best_epoch,
+            patience_counter=state.patience_counter,
+            current_train_loss=avg_loss,
+            current_val_metrics={k: v for k, v in metrics.items() if isinstance(v, (int, float))},
+        )
+        _flush_logs()
 
     if config.save_last_model:
         last_dir = output_dir / "last_model"
@@ -273,5 +377,21 @@ def train(
 
     if wandb_run:
         wandb_run.finish()
+
+    _write_progress_snapshot(
+        output_dir,
+        status="completed",
+        started_at=started_at,
+        epoch=state.epoch,
+        total_epochs=config.epochs,
+        global_step=state.global_step,
+        total_opt_steps=total_opt_steps,
+        best_metric=state.best_metric,
+        best_epoch=state.best_epoch,
+        patience_counter=state.patience_counter,
+        current_train_loss=state.history[-1]["train_loss"] if state.history else None,
+        current_val_metrics=state.history[-1] if state.history else None,
+    )
+    _flush_logs()
 
     return state
