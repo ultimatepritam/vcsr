@@ -166,10 +166,10 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Promotion decision after the multi-seed gate**
-   Decide whether to promote round 4 with explicit `K=8`-first wording, or keep
-   round 3 frozen until a later checkpoint wins more cleanly at both `K=4` and
-   `K=8`.
+1. **Improve beyond the promoted round-4 baseline**
+   Treat round 4 as the default verifier, keep the write-up explicit that the
+   strongest evidence is at `K=8`, and target the next gain rather than
+   re-litigating the promotion decision.
 2. **Replay remains the checkpoint-selection rule**
    Continue to judge new verifier checkpoints primarily by replay on cached
    pools, not by offline AUC alone.
@@ -187,7 +187,7 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - `results/verifier/pilot/` should still be treated as dry-run / debugging output from the earlier smoke-test stage.
 - A completed verifier training run now exists under `results/verifier/full_run/`, along with threshold analysis and a cleaner calibration/evaluation report.
 - We have now completed fixed-pool replay on multiple cached pools and verified that the ranking-aligned round-3 checkpoint is the current official best downstream verifier.
-- `results/verifier/best_current/selection.yaml` now points to `results/verifier/ranking_aligned_round3/retrain_from_round2_multipool`.
+- `results/verifier/best_current/selection.yaml` now points to `results/verifier/ranking_aligned_round4/retrain_from_round3_focused`.
 - The fresh held-out end-to-end runs under `results/vcsr/bestofk_round3_holdout_eval/` and `results/vcsr/bestofk_round4_holdout_eval_clean/` are complete.
 - Round 4 improved over round 3 on replay and also improved fresh held-out `verifier_ranked` at both `K=4` and `K=8`.
 - But round 4 still lost to `greedy_first` at `K=4` and to `random_parseable` at `K=8` on the fresh 50-row held-out sample.
@@ -198,7 +198,8 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - At `K=4`, the same gate is effectively tied:
   mean `verifier_ranked` equivalence is `0.4000` for both round 3 and round 4.
 - The main uncertainty is no longer "can a verifier help downstream selection?" It can.
-- The main uncertainty is now how aggressively to promote round 4 in repo metadata and paper framing, given that the strongest gain is at `K=8` and the `K=4` story remains mixed.
+- Round 4 has now been promoted as the default verifier artifact in repo metadata.
+- The main uncertainty is now how to improve beyond round 4 without overselling the result, given that the strongest gain is at `K=8` and the `K=4` story remains mixed.
 
 ## Long-Run Visibility Rule
 

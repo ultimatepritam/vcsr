@@ -1,22 +1,23 @@
-selected_at: 2026-04-19
-selected_run: results\verifier\ranking_aligned_round3\retrain_from_round2_multipool
-checkpoint_path: results\verifier\ranking_aligned_round3\retrain_from_round2_multipool\best_model\model.pt
-training_history_path: results\verifier\ranking_aligned_round3\retrain_from_round2_multipool\train_history.json
-val_metrics_path: results\verifier\ranking_aligned_round3\retrain_from_round2_multipool\val_metrics.json
-calibration_report_path: results\verifier\ranking_aligned_round3\retrain_from_round2_multipool\calibration_report.json
+selected_at: 2026-04-20
+selected_run: results\verifier\ranking_aligned_round4\retrain_from_round3_focused
+checkpoint_path: results\verifier\ranking_aligned_round4\retrain_from_round3_focused\best_model\model.pt
+training_history_path: results\verifier\ranking_aligned_round4\retrain_from_round3_focused\train_history.json
+val_metrics_path: results\verifier\ranking_aligned_round4\retrain_from_round3_focused\val_metrics.json
+calibration_report_path: results\verifier\ranking_aligned_round4\retrain_from_round3_focused\calibration_report.json
 
 selection_reason:
-  summary: Frozen current baseline verifier checkpoint after multi-pool ranking-aligned round 3.
+  summary: Promoted focused round-4 verifier checkpoint after replay gains, a stronger fresh held-out run than round 3, and a repeated multi-seed held-out advantage that was strongest at K=8.
   criteria:
-    - improved fixed-pool replay on the original 30-row pilot pool at K=4 while matching the prior best K=8 result
-    - beat the frozen round-2 baseline on the stronger 50-row replay pool at both K=4 and K=8
-    - chosen as the best downstream verifier checkpoint for the next end-to-end VCSR phase
+    - improved over round 3 on replay against the frozen held-out candidate pool
+    - improved over round 3 on the fresh single-seed held-out run at both K=4 and K=8
+    - won the repeated fresh held-out multi-seed comparison at K=8 while roughly tying at K=4
+    - promoted as the default downstream verifier checkpoint for the next end-to-end VCSR phase
 
 metrics_snapshot:
-  val_auc: 0.7945323488045006
-  val_f1: 0.4656084656084656
-  eval_raw_auc: 0.7759467040673211
-  best_raw_f1: 0.6630434782608695
-  best_raw_threshold: 0.35
-  best_temp_f1: 0.6630434782608695
-  best_temp_threshold: 0.4
+  val_auc: 0.8076300984528832
+  val_f1: 0.4756756756756757
+  eval_raw_auc: 0.7934081346423563
+  best_raw_f1: 0.6739130434782609
+  best_raw_threshold: 0.3
+  best_temp_f1: 0.6739130434782609
+  best_temp_threshold: 0.35

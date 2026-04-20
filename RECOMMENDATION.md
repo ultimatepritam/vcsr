@@ -27,7 +27,7 @@ decisions:
   downstream ranking.
 - Ranking-aligned verifier training is the right modeling direction.
 - Round 3 was the strongest replay-backed verifier across the existing cached
-  pools and remains the frozen `best_current` checkpoint in the repo.
+  pools and remains the key baseline in the experiment record.
 - The held-out failure-analysis gate was useful:
   it found concentrated `blocksworld`, mostly `abstract/abstract`,
   within-pool misranking errors rather than diffuse failure.
@@ -93,9 +93,8 @@ still asymmetric across `K`.
 
 My current judgment is:
 
-- **keep round 3 as the current frozen `best_current` until we explicitly
-  change the pointer**
-- **treat round 4 as the strongest downstream candidate so far**
+- **round 4 is now the promoted `best_current` verifier in the repo**
+- **round 3 remains the strongest historical replay-backed baseline**
 - **interpret the promotion case as strongest for `K=8`, not as a universal
   across-the-board win**
 
@@ -116,28 +115,23 @@ paper and the repo decision?".
 
 ### Highest-Priority Next Step
 
-Make the promotion decision explicit and consistent across the repo.
+Now that round 4 has been promoted, move to the next modeling improvement while
+preserving the correct interpretation of the current result:
 
-The repeated fresh held-out comparison has now been completed, so the next
-practical step is no longer "run the gate" but rather:
-
-- either promote round 4 with explicit wording that the strongest evidence is at
-  `K=8`
-- or keep round 3 frozen if we want to require a cleaner `K=4` win before any
-  promotion
+- round 4 is the default verifier
+- the strongest repeated fresh held-out evidence is at `K=8`
+- `K=4` remains mixed enough that it should not be oversold
 
 ### Promotion Rule
 
-My recommendation after the completed multi-seed gate:
+The promotion decision has now been made.
 
-- promote round 4 **if** the project's current end-to-end emphasis is verifier
-  selection at `K=8`
-- keep the documentation explicit that `K=4` remains mixed and should not be
-  oversold
+The rule we are implicitly adopting is:
 
-If we do not want a `K=8`-weighted promotion rule, then we should keep round 3
-as the official baseline until a later checkpoint wins more cleanly at both
-`K=4` and `K=8`.
+- we are willing to promote on the basis of the stronger repeated held-out
+  improvement at `K=8`
+- we still require the documentation to say plainly that `K=4` is not a clean
+  win
 
 ### Modeling Recommendation
 
@@ -183,9 +177,8 @@ baselines at every `K` we care about.
 
 So the clearest path from here is:
 
-- either promote round 4 with a precise `K=8`-first interpretation
-- or keep round 3 as the official frozen `best_current` until we require a
-  cleaner all-around win
-- in either case, if the next gain stalls, move to a stronger ranking objective
+- use round 4 as the promoted default verifier
+- keep describing the result as strongest at `K=8`
+- if the next gain stalls, move to a stronger ranking objective
 
 That is the most defensible next step for the project and the paper.

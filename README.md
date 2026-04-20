@@ -32,9 +32,10 @@ tools/             External tool installs (Fast Downward, VAL)
 - The current selected verifier checkpoint is recorded in `results/verifier/best_current/selection.yaml`.
 - We have also completed verifier-ranked best-of-K pilots, replay-controlled evaluation on multiple cached pools, and fresh held-out end-to-end runs.
 - We have now also completed a repeated fresh held-out comparison across seeds `48`, `49`, and `50`.
-- The main open question is now robustness:
-  how should we interpret promotion now that round 4 has the strongest repeated
-  end-to-end evidence at `K=8`, while `K=4` remains much closer to a tie?
+- The main open question is now modeling improvement:
+  how do we improve beyond the promoted round-4 verifier while staying honest
+  that the strongest repeated end-to-end evidence is at `K=8` and the `K=4`
+  story remains more mixed?
 
 ## Quick Start
 
@@ -195,22 +196,16 @@ Current key verifier artifacts:
 | `results/verifier/lr_sweep/` | LR sweep runs plus aggregate summaries |
 | `results/verifier/ranking_aligned_round1/` | First ranking-aligned verifier retrain from cached candidate-pool supervision |
 | `results/verifier/ranking_aligned_round2/` | Earlier replay-backed downstream verifier |
-| `results/verifier/ranking_aligned_round3/` | Current frozen official verifier baseline selected from multi-pool replay wins |
-| `results/verifier/ranking_aligned_round4/` | Focused held-out-failure correction pass; strongest downstream candidate after the multi-seed held-out gate |
+| `results/verifier/ranking_aligned_round3/` | Prior replay-backed verifier baseline selected from multi-pool replay wins |
+| `results/verifier/ranking_aligned_round4/` | Current promoted verifier after replay gains plus the repeated fresh held-out gate |
 | `results/verifier/best_current/selection.yaml` | Stable metadata record for the current best verifier checkpoint |
 
 As of the current repo state, the selected best verifier comes from:
 
-- run: `results/verifier/ranking_aligned_round3/retrain_from_round2_multipool`
-- checkpoint: `results/verifier/ranking_aligned_round3/retrain_from_round2_multipool/best_model/model.pt`
+- run: `results/verifier/ranking_aligned_round4/retrain_from_round3_focused`
+- checkpoint: `results/verifier/ranking_aligned_round4/retrain_from_round3_focused/best_model/model.pt`
 
-There is also a newer provisional candidate under:
-
-- `results/verifier/ranking_aligned_round4/retrain_from_round3_focused`
-
-Round 4 improved round 3 on replay and on one fresh held-out run, but it has
-not yet been promoted in the repo metadata because the current `best_current`
-pointer still reflects the replay-selected round-3 baseline.
+Round 4 is now the promoted default verifier in repo metadata.
 
 We now also have a repeated fresh held-out comparison under:
 
@@ -272,10 +267,9 @@ Key downstream artifacts:
 Current project conclusion from these pilots:
 
 - The verifier has real offline signal and ranking-aligned training has improved downstream ranking quality.
-- Round 3 remains the official frozen baseline because it was the strongest replay-backed checkpoint.
-- Round 4 is the leading provisional candidate:
+- Round 3 remains the important replay-backed baseline in the experiment history.
+- Round 4 is now the promoted default verifier:
   it improved over round 3 on replay and also improved fresh held-out `verifier_ranked` from `0.42 -> 0.44` at `K=4` and `0.46 -> 0.48` at `K=8`.
-- But round 4 still lost to `greedy_first` at `K=4` (`0.44 < 0.46`) and to `random_parseable` at `K=8` (`0.48 < 0.50`) on that fresh 50-row held-out sample.
 - The new repeated fresh held-out comparison strengthens the round-4 case:
   at `K=8`, round 4 now shows a positive mean verifier-ranked gain over round 3
   (`0.4000 -> 0.4267`) with seed-wise results `2` wins, `1` tie, `0` losses.
@@ -288,14 +282,14 @@ Current project conclusion from these pilots:
 
 The highest-value next task is now:
 
-- make the round-4 promotion decision explicit in repo metadata and write-up,
-  with wording that matches the actual evidence
+- move to the next modeling improvement with round 4 as the promoted default,
+  while keeping the write-up explicit that the strongest evidence is at `K=8`
 
 Why this matters:
 
-- The multi-seed gate has been run, so the uncertainty is now interpretive rather than missing-data.
+- The promotion decision has now been made.
 - The strongest positive evidence is at `K=8`, and the docs should say that plainly.
-- If we decide not to promote yet, the next experiment should be a stronger ranking objective rather than another blind retrain.
+- The next experiment should be a stronger ranking objective rather than another blind retrain.
 
 See `RECOMMENDATION.md` for the current project-level recommendation.
 
