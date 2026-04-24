@@ -2,8 +2,8 @@
 
 This document captures the current project-level recommendation for VCSR after
 the first verifier-ranked best-of-K pilot, fixed-pool replay evaluation, four
-ranking-aligned verifier training rounds, and the first repeated fresh
-held-out multi-seed comparison.
+ranking-aligned verifier training rounds, the first repeated fresh held-out
+multi-seed comparison, and a fixed-round-4 selector analysis.
 
 ## Goal
 
@@ -37,6 +37,12 @@ decisions:
   stronger:
   the cleanest gain is now at `K=8`, while `K=4` remains closer to a tie than
   to a decisive win.
+- Pairwise/ranking follow-up training did not improve the promoted round-4
+  selector:
+  round 5 and round 6 both failed replay against round 4.
+- Simple fixed-model selector policies also did not improve round 4:
+  margin fallback, top-gap fallback, agreement fallback, score normalization,
+  and index-penalized ranking all tied or regressed on cached replay.
 
 ## Key Evidence
 
@@ -180,19 +186,34 @@ Round 6 also failed the replay gate:
 - mean replay `K=4`: round 4 `0.5000`, round 6 `0.4733`
 - mean replay `K=8`: round 4 `0.5156`, round 6 `0.4978`
 
-That changes the recommendation. The next step should **not** be another
-immediate verifier retrain. We should first diagnose why ranking-loss pressure
-is degrading the selector despite being aligned with the apparent failure mode.
+That changed the recommendation, so we ran a fixed-round-4 selector analysis
+instead of another training run.
 
-Recommended next investigation:
+Fixed-round-4 selector analysis tested:
 
-- compare score distributions for round 4, round 5, and round 6 on the same
-  candidate pools
-- inspect whether ranking losses compress or distort row-level score order
-- test non-training selection fixes such as row-level score normalization,
-  margin-aware ranking, or calibration-aware ranking
-- only return to training after we can explain which score behavior needs to
-  change
+- margin fallback to greedy
+- top-score gap fallback to greedy
+- round-3/round-4 agreement fallback
+- row-wise score normalization
+- index-penalized ranking
+
+The result was also negative:
+
+- mean cached replay at `K=4`: round-4 `verifier_ranked` stayed best at
+  `0.5050`
+- mean cached replay at `K=8`: round-4 `verifier_ranked` stayed best or tied at
+  `0.5167`
+- the strongest changed policies either regressed or tied with no useful
+  helped-over-hurt pattern
+- oracle-positive misses often had tiny top-score gaps, but simple fallback
+  rules hurt more correct selections than they rescued
+
+This is not a project failure. It is a useful boundary:
+
+- round 4 is not trivially improvable by simple score-use heuristics
+- another small pairwise/listwise retrain is unlikely to be the right next move
+- the next improvement probably needs genuinely new signal, not just a
+  different way to squeeze the same scalar score
 
 ## What We Should Not Over-Prioritize Right Now
 
@@ -205,6 +226,7 @@ Recommended next investigation:
   mode
 - running another pairwise/listwise retrain before understanding why rounds 5
   and 6 both failed replay
+- adding margin/fallback selector policies unless they pass cached replay first
 
 ## Bottom Line
 
@@ -227,7 +249,16 @@ So the clearest path from here is:
 - keep describing the result as strongest at `K=8`
 - treat hybrid pairwise round 5 as a useful negative result
 - treat conservative ranking round 6 as a second negative result
-- pause verifier training and diagnose score/selection behavior before another
-  full training run
+- treat fixed-round-4 selector heuristics as a third useful negative result
+- stop short-horizon training/selector tinkering unless it brings new signal
+
+The next serious project decision is no longer "which small retrain do we run?"
+It is which new source of leverage we want for the paper:
+
+- better generator diversity so the candidate pool contains more recoverable
+  successes
+- semantic/planner-derived selector features beyond the verifier scalar score
+- repair or verifier-guided candidate editing
+- or a larger architectural/objective change with a stricter replay-first gate
 
 That is the most defensible next step for the project and the paper.

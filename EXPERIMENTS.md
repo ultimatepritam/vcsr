@@ -1461,12 +1461,91 @@ Interpretation:
   analyze score behavior, candidate normalization, calibration-by-row, or
   selection policy alternatives.
 
+### Round-4 Fixed-Model Selection Analysis
+
+- Goal: improve how the promoted round-4 verifier is used in best-of-K without
+  training another verifier.
+- Entrypoint:
+  [scripts/analyze_round4_selection.py](/e:/Engineering/vcsr/scripts/analyze_round4_selection.py)
+- Outputs:
+  - [results/vcsr/round4_selection_analysis/score_diagnostics.md](/e:/Engineering/vcsr/results/vcsr/round4_selection_analysis/score_diagnostics.md)
+  - [results/vcsr/round4_selection_analysis/score_diagnostics.json](/e:/Engineering/vcsr/results/vcsr/round4_selection_analysis/score_diagnostics.json)
+  - [results/vcsr/round4_selection_analysis/policy_replay_summary.md](/e:/Engineering/vcsr/results/vcsr/round4_selection_analysis/policy_replay_summary.md)
+  - [results/vcsr/round4_selection_analysis/policy_replay_summary.json](/e:/Engineering/vcsr/results/vcsr/round4_selection_analysis/policy_replay_summary.json)
+  - [results/vcsr/round4_selection_analysis/changed_rows.jsonl](/e:/Engineering/vcsr/results/vcsr/round4_selection_analysis/changed_rows.jsonl)
+- Status: completed, **no selector policy accepted**
+
+Inputs:
+
+- [results/vcsr/bestofk_round4_holdout_eval_clean/candidate_dump.jsonl](/e:/Engineering/vcsr/results/vcsr/bestofk_round4_holdout_eval_clean/candidate_dump.jsonl)
+- [results/vcsr/bestofk_round3_holdout_eval/candidate_dump.jsonl](/e:/Engineering/vcsr/results/vcsr/bestofk_round3_holdout_eval/candidate_dump.jsonl)
+- [results/vcsr/bestofk_pilot/candidate_dump.jsonl](/e:/Engineering/vcsr/results/vcsr/bestofk_pilot/candidate_dump.jsonl)
+- [results/vcsr/bestofk_ranking_round2_pool/candidate_dump.jsonl](/e:/Engineering/vcsr/results/vcsr/bestofk_ranking_round2_pool/candidate_dump.jsonl)
+
+Policies evaluated:
+
+- existing baselines: `greedy_first`, `random_parseable`, `verifier_ranked`
+- margin fallback to greedy with margins `0.02`, `0.05`, `0.10`, `0.15`
+- top-gap fallback to greedy with the same margin grid
+- round-3/round-4 agreement fallback policies
+- row-wise score normalization by z-score and min-max
+- index-penalized scoring with alpha `0.00`, `0.01`, `0.03`, `0.05`
+
+Mean cached-replay results:
+
+- `K=4`
+  - round-4 `verifier_ranked`: `0.5050`
+  - best nontrivial changed policy: `round3_round4_agreement_lowest_parseable`
+    at `0.4900`
+  - all margin, top-gap, index-penalty, greedy, and random policies regressed
+- `K=8`
+  - round-4 `verifier_ranked`: `0.5167`
+  - agreement policies tied round 4 at `0.5167` but changed rows with equal
+    helped/hurt counts
+  - the closest changed policy was `hybrid_rank_index_penalty_a0.01` at
+    `0.5133`
+  - all margin, top-gap, stronger index-penalty, greedy, and random policies
+    regressed
+
+Score diagnostics:
+
+- rows where round 4 selected an equivalent candidate: `183`
+- rows with no equivalent candidate in pool: `160`
+- oracle-positive round-4 misses: `17`
+- top-vs-second score gaps are often extremely small or tied:
+  oracle-positive misses had median top-second gap `0.0` and p75 about
+  `0.0010`
+
+Interpretation:
+
+- This was the correct follow-up after rounds 5 and 6 failed replay: it kept
+  the round-4 verifier fixed and tested whether score-use heuristics could
+  recover easy wins.
+- No tested zero-training policy beat plain round-4 `verifier_ranked`.
+- Row-wise score normalization was a no-op for ranking, as expected, and tied
+  the baseline.
+- Fallback policies usually hurt because they overrode correct round-4 choices
+  more often than they rescued misses.
+- The result strengthens the case that round 4 is a strong local baseline, not
+  merely an artifact of a bad selector rule.
+
+Project takeaway:
+
+- Do not launch another small verifier retrain or simple selector tweak as the
+  next move.
+- If we need a stronger paper claim than the current round-4 story, the next
+  improvement likely needs new information or a more structural change:
+  generator diversity, semantic/planner-derived features, repair, or a more
+  carefully designed verifier architecture/objective.
+- Round 4 remains the promoted `best_current` verifier and the best fixed
+  selector among the tested cached-replay policies.
+
 ## Recommended Next Entries
 
-- Analyze why both pairwise round 5 and conservative ranking round 6 failed the
-  replay gate before launching any more verifier training.
-- Consider score/selection-side improvements before another objective change:
-  row-level score normalization, margin-aware selection, or calibration-aware
-  candidate ranking.
+- Treat the round-4 fixed-model selector analysis as the current stopping point
+  for simple score-use improvements.
+- Decide whether the next paper-facing path is:
+  generator diversity, semantic/planner-derived selector features, repair, or a
+  more structural verifier change.
 - Selective prediction / abstention experiments only after the ranker baseline
   is actually stable

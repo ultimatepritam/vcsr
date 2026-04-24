@@ -152,6 +152,7 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] **Train focused ranking-aligned round 4 from the frozen round-3 baseline**
 - [x] **Run fresh held-out end-to-end best-of-K evaluation with focused round 4**
 - [x] **Run repeated fresh held-out comparison for round 3 vs round 4**
+- [x] **Analyze fixed-round-4 selector policies without further training**
 
 ### Phase 3: Search and Repair (Weeks 5-6)
 
@@ -166,20 +167,21 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Improve beyond the promoted round-4 baseline**
+1. **Find genuinely new signal beyond round 4**
    Treat round 4 as the default verifier, keep the write-up explicit that the
-   strongest evidence is at `K=8`, and target the next gain rather than
-   re-litigating the promotion decision.
+   strongest evidence is at `K=8`, and do not assume another small retrain or
+   selector heuristic will improve it.
 2. **Replay remains the checkpoint-selection rule**
    Continue to judge new verifier checkpoints primarily by replay on cached
    pools, not by offline AUC alone.
 3. **Preserve provenance**
    Never reuse pool output directories; every long-running generation or
    training run must have its own output directory and visible `progress.log`.
-4. **Escalate only if the promotion story remains too mixed**
-   If round 4 still looks too close to simple baselines, especially at `K=4`,
-   move next to an explicit pairwise/listwise ranking objective rather than
-   another blind pointwise retrain.
+4. **Avoid short-horizon tinkering**
+   Round 5, round 6, and fixed-round-4 selector heuristics all failed to beat
+   round 4 on cached replay. The next meaningful improvement likely needs
+   generator diversity, semantic/planner-derived features, repair, or a more
+   structural verifier change.
 
 ## Current Status Notes
 
@@ -214,8 +216,13 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
   `results/verifier/ranking_round6/`. It warm-starts from round 4 with
   pointwise-dominant hybrid ranking loss and a larger cached-pool dataset, but
   it failed replay against round 4 and is not promoted.
-- Current next-step bias: do not launch another ranking retrain blindly. First
-  diagnose score/selection behavior across round 4, round 5, and round 6.
+- Fixed-round-4 selector analysis is implemented under
+  `results/vcsr/round4_selection_analysis/`. It tested margin fallback,
+  top-gap fallback, round-3/round-4 agreement fallback, score normalization, and
+  index-penalized ranking without changing verifier weights. No policy beat
+  plain round-4 `verifier_ranked` on cached replay.
+- Current next-step bias: do not launch another ranking retrain or selector
+  heuristic blindly. Decide what new signal the project should add next.
 
 ## Long-Run Visibility Rule
 
