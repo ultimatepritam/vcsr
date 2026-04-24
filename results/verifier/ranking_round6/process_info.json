@@ -1,0 +1,8 @@
+{
+  "pid": 8300,
+  "started_at": "2026-04-25T01:31:43",
+  "command": "scripts\\prepare_ranking_round6_dataset.py",
+  "output_dir": "results\\verifier\\ranking_round6",
+  "progress_log": "results\\verifier\\ranking_round6\\progress.log",
+  "progress_json": "results\\verifier\\ranking_round6\\progress.json"
+}

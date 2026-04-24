@@ -1,0 +1,26 @@
+selected_at: '2026-04-25'
+selected_run: results\verifier\ranking_round6\retrain_from_round4_conservative_pairwise
+checkpoint_path: results\verifier\ranking_round6\retrain_from_round4_conservative_pairwise\best_model\model.pt
+training_history_path: results\verifier\ranking_round6\retrain_from_round4_conservative_pairwise\train_history.json
+val_metrics_path: results\verifier\ranking_round6\retrain_from_round4_conservative_pairwise\val_metrics.json
+calibration_report_path: results\verifier\ranking_round6\retrain_from_round4_conservative_pairwise\calibration_report.json
+
+selection_reason:
+  summary: Provisional conservative ranking-aware round-6 verifier warm-started from promoted round 4, with pointwise BCE kept dominant and pairwise ranking loss used as a smaller auxiliary signal.
+  criteria:
+    - warm-started from results/verifier/best_current/selection.yaml
+    - used round-5 regression analysis as diagnostic priority signal, not as a parent checkpoint
+    - trained on a larger cached-pool ranking dataset than round 5
+    - used explicit pairwise dev data and selected the best checkpoint by validation AUC rather than tiny pairwise accuracy alone
+    - intended only for fixed-pool replay against promoted round 4 before any fresh evaluation or promotion
+
+metrics_snapshot:
+  val_auc: 0.7926160337552743
+  val_f1: 0.4656084656084656
+  val_pairwise_accuracy: 0.5887096774193549
+  val_pairwise_mean_margin: 0.7733981224798387
+  eval_raw_auc: 0.7797335203366058
+  best_raw_f1: 0.6630434782608695
+  best_raw_threshold: 0.3
+  best_temp_f1: 0.6630434782608695
+  best_temp_threshold: 0.3

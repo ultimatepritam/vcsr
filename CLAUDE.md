@@ -210,6 +210,12 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
   on `bestofk_round3_holdout_eval`.
 - Keep `results/verifier/best_current/selection.yaml` pointed at round 4 unless
   a later replay/fresh gate clearly beats it.
+- Conservative ranking round 6 is also implemented under
+  `results/verifier/ranking_round6/`. It warm-starts from round 4 with
+  pointwise-dominant hybrid ranking loss and a larger cached-pool dataset, but
+  it failed replay against round 4 and is not promoted.
+- Current next-step bias: do not launch another ranking retrain blindly. First
+  diagnose score/selection behavior across round 4, round 5, and round 6.
 
 ## Long-Run Visibility Rule
 

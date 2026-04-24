@@ -1404,13 +1404,69 @@ Interpretation:
 - Treat round 5 as an implemented negative result and a useful scaffold for a
   more careful ranking-loss experiment.
 
+### Conservative Ranking Round 6 From Promoted Round 4
+
+- Goal: improve round 4 without repeating the aggressive round-5 recipe.
+- Regression diagnostic:
+  [results/verifier/pairwise_round5/regression_analysis](/e:/Engineering/vcsr/results/verifier/pairwise_round5/regression_analysis)
+- Dataset output:
+  [results/verifier/ranking_round6](/e:/Engineering/vcsr/results/verifier/ranking_round6)
+- Training config:
+  [configs/verifier_ranking_round6.yaml](/e:/Engineering/vcsr/configs/verifier_ranking_round6.yaml)
+- Training output:
+  [results/verifier/ranking_round6/retrain_from_round4_conservative_pairwise](/e:/Engineering/vcsr/results/verifier/ranking_round6/retrain_from_round4_conservative_pairwise)
+- Replay gate:
+  [results/vcsr/replay_compare_round4_vs_round6/replay_gate_summary.md](/e:/Engineering/vcsr/results/vcsr/replay_compare_round4_vs_round6/replay_gate_summary.md)
+- Status: completed, **rejected**
+
+Round-5 regression diagnostic:
+
+- Changed outcome rows across two replay pools: `6`
+- Round 5 helped rows: `1`
+- Round 5 hurt rows: `5`
+- All changed rows were `blocksworld explicit/explicit`
+
+Round-6 mining summary:
+
+- Cached pools used: `10`
+- Deduped pairwise rows: `558`
+- Pairwise train/dev: `434 / 124`
+- Pointwise retention examples: `817`
+- Pairwise rows by `K`:
+  - `K=4`: `186`
+  - `K=8`: `372`
+
+Round-6 training summary:
+
+- Warm start: promoted round 4
+- Objective: `1.0 * pointwise_bce + 0.25 * pairwise_logistic_loss`
+- Early stopping metric: `val_auc`
+- Best epoch: `1`
+- Validation AUC: `0.7926`
+- Pairwise dev accuracy: `0.5887`
+
+Replay gate against round 4:
+
+- Mean replay `K=4`: round 4 `0.5000`, round 6 `0.4733`
+- Mean replay `K=8`: round 4 `0.5156`, round 6 `0.4978`
+
+Interpretation:
+
+- Round 6 does not pass the replay gate.
+- The conservative objective avoided a catastrophic collapse, but still moved
+  selection in the wrong direction on average.
+- Do **not** run fresh generation for round 6.
+- Keep round 4 as `best_current`.
+- The next improvement should not be another immediate pairwise retrain; first
+  analyze score behavior, candidate normalization, calibration-by-row, or
+  selection policy alternatives.
+
 ## Recommended Next Entries
 
-- Analyze why the first hybrid pairwise round 5 regressed on replay before
-  launching fresh generation.
-- If continuing ranking-objective work, improve the pairwise protocol rather
-  than blindly rerunning the same recipe:
-  larger/stratified pair validation, stronger non-regression weighting for
-  `K=4`, and replay-selected checkpoints.
+- Analyze why both pairwise round 5 and conservative ranking round 6 failed the
+  replay gate before launching any more verifier training.
+- Consider score/selection-side improvements before another objective change:
+  row-level score normalization, margin-aware selection, or calibration-aware
+  candidate ranking.
 - Selective prediction / abstention experiments only after the ranker baseline
   is actually stable

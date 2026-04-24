@@ -1,0 +1,8 @@
+{
+  "pid": 26152,
+  "started_at": "2026-04-25T01:35:05",
+  "command": "scripts\\train_verifier.py --config configs\\verifier_ranking_round6.yaml --dry_run --output_dir results\\verifier\\ranking_round6\\smoke_conservative_pairwise",
+  "output_dir": "results\\verifier\\ranking_round6\\smoke_conservative_pairwise",
+  "progress_log": "results\\verifier\\ranking_round6\\smoke_conservative_pairwise\\progress.log",
+  "progress_json": "results\\verifier\\ranking_round6\\smoke_conservative_pairwise\\progress.json"
+}

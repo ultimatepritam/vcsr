@@ -35,6 +35,8 @@ tools/             External tool installs (Fast Downward, VAL)
 - Pairwise-ranking round 5 has been implemented and trained as a hybrid pairwise
   + pointwise verifier experiment, but the first recipe did not beat the
   promoted round-4 verifier on replay, so it is not promoted.
+- Conservative ranking round 6 has also been implemented and trained from round
+  4, but it failed replay against round 4 and is not promoted.
 - The main open question is now modeling improvement:
   how do we improve beyond the promoted round-4 verifier while staying honest
   that the strongest repeated end-to-end evidence is at `K=8` and the `K=4`
@@ -127,6 +129,14 @@ python scripts/train_verifier.py --config configs/verifier_pairwise_round5.yaml
 
 # 25. Replay pairwise round 5 against promoted round 4 before any promotion
 python scripts/replay_verifier_bestofk.py --candidate_dump results/vcsr/bestofk_round4_holdout_eval_clean/candidate_dump.jsonl --selection results/verifier/best_current/selection.yaml --selection results/verifier/pairwise_round5/retrain_from_round4_hybrid_pairwise/selection.yaml --output_dir results/vcsr/bestofk_round4_holdout_eval_clean/replay_compare_round4_vs_pairwise_round5 --k_values 4 8
+
+# 26. Analyze round-5 regression and prepare conservative ranking round 6
+python scripts/analyze_round5_regression.py
+python scripts/prepare_ranking_round6_dataset.py
+
+# 27. Train and replay conservative ranking round 6
+python scripts/train_verifier.py --config configs/verifier_ranking_round6.yaml
+python scripts/replay_verifier_bestofk.py --candidate_dump results/vcsr/bestofk_round4_holdout_eval_clean/candidate_dump.jsonl --selection results/verifier/best_current/selection.yaml --selection results/verifier/ranking_round6/retrain_from_round4_conservative_pairwise/selection.yaml --output_dir results/vcsr/replay_compare_round4_vs_round6/round4_holdout_clean --k_values 4 8
 ```
 
 ## Windows E: Drive Setup
@@ -213,6 +223,7 @@ Current key verifier artifacts:
 | `results/verifier/ranking_aligned_round3/` | Prior replay-backed verifier baseline selected from multi-pool replay wins |
 | `results/verifier/ranking_aligned_round4/` | Current promoted verifier after replay gains plus the repeated fresh held-out gate |
 | `results/verifier/pairwise_round5/` | Hybrid pairwise-ranking experiment; trained successfully but not promoted because replay regressed vs round 4 |
+| `results/verifier/ranking_round6/` | Conservative ranking-aware successor from round 4; trained successfully but rejected by replay gate |
 | `results/verifier/best_current/selection.yaml` | Stable metadata record for the current best verifier checkpoint |
 
 As of the current repo state, the selected best verifier comes from:
@@ -246,6 +257,12 @@ negative-result scaffold, but not as a new default: replay against the promoted
 round-4 verifier tied at `K=4` and regressed at `K=8` on the clean round-4
 held-out pool, and regressed at both `K=4` and `K=8` on the round-3 held-out
 pool.
+
+Conservative ranking round 6 was also implemented to address round 5's issues.
+It used a larger cached-pool dataset, an explicit pairwise dev split, and a
+pointwise-dominant hybrid loss. It still failed replay against round 4, so the
+next step should be score/selection diagnosis rather than another immediate
+ranking retrain.
 
 See `EXPERIMENTS.md` for the running experiment log and interpretation of these results.
 
@@ -286,6 +303,7 @@ Key downstream artifacts:
 | `results/vcsr/multiseed_holdout_compare/` | Repeated fresh held-out round-3 vs round-4 comparison across seeds `48`, `49`, `50` |
 | `results/vcsr/bestofk_round4_holdout_eval_clean/replay_compare_round4_vs_pairwise_round5/` | Fixed-pool replay showing pairwise round 5 did not beat round 4 on the clean round-4 held-out pool |
 | `results/vcsr/bestofk_round3_holdout_eval/replay_compare_round4_vs_pairwise_round5/` | Fixed-pool replay showing pairwise round 5 also regressed on the earlier round-3 held-out pool |
+| `results/vcsr/replay_compare_round4_vs_round6/` | Fixed-pool replay gate showing conservative ranking round 6 does not beat round 4 |
 
 Current project conclusion from these pilots:
 
@@ -304,20 +322,23 @@ Current project conclusion from these pilots:
   not pass replay selection:
   it tied round 4 at `K=4` and lost at `K=8` on the clean round-4 held-out
   replay, and lost at both `K=4` and `K=8` on the round-3 held-out replay.
+- Conservative ranking round 6 is also implemented and trained, but it failed
+  replay against round 4:
+  mean replay deltas were `-0.0267` at `K=4` and `-0.0178` at `K=8`.
 
 ## Recommended Next Step
 
 The highest-value next task is now:
 
-- keep round 4 as the promoted default and analyze the pairwise round-5
-  regression before launching another training run
+- keep round 4 as the promoted default and analyze score/selection behavior
+  before launching another training run
 
 Why this matters:
 
 - The promotion decision has now been made.
 - The strongest positive evidence is at `K=8`, and the docs should say that plainly.
-- The first pairwise recipe was the right direction structurally, but the replay
-  gate says this implementation is not yet the stronger selector.
+- Both round 5 and round 6 show that ranking-objective pressure alone is not
+  yet producing a stronger selector.
 
 See `RECOMMENDATION.md` for the current project-level recommendation.
 

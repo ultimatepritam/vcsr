@@ -125,6 +125,7 @@ def main():
     extra_train_jsonl = data_cfg.get("extra_train_jsonl")
     extra_train_repeat = int(data_cfg.get("extra_train_repeat", 1))
     pairwise_train_jsonl = data_cfg.get("pairwise_train_jsonl")
+    pairwise_val_jsonl = data_cfg.get("pairwise_val_jsonl")
     val_fraction = data_cfg.get("val_fraction", 0.15)
     pairwise_val_fraction = float(data_cfg.get("pairwise_val_fraction", val_fraction))
     filter_unparseable = data_cfg.get("filter_unparseable", True)
@@ -163,11 +164,20 @@ def main():
     pairwise_val_rows = []
     if pairwise_train_jsonl:
         pairwise_rows = load_pairwise_jsonl(pairwise_train_jsonl)
-        pair_train_rows, pair_val_rows = split_pairwise_by_template(
-            pairwise_rows,
-            val_fraction=pairwise_val_fraction,
-            seed=seed,
-        )
+        if pairwise_val_jsonl:
+            pair_train_rows = pairwise_rows
+            pair_val_rows = load_pairwise_jsonl(pairwise_val_jsonl)
+            logger.info(
+                "Using explicit pairwise validation file: train=%s val=%s",
+                pairwise_train_jsonl,
+                pairwise_val_jsonl,
+            )
+        else:
+            pair_train_rows, pair_val_rows = split_pairwise_by_template(
+                pairwise_rows,
+                val_fraction=pairwise_val_fraction,
+                seed=seed,
+            )
         pairwise_train_ds = PairwiseVerifierDataset(pair_train_rows, tokenizer, max_length=max_seq_len)
         pairwise_val_ds = PairwiseVerifierDataset(pair_val_rows, tokenizer, max_length=max_seq_len)
         pairwise_val_rows = pair_val_rows

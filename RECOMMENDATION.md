@@ -167,15 +167,32 @@ specific recipe should **not** be promoted:
 So the next modeling move should be a better-controlled ranking objective, not
 a blind rerun of round 5.
 
-Recommended next ranking experiment:
+We tried that better-controlled ranking experiment as round 6:
 
-- keep round 4 as the warm start and baseline
-- build a larger, stratified pairwise dev split that is not used for training
-- keep `K=4` and `K=8` non-regression gates explicit
-- add stronger replay-based checkpoint selection rather than selecting only by
-  small pairwise validation accuracy
-- consider listwise or row-wise softmax ranking over candidate pools if the
-  pairwise-only signal remains unstable
+- warm start from round 4
+- larger cached-pool ranking set
+- explicit pairwise dev file
+- pointwise-dominant hybrid loss
+- replay gate before fresh generation
+
+Round 6 also failed the replay gate:
+
+- mean replay `K=4`: round 4 `0.5000`, round 6 `0.4733`
+- mean replay `K=8`: round 4 `0.5156`, round 6 `0.4978`
+
+That changes the recommendation. The next step should **not** be another
+immediate verifier retrain. We should first diagnose why ranking-loss pressure
+is degrading the selector despite being aligned with the apparent failure mode.
+
+Recommended next investigation:
+
+- compare score distributions for round 4, round 5, and round 6 on the same
+  candidate pools
+- inspect whether ranking losses compress or distort row-level score order
+- test non-training selection fixes such as row-level score normalization,
+  margin-aware ranking, or calibration-aware ranking
+- only return to training after we can explain which score behavior needs to
+  change
 
 ## What We Should Not Over-Prioritize Right Now
 
@@ -186,6 +203,8 @@ Recommended next ranking experiment:
 - architecture changes before we establish whether the current gain is stable
 - promoting pairwise round 5 just because it matches the hypothesized failure
   mode
+- running another pairwise/listwise retrain before understanding why rounds 5
+  and 6 both failed replay
 
 ## Bottom Line
 
@@ -207,7 +226,8 @@ So the clearest path from here is:
 - use round 4 as the promoted default verifier
 - keep describing the result as strongest at `K=8`
 - treat hybrid pairwise round 5 as a useful negative result
-- if we continue ranking-objective work, improve the supervision/evaluation
-  protocol before another full training run
+- treat conservative ranking round 6 as a second negative result
+- pause verifier training and diagnose score/selection behavior before another
+  full training run
 
 That is the most defensible next step for the project and the paper.

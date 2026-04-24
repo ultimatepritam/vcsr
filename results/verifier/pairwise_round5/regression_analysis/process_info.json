@@ -1,0 +1,8 @@
+{
+  "pid": 18016,
+  "started_at": "2026-04-25T01:31:31",
+  "command": "scripts\\analyze_round5_regression.py",
+  "output_dir": "results\\verifier\\pairwise_round5\\regression_analysis",
+  "progress_log": "results\\verifier\\pairwise_round5\\regression_analysis\\progress.log",
+  "progress_json": "results\\verifier\\pairwise_round5\\regression_analysis\\progress.json"
+}
