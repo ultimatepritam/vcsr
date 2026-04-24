@@ -1,0 +1,22 @@
+selected_at: '2026-04-25'
+selected_run: results\verifier\focused_round7\retrain_from_round4_pointwise
+checkpoint_path: results\verifier\focused_round7\retrain_from_round4_pointwise\best_model\model.pt
+training_history_path: results\verifier\focused_round7\retrain_from_round4_pointwise\train_history.json
+val_metrics_path: results\verifier\focused_round7\retrain_from_round4_pointwise\val_metrics.json
+calibration_report_path: results\verifier\focused_round7\retrain_from_round4_pointwise\calibration_report.json
+selection_reason:
+  summary: Round-7 focused pointwise retrain from promoted round 4 using larger cached-pool
+    round-4-style mined supervision; candidate for replay gate only, not promoted.
+  criteria:
+  - warm-started from promoted round 4
+  - pure pointwise objective with no pairwise/listwise loss
+  - mined 788 parseable cached-pool examples across K=4 and K=8
+  - must beat round 4 on fixed-pool replay before any promotion
+metrics_snapshot:
+  val_auc: 0.8017229254571027
+  val_f1: 0.47058823529411764
+  eval_raw_auc: 0.7799438990182329
+  best_raw_f1: 0.6631016042780749
+  best_raw_threshold: 0.05
+  best_temp_f1: 0.6631016042780749
+  best_temp_threshold: 0.1

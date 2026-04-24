@@ -41,9 +41,12 @@ tools/             External tool installs (Fast Downward, VAL)
   fallback, agreement fallback, score normalization, and index-penalized
   policies without changing verifier weights. None beat plain round-4
   `verifier_ranked` on cached replay.
-- The main open question is now where to get new signal:
-  generator diversity, semantic/planner-derived selector features, repair, or a
-  more structural verifier change.
+- Focused pointwise round 7 returned to the successful round-4 recipe with a
+  larger cached-pool mined dataset. It passed cached replay against round 4 at
+  `K=8` while tying at `K=4`, but it is not promoted until fresh multiseed
+  evaluation.
+- The main open question is now whether round 7's cached replay gain survives
+  fresh generation.
 
 ## Quick Start
 
@@ -143,6 +146,14 @@ python scripts/replay_verifier_bestofk.py --candidate_dump results/vcsr/bestofk_
 
 # 28. Analyze fixed-round-4 selector policies without training
 python scripts/analyze_round4_selection.py
+
+# 29. Prepare and train focused pointwise round 7 from promoted round 4
+python scripts/prepare_focused_round7_dataset.py
+python scripts/train_verifier.py --config configs/verifier_focused_round7.yaml
+python scripts/calibrate_verifier.py --config configs/verifier_focused_round7.yaml
+
+# 30. Fresh multiseed gate for round 4 vs round 7, after cached replay passes
+python scripts/run_multiseed_holdout_compare.py --config configs/vcsr_multiseed_round7_compare.yaml
 ```
 
 ## Windows E: Drive Setup
@@ -230,6 +241,7 @@ Current key verifier artifacts:
 | `results/verifier/ranking_aligned_round4/` | Current promoted verifier after replay gains plus the repeated fresh held-out gate |
 | `results/verifier/pairwise_round5/` | Hybrid pairwise-ranking experiment; trained successfully but not promoted because replay regressed vs round 4 |
 | `results/verifier/ranking_round6/` | Conservative ranking-aware successor from round 4; trained successfully but rejected by replay gate |
+| `results/verifier/focused_round7/` | Focused pointwise round-7 dataset and training artifacts; passed cached replay but not promoted yet |
 | `results/verifier/best_current/selection.yaml` | Stable metadata record for the current best verifier checkpoint |
 
 As of the current repo state, the selected best verifier comes from:
@@ -280,6 +292,19 @@ zero-training policy beat plain round-4 `verifier_ranked`; the baseline remains
 `0.5050` mean equivalence at `K=4` and `0.5167` at `K=8` on the analyzed cached
 replay pools.
 
+Focused pointwise round 7 is under:
+
+- `results/verifier/focused_round7/`
+
+It mined `788` pointwise examples from cached pools, warm-started from round 4,
+and used pure pointwise training. Cached replay against round 4 passed:
+
+- mean `K=4`: round 4 `0.5050`, round 7 `0.5050`
+- mean `K=8`: round 4 `0.5167`, round 7 `0.5283`
+
+Round 7 is the leading provisional successor, but round 4 remains
+`best_current` until fresh multiseed evaluation passes.
+
 See `EXPERIMENTS.md` for the running experiment log and interpretation of these results.
 
 Development note:
@@ -321,6 +346,7 @@ Key downstream artifacts:
 | `results/vcsr/bestofk_round3_holdout_eval/replay_compare_round4_vs_pairwise_round5/` | Fixed-pool replay showing pairwise round 5 also regressed on the earlier round-3 held-out pool |
 | `results/vcsr/replay_compare_round4_vs_round6/` | Fixed-pool replay gate showing conservative ranking round 6 does not beat round 4 |
 | `results/vcsr/round4_selection_analysis/` | Fixed-round-4 selector-policy analysis showing simple score-use policies do not beat round-4 `verifier_ranked` |
+| `results/vcsr/replay_compare_round4_vs_round7_focused/` | Fixed-pool replay gate showing focused pointwise round 7 improves mean `K=8` while tying `K=4` |
 
 Current project conclusion from these pilots:
 
@@ -345,13 +371,16 @@ Current project conclusion from these pilots:
 - Fixed-round-4 selector analysis is also complete:
   no margin, top-gap, agreement, normalization, or index-penalty policy beat
   plain round-4 `verifier_ranked` on cached replay.
+- Focused pointwise round 7 is complete and passed cached replay:
+  mean `K=8` improved by `+0.0117`, while mean `K=4` tied round 4.
+- Round 7 is not promoted yet; fresh multiseed evaluation is the next gate.
 
 ## Recommended Next Step
 
 The highest-value next task is now:
 
-- keep round 4 as the promoted default and choose a source of genuinely new
-  signal before launching another training run
+- run the fresh multiseed round-4-vs-round-7 comparison using
+  `configs/vcsr_multiseed_round7_compare.yaml`
 
 Why this matters:
 
@@ -361,6 +390,8 @@ Why this matters:
   yet producing a stronger selector.
 - The fixed-model selector analysis shows that simple score-use heuristics are
   also not enough.
+- Round 7 is the first post-round-4 training result to pass cached replay, so
+  it deserves a fresh-generation gate before promotion.
 
 See `RECOMMENDATION.md` for the current project-level recommendation.
 

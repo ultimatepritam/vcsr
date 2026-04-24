@@ -3,7 +3,8 @@
 This document captures the current project-level recommendation for VCSR after
 the first verifier-ranked best-of-K pilot, fixed-pool replay evaluation, four
 ranking-aligned verifier training rounds, the first repeated fresh held-out
-multi-seed comparison, and a fixed-round-4 selector analysis.
+multi-seed comparison, a fixed-round-4 selector analysis, and the focused
+pointwise round-7 replay gate.
 
 ## Goal
 
@@ -43,6 +44,9 @@ decisions:
 - Simple fixed-model selector policies also did not improve round 4:
   margin fallback, top-gap fallback, agreement fallback, score normalization,
   and index-penalized ranking all tied or regressed on cached replay.
+- The corrected "improve round 4" direction is now supported:
+  a larger round-4-style pointwise round 7 passed cached replay against round 4
+  at `K=8` while tying at `K=4`.
 
 ## Key Evidence
 
@@ -215,6 +219,30 @@ This is not a project failure. It is a useful boundary:
 - the next improvement probably needs genuinely new signal, not just a
   different way to squeeze the same scalar score
 
+We then tested the corrected interpretation: do what made round 4 work, but
+larger and cleaner.
+
+Focused pointwise round 7:
+
+- warm-started from promoted round 4
+- used pure pointwise BCE, not pairwise/listwise loss
+- mined `788` parseable cached-pool examples across `K=4` and `K=8`
+- kept the original verifier validation split fixed
+
+Replay gate result:
+
+- mean replay `K=4`: round 4 `0.5050`, round 7 `0.5050`
+- mean replay `K=8`: round 4 `0.5167`, round 7 `0.5283`
+- row-level `K=8`: `4` helped, `1` hurt
+- acceptance: round 7 passed cached replay but is not promoted yet
+
+This changes the recommendation again:
+
+- the round-4-style pointwise direction is worth continuing
+- round 7 is the leading provisional successor
+- round 4 remains `best_current` until a fresh multiseed gate confirms the
+  replay result
+
 ## What We Should Not Over-Prioritize Right Now
 
 - promoting round 4 while claiming the selector is now uniformly robust
@@ -227,6 +255,7 @@ This is not a project failure. It is a useful boundary:
 - running another pairwise/listwise retrain before understanding why rounds 5
   and 6 both failed replay
 - adding margin/fallback selector policies unless they pass cached replay first
+- promoting round 7 from cached replay alone
 
 ## Bottom Line
 
@@ -250,15 +279,9 @@ So the clearest path from here is:
 - treat hybrid pairwise round 5 as a useful negative result
 - treat conservative ranking round 6 as a second negative result
 - treat fixed-round-4 selector heuristics as a third useful negative result
-- stop short-horizon training/selector tinkering unless it brings new signal
+- treat focused pointwise round 7 as the leading provisional successor
+- run fresh multiseed round-4-vs-round-7 evaluation before promotion
 
-The next serious project decision is no longer "which small retrain do we run?"
-It is which new source of leverage we want for the paper:
-
-- better generator diversity so the candidate pool contains more recoverable
-  successes
-- semantic/planner-derived selector features beyond the verifier scalar score
-- repair or verifier-guided candidate editing
-- or a larger architectural/objective change with a stricter replay-first gate
-
-That is the most defensible next step for the project and the paper.
+If round 7 passes the fresh gate, it becomes the new best paper-facing
+candidate. If it fails, round 4 remains the stable result and we should look for
+new signal beyond small verifier-only training changes.

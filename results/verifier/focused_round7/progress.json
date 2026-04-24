@@ -1,0 +1,9 @@
+{
+  "status": "completed",
+  "elapsed_sec": 182.0754415988922,
+  "pool_count": 9,
+  "completed_pools": 9,
+  "merged_examples_total": 788,
+  "merged_positive_examples": 316,
+  "merged_negative_examples": 472
+}

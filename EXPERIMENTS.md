@@ -1540,12 +1540,101 @@ Project takeaway:
 - Round 4 remains the promoted `best_current` verifier and the best fixed
   selector among the tested cached-replay policies.
 
+### Focused Pointwise Round 7 From Promoted Round 4
+
+- Goal: improve in the direction that made round 4 work: focused, pointwise,
+  warm-started, and downstream-gated.
+- Mining script:
+  [scripts/prepare_focused_round7_dataset.py](/e:/Engineering/vcsr/scripts/prepare_focused_round7_dataset.py)
+- Training config:
+  [configs/verifier_focused_round7.yaml](/e:/Engineering/vcsr/configs/verifier_focused_round7.yaml)
+- Mining output:
+  [results/verifier/focused_round7](/e:/Engineering/vcsr/results/verifier/focused_round7)
+- Training output:
+  [results/verifier/focused_round7/retrain_from_round4_pointwise](/e:/Engineering/vcsr/results/verifier/focused_round7/retrain_from_round4_pointwise)
+- Replay gate:
+  [results/vcsr/replay_compare_round4_vs_round7_focused/replay_gate_summary.md](/e:/Engineering/vcsr/results/vcsr/replay_compare_round4_vs_round7_focused/replay_gate_summary.md)
+- Status: completed training, **passed cached replay gate**, not yet promoted
+
+Mining setup:
+
+- cached development pools used:
+  `bestofk_pilot`, `bestofk_ranking_round2_pool`, `round3_pool_seed43-47`,
+  `bestofk_round3_holdout_eval`, and `bestofk_round4_holdout_eval_clean`
+- round-4 verifier scores were used to prioritize mined candidates
+- examples are standard pointwise verifier rows, not pairwise rows
+- `K=4` and `K=8` were both mined
+
+Mining results from
+[mining_report.json](/e:/Engineering/vcsr/results/verifier/focused_round7/mining_report.json):
+
+- `9` cached pools
+- `788` deduped mined examples
+- `316` positives
+- `472` negatives
+- source mix:
+  - `316` focused positives
+  - `225` focused negatives from oracle-positive pools
+  - `247` negative-only examples
+- domain mix:
+  - `555` `blocksworld`
+  - `233` `gripper`
+- style mix:
+  - `547` `abstract/abstract`
+  - `241` `explicit/explicit`
+
+Training setup:
+
+- warm start: promoted round 4 from
+  [results/verifier/best_current/selection.yaml](/e:/Engineering/vcsr/results/verifier/best_current/selection.yaml)
+- objective: pure `pointwise`
+- no pairwise/listwise loss
+- extra train repeat: `4`
+- best epoch: `3`
+- early-stopped after epoch `5`
+
+Offline validation:
+
+- round 4 validation AUC: `0.8076`
+- round 7 validation AUC: `0.8017`
+- this is a small offline AUC drop, but within the pre-set non-collapse
+  tolerance and not decisive by itself
+
+Replay gate against round 4:
+
+- mean `K=4`
+  - round 4: `0.5050`
+  - round 7: `0.5050`
+  - delta: `+0.0000`
+- mean `K=8`
+  - round 4: `0.5167`
+  - round 7: `0.5283`
+  - delta: `+0.0117`
+- row-level changes:
+  - `K=4`: `1` helped, `1` hurt
+  - `K=8`: `4` helped, `1` hurt
+- `K=8` improved on `2` of `4` replay pools
+
+Interpretation:
+
+- This is the first post-round-4 training result that passes the cached replay
+  gate.
+- The key difference from rounds 5 and 6 is that round 7 returned to the
+  successful round-4 recipe: pointwise training with focused mined examples.
+- Round 7 should not be promoted yet, because the acceptance plan requires a
+  fresh multiseed development comparison before changing `best_current`.
+
+Project takeaway:
+
+- The round-4 direction is still alive.
+- The next step is a fresh multiseed round-4-vs-round-7 comparison using
+  [configs/vcsr_multiseed_round7_compare.yaml](/e:/Engineering/vcsr/configs/vcsr_multiseed_round7_compare.yaml).
+- Keep round 4 as `best_current` until round 7 passes the fresh gate.
+
 ## Recommended Next Entries
 
-- Treat the round-4 fixed-model selector analysis as the current stopping point
-  for simple score-use improvements.
-- Decide whether the next paper-facing path is:
-  generator diversity, semantic/planner-derived selector features, repair, or a
-  more structural verifier change.
+- Run the fresh multiseed round-4-vs-round-7 comparison using
+  `configs/vcsr_multiseed_round7_compare.yaml`.
+- Promote round 7 only if the fresh gate supports the cached replay result.
 - Selective prediction / abstention experiments only after the ranker baseline
   is actually stable

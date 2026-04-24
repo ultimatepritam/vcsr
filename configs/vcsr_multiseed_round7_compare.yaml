@@ -1,0 +1,15 @@
+base_config: configs/vcsr_bestofk_round3_holdout_eval.yaml
+max_rows: 50
+seeds:
+  - 56
+  - 57
+  - 58
+clear_proxy_env: true
+
+verifiers:
+  - name: round4_best_current
+    selection: results/verifier/best_current/selection.yaml
+  - name: round7_focused_pointwise
+    selection: results/verifier/focused_round7/retrain_from_round4_pointwise/selection.yaml
+
+output_dir: results/vcsr/multiseed_round7_compare

@@ -1,0 +1,15 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 0.5245177205651999,
+    "train_pointwise_loss": 0.5245177205651999,
+    "train_pairwise_loss": 0.0,
+    "val_auc": 0.8008658008658008,
+    "val_accuracy": 0.71875,
+    "val_f1": 0.47058823529411764,
+    "val_precision": 0.6666666666666666,
+    "val_recall": 0.36363636363636365,
+    "val_n": 32,
+    "val_loss": 0.410519003868103
+  }
+]

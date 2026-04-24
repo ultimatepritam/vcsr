@@ -1,0 +1,97 @@
+{
+  "inputs": {
+    "pools": [
+      "round4_holdout_clean",
+      "round3_holdout",
+      "round2_pool",
+      "pilot"
+    ],
+    "round4": "retrain_from_round3_focused",
+    "round7": "retrain_from_round4_pointwise"
+  },
+  "per_pool": [
+    {
+      "pool": "round4_holdout_clean",
+      "K": 4,
+      "round4_equiv": 0.5,
+      "round7_equiv": 0.52,
+      "delta": 0.020000000000000018
+    },
+    {
+      "pool": "round4_holdout_clean",
+      "K": 8,
+      "round4_equiv": 0.52,
+      "round7_equiv": 0.54,
+      "delta": 0.020000000000000018
+    },
+    {
+      "pool": "round3_holdout",
+      "K": 4,
+      "round4_equiv": 0.5,
+      "round7_equiv": 0.48,
+      "delta": -0.020000000000000018
+    },
+    {
+      "pool": "round3_holdout",
+      "K": 8,
+      "round4_equiv": 0.46,
+      "round7_equiv": 0.46,
+      "delta": 0.0
+    },
+    {
+      "pool": "round2_pool",
+      "K": 4,
+      "round4_equiv": 0.52,
+      "round7_equiv": 0.52,
+      "delta": 0.0
+    },
+    {
+      "pool": "round2_pool",
+      "K": 8,
+      "round4_equiv": 0.52,
+      "round7_equiv": 0.58,
+      "delta": 0.05999999999999994
+    },
+    {
+      "pool": "pilot",
+      "K": 4,
+      "round4_equiv": 0.5,
+      "round7_equiv": 0.5,
+      "delta": 0.0
+    },
+    {
+      "pool": "pilot",
+      "K": 8,
+      "round4_equiv": 0.5666666666666667,
+      "round7_equiv": 0.5333333333333333,
+      "delta": -0.033333333333333326
+    }
+  ],
+  "mean": [
+    {
+      "K": 4,
+      "round4_mean": 0.505,
+      "round7_mean": 0.505,
+      "delta": 0.0,
+      "helped": 1,
+      "hurt": 1,
+      "changed": 47
+    },
+    {
+      "K": 8,
+      "round4_mean": 0.5166666666666667,
+      "round7_mean": 0.5283333333333333,
+      "delta": 0.011666666666666603,
+      "helped": 4,
+      "hurt": 1,
+      "changed": 59
+    }
+  ],
+  "acceptance": {
+    "accepted": true,
+    "k8_improves": true,
+    "k4_non_regress_with_tolerance_minus_0p01": true,
+    "helped_more_than_hurt": true,
+    "k8_improvement_pool_count": 2
+  }
+}

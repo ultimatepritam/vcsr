@@ -1,0 +1,8 @@
+{
+  "pid": 24924,
+  "started_at": "2026-04-25T02:25:22",
+  "command": "scripts/prepare_focused_round7_dataset.py",
+  "output_dir": "results\\verifier\\focused_round7",
+  "progress_log": "results\\verifier\\focused_round7\\progress.log",
+  "progress_json": "results\\verifier\\focused_round7\\progress.json"
+}

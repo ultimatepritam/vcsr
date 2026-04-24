@@ -1,0 +1,8 @@
+{
+  "pid": 11284,
+  "started_at": "2026-04-25T02:29:10",
+  "command": "scripts/train_verifier.py --config configs/verifier_focused_round7.yaml",
+  "output_dir": "results\\verifier\\focused_round7\\retrain_from_round4_pointwise",
+  "progress_log": "results\\verifier\\focused_round7\\retrain_from_round4_pointwise\\progress.log",
+  "progress_json": "results\\verifier\\focused_round7\\retrain_from_round4_pointwise\\progress.json"
+}

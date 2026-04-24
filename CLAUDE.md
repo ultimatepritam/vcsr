@@ -153,6 +153,7 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] **Run fresh held-out end-to-end best-of-K evaluation with focused round 4**
 - [x] **Run repeated fresh held-out comparison for round 3 vs round 4**
 - [x] **Analyze fixed-round-4 selector policies without further training**
+- [x] **Train focused pointwise round 7 from promoted round 4 and run cached replay gate**
 
 ### Phase 3: Search and Repair (Weeks 5-6)
 
@@ -167,21 +168,20 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Find genuinely new signal beyond round 4**
+1. **Fresh-gate focused pointwise round 7**
    Treat round 4 as the default verifier, keep the write-up explicit that the
-   strongest evidence is at `K=8`, and do not assume another small retrain or
-   selector heuristic will improve it.
+   strongest evidence is at `K=8`, and test whether round 7's cached replay
+   gain survives fresh generation before promotion.
 2. **Replay remains the checkpoint-selection rule**
    Continue to judge new verifier checkpoints primarily by replay on cached
    pools, not by offline AUC alone.
 3. **Preserve provenance**
    Never reuse pool output directories; every long-running generation or
    training run must have its own output directory and visible `progress.log`.
-4. **Avoid short-horizon tinkering**
-   Round 5, round 6, and fixed-round-4 selector heuristics all failed to beat
-   round 4 on cached replay. The next meaningful improvement likely needs
-   generator diversity, semantic/planner-derived features, repair, or a more
-   structural verifier change.
+4. **Keep the distinction clear**
+   Rounds 5 and 6 failed because they pushed pairwise/ranking loss. Round 7 is
+   different: it is a larger round-4-style focused pointwise retrain, and it
+   passed cached replay but is not promoted yet.
 
 ## Current Status Notes
 
@@ -221,8 +221,17 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
   top-gap fallback, round-3/round-4 agreement fallback, score normalization, and
   index-penalized ranking without changing verifier weights. No policy beat
   plain round-4 `verifier_ranked` on cached replay.
-- Current next-step bias: do not launch another ranking retrain or selector
-  heuristic blindly. Decide what new signal the project should add next.
+- Focused pointwise round 7 is implemented under
+  `results/verifier/focused_round7/`. It mined `788` pointwise examples from
+  cached pools, warm-started from promoted round 4, and used pure pointwise
+  training. Cached replay against round 4 passed:
+  `K=4` tied at `0.5050`, and `K=8` improved from `0.5167` to `0.5283`.
+- Round 7 is the leading provisional successor, but
+  `results/verifier/best_current/selection.yaml` should remain pointed at round
+  4 until fresh multiseed evaluation passes.
+- Current next-step bias: run
+  `scripts/run_multiseed_holdout_compare.py --config configs/vcsr_multiseed_round7_compare.yaml`
+  when ready to spend on fresh generation.
 
 ## Long-Run Visibility Rule
 
