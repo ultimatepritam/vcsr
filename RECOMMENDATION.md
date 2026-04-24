@@ -115,12 +115,14 @@ paper and the repo decision?".
 
 ### Highest-Priority Next Step
 
-Now that round 4 has been promoted, move to the next modeling improvement while
-preserving the correct interpretation of the current result:
+Now that round 4 has been promoted, keep it as the default verifier and treat
+the first pairwise round-5 run as a completed but non-promoted experiment:
 
 - round 4 is the default verifier
 - the strongest repeated fresh held-out evidence is at `K=8`
 - `K=4` remains mixed enough that it should not be oversold
+- hybrid pairwise round 5 is implemented and trained, but did not beat round 4
+  on replay
 
 ### Promotion Rule
 
@@ -152,6 +154,29 @@ escalation should be an objective change, not an architecture change:
 - listwise ranking supervision
 - or another explicitly within-pool ranking objective
 
+The first hybrid pairwise attempt was the right class of experiment, but this
+specific recipe should **not** be promoted:
+
+- it tied round 4 at `K=4` and regressed at `K=8` on
+  `bestofk_round4_holdout_eval_clean`
+- it regressed at both `K=4` and `K=8` on `bestofk_round3_holdout_eval`
+- its pairwise validation split was small (`38` examples)
+- the mined pairs were entirely `blocksworld`, with heavy
+  `abstract/abstract` concentration
+
+So the next modeling move should be a better-controlled ranking objective, not
+a blind rerun of round 5.
+
+Recommended next ranking experiment:
+
+- keep round 4 as the warm start and baseline
+- build a larger, stratified pairwise dev split that is not used for training
+- keep `K=4` and `K=8` non-regression gates explicit
+- add stronger replay-based checkpoint selection rather than selecting only by
+  small pairwise validation accuracy
+- consider listwise or row-wise softmax ranking over candidate pools if the
+  pairwise-only signal remains unstable
+
 ## What We Should Not Over-Prioritize Right Now
 
 - promoting round 4 while claiming the selector is now uniformly robust
@@ -159,6 +184,8 @@ escalation should be an objective change, not an architecture change:
 - treating a 1-row difference on a 50-row held-out sample as decisive
 - generic extra epochs on the same data without stronger evaluation
 - architecture changes before we establish whether the current gain is stable
+- promoting pairwise round 5 just because it matches the hypothesized failure
+  mode
 
 ## Bottom Line
 
@@ -179,6 +206,8 @@ So the clearest path from here is:
 
 - use round 4 as the promoted default verifier
 - keep describing the result as strongest at `K=8`
-- if the next gain stalls, move to a stronger ranking objective
+- treat hybrid pairwise round 5 as a useful negative result
+- if we continue ranking-objective work, improve the supervision/evaluation
+  protocol before another full training run
 
 That is the most defensible next step for the project and the paper.

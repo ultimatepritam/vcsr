@@ -1,0 +1,13 @@
+{
+  "status": "epoch_start",
+  "elapsed_sec": 0.007286548614501953,
+  "epoch": 1,
+  "total_epochs": 1,
+  "global_step": 0,
+  "total_optimizer_steps": 1,
+  "best_metric": 0.0,
+  "best_epoch": 0,
+  "patience_counter": 0,
+  "current_train_loss": null,
+  "current_val_metrics": null
+}

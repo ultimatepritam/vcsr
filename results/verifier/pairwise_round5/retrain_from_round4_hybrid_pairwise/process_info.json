@@ -1,0 +1,8 @@
+{
+  "pid": 5284,
+  "started_at": "2026-04-25T00:41:16",
+  "command": "scripts\\train_verifier.py --config configs\\verifier_pairwise_round5.yaml",
+  "output_dir": "results\\verifier\\pairwise_round5\\retrain_from_round4_hybrid_pairwise",
+  "progress_log": "results\\verifier\\pairwise_round5\\retrain_from_round4_hybrid_pairwise\\progress.log",
+  "progress_json": "results\\verifier\\pairwise_round5\\retrain_from_round4_hybrid_pairwise\\progress.json"
+}

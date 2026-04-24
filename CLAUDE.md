@@ -200,6 +200,16 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - The main uncertainty is no longer "can a verifier help downstream selection?" It can.
 - Round 4 has now been promoted as the default verifier artifact in repo metadata.
 - The main uncertainty is now how to improve beyond round 4 without overselling the result, given that the strongest gain is at `K=8` and the `K=4` story remains mixed.
+- Pairwise round 5 is implemented under `results/verifier/pairwise_round5/`:
+  it mines same-row equivalent-vs-non-equivalent candidate pairs, trains a
+  hybrid pairwise + pointwise DeBERTa verifier from round 4, and writes normal
+  progress/model/calibration artifacts.
+- The first hybrid pairwise round-5 recipe is **not promoted**:
+  replay tied round 4 at `K=4` and regressed at `K=8` on
+  `bestofk_round4_holdout_eval_clean`, and regressed at both `K=4` and `K=8`
+  on `bestofk_round3_holdout_eval`.
+- Keep `results/verifier/best_current/selection.yaml` pointed at round 4 unless
+  a later replay/fresh gate clearly beats it.
 
 ## Long-Run Visibility Rule
 

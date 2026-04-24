@@ -32,6 +32,9 @@ tools/             External tool installs (Fast Downward, VAL)
 - The current selected verifier checkpoint is recorded in `results/verifier/best_current/selection.yaml`.
 - We have also completed verifier-ranked best-of-K pilots, replay-controlled evaluation on multiple cached pools, and fresh held-out end-to-end runs.
 - We have now also completed a repeated fresh held-out comparison across seeds `48`, `49`, and `50`.
+- Pairwise-ranking round 5 has been implemented and trained as a hybrid pairwise
+  + pointwise verifier experiment, but the first recipe did not beat the
+  promoted round-4 verifier on replay, so it is not promoted.
 - The main open question is now modeling improvement:
   how do we improve beyond the promoted round-4 verifier while staying honest
   that the strongest repeated end-to-end evidence is at `K=8` and the `K=4`
@@ -115,6 +118,15 @@ python scripts/run_verifier_bestofk.py --config configs/vcsr_bestofk_round3_hold
 
 # 22. Repeated fresh held-out comparison across multiple seeds
 python scripts/run_multiseed_holdout_compare.py --config configs/vcsr_multiseed_holdout_compare.yaml
+
+# 23. Mine pairwise ranking data from cached pools
+python scripts/prepare_pairwise_round5_dataset.py
+
+# 24. Hybrid pairwise verifier training from promoted round 4
+python scripts/train_verifier.py --config configs/verifier_pairwise_round5.yaml
+
+# 25. Replay pairwise round 5 against promoted round 4 before any promotion
+python scripts/replay_verifier_bestofk.py --candidate_dump results/vcsr/bestofk_round4_holdout_eval_clean/candidate_dump.jsonl --selection results/verifier/best_current/selection.yaml --selection results/verifier/pairwise_round5/retrain_from_round4_hybrid_pairwise/selection.yaml --output_dir results/vcsr/bestofk_round4_holdout_eval_clean/replay_compare_round4_vs_pairwise_round5 --k_values 4 8
 ```
 
 ## Windows E: Drive Setup
@@ -178,6 +190,7 @@ Main verifier configs and scripts:
 - `configs/verifier_ranking_aligned_round1.yaml`
 - `configs/verifier_ranking_aligned_round2.yaml`
 - `configs/verifier_ranking_aligned_round3.yaml`
+- `configs/verifier_pairwise_round5.yaml`
 - `scripts/train_verifier.py`
 - `scripts/analyze_verifier.py`
 - `scripts/calibrate_verifier.py`
@@ -186,6 +199,7 @@ Main verifier configs and scripts:
 - `scripts/mine_verifier_hard_negatives.py`
 - `scripts/mine_verifier_ranking_examples.py`
 - `scripts/prepare_ranking_round3_dataset.py`
+- `scripts/prepare_pairwise_round5_dataset.py`
 
 Current key verifier artifacts:
 
@@ -198,6 +212,7 @@ Current key verifier artifacts:
 | `results/verifier/ranking_aligned_round2/` | Earlier replay-backed downstream verifier |
 | `results/verifier/ranking_aligned_round3/` | Prior replay-backed verifier baseline selected from multi-pool replay wins |
 | `results/verifier/ranking_aligned_round4/` | Current promoted verifier after replay gains plus the repeated fresh held-out gate |
+| `results/verifier/pairwise_round5/` | Hybrid pairwise-ranking experiment; trained successfully but not promoted because replay regressed vs round 4 |
 | `results/verifier/best_current/selection.yaml` | Stable metadata record for the current best verifier checkpoint |
 
 As of the current repo state, the selected best verifier comes from:
@@ -225,6 +240,12 @@ That multi-seed gate strengthens the case for round 4:
 
 So the strongest current downstream case for round 4 is specifically at
 best-of-`8`, not as a claim that it cleanly dominates every setting.
+
+Pairwise round 5 has also been implemented and trained. It is useful as a
+negative-result scaffold, but not as a new default: replay against the promoted
+round-4 verifier tied at `K=4` and regressed at `K=8` on the clean round-4
+held-out pool, and regressed at both `K=4` and `K=8` on the round-3 held-out
+pool.
 
 See `EXPERIMENTS.md` for the running experiment log and interpretation of these results.
 
@@ -263,6 +284,8 @@ Key downstream artifacts:
 | `results/vcsr/bestofk_round3_holdout_eval/` | Fresh held-out end-to-end run with frozen round 3 |
 | `results/vcsr/bestofk_round4_holdout_eval_clean/` | Fresh held-out end-to-end run with focused round 4 |
 | `results/vcsr/multiseed_holdout_compare/` | Repeated fresh held-out round-3 vs round-4 comparison across seeds `48`, `49`, `50` |
+| `results/vcsr/bestofk_round4_holdout_eval_clean/replay_compare_round4_vs_pairwise_round5/` | Fixed-pool replay showing pairwise round 5 did not beat round 4 on the clean round-4 held-out pool |
+| `results/vcsr/bestofk_round3_holdout_eval/replay_compare_round4_vs_pairwise_round5/` | Fixed-pool replay showing pairwise round 5 also regressed on the earlier round-3 held-out pool |
 
 Current project conclusion from these pilots:
 
@@ -277,19 +300,24 @@ Current project conclusion from these pilots:
   both rounds average `0.4000` verifier-ranked equivalence.
 - Candidate generation quality is often good enough that a better selector should still be able to do better:
   oracle remains `0.5200` to `0.6200` across the development and held-out pools.
+- Pairwise round 5 is implemented and trained, but the first hybrid recipe did
+  not pass replay selection:
+  it tied round 4 at `K=4` and lost at `K=8` on the clean round-4 held-out
+  replay, and lost at both `K=4` and `K=8` on the round-3 held-out replay.
 
 ## Recommended Next Step
 
 The highest-value next task is now:
 
-- move to the next modeling improvement with round 4 as the promoted default,
-  while keeping the write-up explicit that the strongest evidence is at `K=8`
+- keep round 4 as the promoted default and analyze the pairwise round-5
+  regression before launching another training run
 
 Why this matters:
 
 - The promotion decision has now been made.
 - The strongest positive evidence is at `K=8`, and the docs should say that plainly.
-- The next experiment should be a stronger ranking objective rather than another blind retrain.
+- The first pairwise recipe was the right direction structurally, but the replay
+  gate says this implementation is not yet the stronger selector.
 
 See `RECOMMENDATION.md` for the current project-level recommendation.
 

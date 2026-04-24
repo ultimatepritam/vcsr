@@ -1338,11 +1338,79 @@ Project takeaway:
 - The repo still keeps round 3 as the official `best_current` pointer until we
   explicitly change that metadata.
 
+### Pairwise-Ranking Round 5: Hybrid Pairwise Objective
+
+- Goal: test whether explicit within-pool pairwise supervision improves the
+  promoted round-4 verifier on cached best-of-K replay.
+- Config:
+  [configs/verifier_pairwise_round5.yaml](/e:/Engineering/vcsr/configs/verifier_pairwise_round5.yaml)
+- Mining script:
+  [scripts/prepare_pairwise_round5_dataset.py](/e:/Engineering/vcsr/scripts/prepare_pairwise_round5_dataset.py)
+- Training output:
+  [results/verifier/pairwise_round5/retrain_from_round4_hybrid_pairwise](/e:/Engineering/vcsr/results/verifier/pairwise_round5/retrain_from_round4_hybrid_pairwise)
+- Status: completed, **not promoted**
+
+Pairwise mining summary:
+
+- Source pools: `round3_pool_seed43` through `round3_pool_seed47`
+- Pairwise examples: `247`
+- Pointwise retention examples: `464`
+- Pairwise examples by `K`:
+  - `K=4`: `84`
+  - `K=8`: `163`
+- Pair types:
+  - `near_tie`: `101`
+  - `selected_wrong`: `79`
+  - `outranks_positive`: `50`
+  - `moderate_gap`: `17`
+
+Training summary:
+
+- Warm start: promoted round-4 verifier from
+  [results/verifier/best_current/selection.yaml](/e:/Engineering/vcsr/results/verifier/best_current/selection.yaml)
+- Objective: `pairwise_logistic_loss + 0.5 * pointwise_bce_loss`
+- Effective batch: `128` via microbatch `2` and gradient accumulation `64`
+- Early stopping selected epoch `1`
+- Offline metrics:
+  - val AUC: `0.7927`
+  - val F1: `0.4681`
+  - pairwise val accuracy: `0.5789`
+  - pairwise mean margin: `0.9000`
+
+Replay gate against promoted round 4:
+
+- On
+  [bestofk_round4_holdout_eval_clean](/e:/Engineering/vcsr/results/vcsr/bestofk_round4_holdout_eval_clean/replay_compare_round4_vs_pairwise_round5/replay_summary.md):
+  - round 4 `K=4`: `0.5000`
+  - round 5 `K=4`: `0.5000`
+  - round 4 `K=8`: `0.5200`
+  - round 5 `K=8`: `0.5000`
+- On
+  [bestofk_round3_holdout_eval](/e:/Engineering/vcsr/results/vcsr/bestofk_round3_holdout_eval/replay_compare_round4_vs_pairwise_round5/replay_summary.md):
+  - round 4 `K=4`: `0.5000`
+  - round 5 `K=4`: `0.4600`
+  - round 4 `K=8`: `0.4600`
+  - round 5 `K=8`: `0.4400`
+
+Interpretation:
+
+- The pairwise training infrastructure works end to end.
+- This first round-5 recipe does **not** pass the replay acceptance gate.
+- The likely issue is not that pairwise ranking is the wrong research
+  direction; it is that this specific pair set/objective balance is too small
+  and too blocksworld-heavy, and the pairwise validation split is only `38`
+  examples.
+- Keep round 4 as `best_current`.
+- Treat round 5 as an implemented negative result and a useful scaffold for a
+  more careful ranking-loss experiment.
+
 ## Recommended Next Entries
 
-- Promotion decision on whether to keep round 3 frozen or move `best_current`
-  to round 4 with explicit `K=8`-first wording
-- If round 4 still feels too mixed for promotion, explicit pairwise/listwise
-  ranking-objective experiments
+- Analyze why the first hybrid pairwise round 5 regressed on replay before
+  launching fresh generation.
+- If continuing ranking-objective work, improve the pairwise protocol rather
+  than blindly rerunning the same recipe:
+  larger/stratified pair validation, stronger non-regression weighting for
+  `K=4`, and replay-selected checkpoints.
 - Selective prediction / abstention experiments only after the ranker baseline
   is actually stable

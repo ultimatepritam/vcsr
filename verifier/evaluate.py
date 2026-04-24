@@ -110,3 +110,59 @@ def evaluate(
             metrics["per_domain"][dom] = _compute_metrics(np.array(yt), np.array(ys), threshold)
 
     return metrics
+
+
+@torch.no_grad()
+def evaluate_pairwise(
+    model: VerifierModel,
+    dataloader: DataLoader,
+    device: torch.device,
+) -> dict:
+    """Evaluate whether the model scores positive candidates above negatives."""
+    model.eval()
+
+    margins: list[float] = []
+    by_domain: dict[str, list[float]] = defaultdict(list)
+    by_style: dict[str, list[float]] = defaultdict(list)
+    by_k: dict[str, list[float]] = defaultdict(list)
+    by_pair_type: dict[str, list[float]] = defaultdict(list)
+
+    for batch in dataloader:
+        pos = {k: v.to(device) for k, v in batch["positive"].items()}
+        neg = {k: v.to(device) for k, v in batch["negative"].items()}
+        with autocast("cuda", enabled=device.type == "cuda"):
+            pos_logits = model(**pos)["logits"]
+            neg_logits = model(**neg)["logits"]
+
+        batch_margins = (pos_logits - neg_logits).detach().cpu().numpy().tolist()
+        margins.extend(batch_margins)
+
+        for margin, domain, style, k_value, pair_type in zip(
+            batch_margins,
+            batch.get("domain", []),
+            batch.get("style", []),
+            batch.get("k", []),
+            batch.get("pair_type", []),
+        ):
+            by_domain[str(domain or "unknown")].append(float(margin))
+            by_style[str(style or "unknown")].append(float(margin))
+            by_k[str(k_value)].append(float(margin))
+            by_pair_type[str(pair_type or "unknown")].append(float(margin))
+
+    def summarize(values: list[float]) -> dict:
+        arr = np.array(values, dtype=float)
+        if len(arr) == 0:
+            return {"n": 0, "pairwise_accuracy": 0.0, "mean_margin": 0.0}
+        return {
+            "n": int(len(arr)),
+            "pairwise_accuracy": float((arr > 0).mean()),
+            "mean_margin": float(arr.mean()),
+        }
+
+    return {
+        **summarize(margins),
+        "per_domain": {key: summarize(values) for key, values in by_domain.items()},
+        "per_style": {key: summarize(values) for key, values in by_style.items()},
+        "per_k": {key: summarize(values) for key, values in by_k.items()},
+        "per_pair_type": {key: summarize(values) for key, values in by_pair_type.items()},
+    }

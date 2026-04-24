@@ -11,7 +11,9 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import sys
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -21,7 +23,17 @@ import yaml
 import torch
 from transformers import AutoTokenizer
 
-from verifier.dataset import VerifierDataset, build_datasets, collate_fn, load_jsonl, split_by_template
+from verifier.dataset import (
+    PairwiseVerifierDataset,
+    VerifierDataset,
+    build_datasets,
+    collate_fn,
+    collate_pairwise_fn,
+    load_jsonl,
+    load_pairwise_jsonl,
+    split_by_template,
+    split_pairwise_by_template,
+)
 from verifier.evaluate import evaluate
 from verifier.model import VerifierModel
 from verifier.train import TrainConfig, train
@@ -48,10 +60,24 @@ def _configure_file_logging(output_dir: Path) -> Path:
     return log_path
 
 
+def _write_process_info(output_dir: Path, command: list[str]) -> None:
+    info = {
+        "pid": os.getpid(),
+        "started_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "command": " ".join(command),
+        "output_dir": str(output_dir),
+        "progress_log": str(output_dir / "progress.log"),
+        "progress_json": str(output_dir / "progress.json"),
+    }
+    with open(output_dir / "process_info.json", "w", encoding="utf-8") as f:
+        json.dump(info, f, indent=2)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Train VCSR semantic verifier")
     parser.add_argument("--config", type=str, default="configs/verifier.yaml")
     parser.add_argument("--dry_run", action="store_true", help="1 epoch, small subset")
+    parser.add_argument("--output_dir", type=str, default=None, help="Override output.dir from config")
     args = parser.parse_args()
 
     with open(args.config) as f:
@@ -66,10 +92,13 @@ def main():
     eval_cfg = cfg.get("evaluation", {})
     out_cfg = cfg.get("output", {})
     log_cfg = cfg.get("logging", {})
+    if args.output_dir:
+        out_cfg["dir"] = args.output_dir
     output_dir = out_cfg.get("dir", "results/verifier/pilot")
     out_path = Path(output_dir)
     out_path.mkdir(parents=True, exist_ok=True)
     log_path = _configure_file_logging(out_path)
+    _write_process_info(out_path, sys.argv)
     logger.info("Live training log: %s", log_path)
 
     revision = model_cfg.get("revision")
@@ -95,7 +124,9 @@ def main():
     jsonl_path = data_cfg.get("train_jsonl", "results/neggen/pilot/verifier_train.relabeled.jsonl")
     extra_train_jsonl = data_cfg.get("extra_train_jsonl")
     extra_train_repeat = int(data_cfg.get("extra_train_repeat", 1))
+    pairwise_train_jsonl = data_cfg.get("pairwise_train_jsonl")
     val_fraction = data_cfg.get("val_fraction", 0.15)
+    pairwise_val_fraction = float(data_cfg.get("pairwise_val_fraction", val_fraction))
     filter_unparseable = data_cfg.get("filter_unparseable", True)
 
     if extra_train_jsonl:
@@ -127,12 +158,36 @@ def main():
         )
     logger.info("Train: %d  Val: %d", len(train_ds), len(val_ds))
 
+    pairwise_train_ds = None
+    pairwise_val_ds = None
+    pairwise_val_rows = []
+    if pairwise_train_jsonl:
+        pairwise_rows = load_pairwise_jsonl(pairwise_train_jsonl)
+        pair_train_rows, pair_val_rows = split_pairwise_by_template(
+            pairwise_rows,
+            val_fraction=pairwise_val_fraction,
+            seed=seed,
+        )
+        pairwise_train_ds = PairwiseVerifierDataset(pair_train_rows, tokenizer, max_length=max_seq_len)
+        pairwise_val_ds = PairwiseVerifierDataset(pair_val_rows, tokenizer, max_length=max_seq_len)
+        pairwise_val_rows = pair_val_rows
+        logger.info(
+            "Pairwise train: %d  Pairwise val: %d",
+            len(pairwise_train_ds),
+            len(pairwise_val_ds),
+        )
+
     # Dry-run: tiny subset
     if args.dry_run:
         from torch.utils.data import Subset
         train_ds = Subset(train_ds, list(range(min(64, len(train_ds)))))
         val_ds_eval = Subset(val_ds, list(range(min(32, len(val_ds)))))
         val_rows_eval = val_rows[:min(32, len(val_rows))]
+        if pairwise_train_ds is not None:
+            pairwise_train_ds = Subset(pairwise_train_ds, list(range(min(64, len(pairwise_train_ds)))))
+        if pairwise_val_ds is not None:
+            pairwise_val_ds = Subset(pairwise_val_ds, list(range(min(32, len(pairwise_val_ds)))))
+            pairwise_val_rows = pairwise_val_rows[:min(32, len(pairwise_val_rows))]
         train_cfg["epochs"] = 1
         train_cfg["log_every_n_steps"] = 2
         logger.info("=== DRY RUN: train=%d val=%d, 1 epoch ===", len(train_ds), len(val_ds_eval))
@@ -185,6 +240,9 @@ def main():
         save_last_model=out_cfg.get("save_last_model", False),
         output_dir=output_dir,
         wandb_project=log_cfg.get("wandb_project"),
+        objective=train_cfg.get("objective", "pointwise"),
+        pairwise_loss_weight=train_cfg.get("pairwise_loss_weight", 1.0),
+        pointwise_loss_weight=train_cfg.get("pointwise_loss_weight", 0.5),
     )
 
     # Train
@@ -194,6 +252,8 @@ def main():
         val_ds=val_ds_eval,
         config=tc,
         val_rows=val_rows_eval,
+        pairwise_train_ds=pairwise_train_ds,
+        pairwise_val_ds=pairwise_val_ds,
     )
 
     # Save training history
@@ -226,6 +286,16 @@ def main():
             num_workers=0,
         )
         final_metrics = evaluate(model, final_loader, device, val_rows=val_rows_eval)
+        if pairwise_val_ds is not None and len(pairwise_val_ds) > 0:
+            from verifier.evaluate import evaluate_pairwise
+            pair_loader = DataLoader(
+                pairwise_val_ds,
+                batch_size=tc.batch_size * 2,
+                shuffle=False,
+                collate_fn=collate_pairwise_fn,
+                num_workers=0,
+            )
+            final_metrics["pairwise"] = evaluate_pairwise(model, pair_loader, device)
         with open(out_path / "val_metrics.json", "w") as f:
             json.dump(final_metrics, f, indent=2, default=str)
         logger.info("Final val metrics saved to %s", out_path / "val_metrics.json")
