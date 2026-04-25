@@ -154,6 +154,7 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] **Run repeated fresh held-out comparison for round 3 vs round 4**
 - [x] **Analyze fixed-round-4 selector policies without further training**
 - [x] **Train focused pointwise round 7 from promoted round 4 and run cached replay gate**
+- [x] **Run fresh multiseed round 4 vs round 7 gate**
 
 ### Phase 3: Search and Repair (Weeks 5-6)
 
@@ -168,10 +169,10 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Fresh-gate focused pointwise round 7**
+1. **Analyze round-7 fresh wins/losses**
    Treat round 4 as the default verifier, keep the write-up explicit that the
-   strongest evidence is at `K=8`, and test whether round 7's cached replay
-   gain survives fresh generation before promotion.
+   strongest evidence is at `K=8`, and understand why round 7 helps some seeds
+   but regresses seed `56` at `K=8`.
 2. **Replay remains the checkpoint-selection rule**
    Continue to judge new verifier checkpoints primarily by replay on cached
    pools, not by offline AUC alone.
@@ -181,7 +182,7 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 4. **Keep the distinction clear**
    Rounds 5 and 6 failed because they pushed pairwise/ranking loss. Round 7 is
    different: it is a larger round-4-style focused pointwise retrain, and it
-   passed cached replay but is not promoted yet.
+   passed cached replay but did not pass the fresh promotion gate.
 
 ## Current Status Notes
 
@@ -226,12 +227,14 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
   cached pools, warm-started from promoted round 4, and used pure pointwise
   training. Cached replay against round 4 passed:
   `K=4` tied at `0.5050`, and `K=8` improved from `0.5167` to `0.5283`.
-- Round 7 is the leading provisional successor, but
-  `results/verifier/best_current/selection.yaml` should remain pointed at round
-  4 until fresh multiseed evaluation passes.
-- Current next-step bias: run
-  `scripts/run_multiseed_holdout_compare.py --config configs/vcsr_multiseed_round7_compare.yaml`
-  when ready to spend on fresh generation.
+- Fresh multiseed round-4-vs-round-7 evaluation is complete under
+  `results/vcsr/multiseed_round7_compare/`. Round 7 improved mean `K=4`
+  (`0.4000 -> 0.4133`) but tied mean `K=8` (`0.4200 -> 0.4200`), so it is not
+  promoted.
+- `results/verifier/best_current/selection.yaml` should remain pointed at round
+  4.
+- Current next-step bias: analyze round-7 changed rows, especially seed `56` at
+  `K=8`, before more training.
 
 ## Long-Run Visibility Rule
 

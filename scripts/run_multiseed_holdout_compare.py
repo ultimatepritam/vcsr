@@ -131,11 +131,14 @@ def _markdown(report: dict) -> str:
             f"{row['ties']} | {row['mean_equiv_delta']:+.4f} |"
         )
 
+    baseline_label = report["head_to_head"][0]["baseline"] if report.get("head_to_head") else "baseline"
+    candidate_label = report["head_to_head"][0]["candidate"] if report.get("head_to_head") else "candidate"
+
     lines.extend(["", "## Per-Seed Verifier-Ranked", ""])
     for k_key, seed_rows in report["verifier_ranked_by_seed"].items():
         lines.append(f"### K={k_key}")
         lines.append("")
-        lines.append("| Seed | Round3 | Round4 | Delta |")
+        lines.append(f"| Seed | {baseline_label} | {candidate_label} | Delta |")
         lines.append("|---:|---:|---:|---:|")
         for seed_row in seed_rows:
             lines.append(

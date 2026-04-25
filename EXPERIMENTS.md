@@ -1627,14 +1627,66 @@ Interpretation:
 Project takeaway:
 
 - The round-4 direction is still alive.
-- The next step is a fresh multiseed round-4-vs-round-7 comparison using
-  [configs/vcsr_multiseed_round7_compare.yaml](/e:/Engineering/vcsr/configs/vcsr_multiseed_round7_compare.yaml).
-- Keep round 4 as `best_current` until round 7 passes the fresh gate.
+- Keep round 4 as `best_current` until round 7 passes a fresh gate.
+
+### Fresh Multiseed Round 4 vs Round 7 Comparison
+
+- Goal: test whether round 7's cached replay gain survives fresh generation.
+- Config:
+  [configs/vcsr_multiseed_round7_compare.yaml](/e:/Engineering/vcsr/configs/vcsr_multiseed_round7_compare.yaml)
+- Output:
+  [results/vcsr/multiseed_round7_compare](/e:/Engineering/vcsr/results/vcsr/multiseed_round7_compare)
+- Status: completed, **round 7 not promoted**
+
+Setup:
+
+- Base best-of-K config:
+  [configs/vcsr_bestofk_round3_holdout_eval.yaml](/e:/Engineering/vcsr/configs/vcsr_bestofk_round3_holdout_eval.yaml)
+- Seeds: `56`, `57`, `58`
+- Rows per verifier/seed: `50`
+- Verifiers:
+  - round 4 via [results/verifier/best_current/selection.yaml](/e:/Engineering/vcsr/results/verifier/best_current/selection.yaml)
+  - round 7 via [results/verifier/focused_round7/retrain_from_round4_pointwise/selection.yaml](/e:/Engineering/vcsr/results/verifier/focused_round7/retrain_from_round4_pointwise/selection.yaml)
+
+Mean fresh verifier-ranked equivalence from
+[comparison_summary.md](/e:/Engineering/vcsr/results/vcsr/multiseed_round7_compare/comparison_summary.md):
+
+- `K=4`
+  - round 4: `0.4000`
+  - round 7: `0.4133`
+  - delta: `+0.0133`
+- `K=8`
+  - round 4: `0.4200`
+  - round 7: `0.4200`
+  - delta: `+0.0000`
+
+Seed-wise verifier-ranked deltas:
+
+- `K=4`: round 7 wins `2`, round 4 wins `1`, ties `0`
+- `K=8`: round 7 wins `2`, round 4 wins `1`, ties `0`, but mean delta is
+  exactly tied because seed `56` regressed by `-0.0800`
+
+Interpretation:
+
+- Round 7 did not fail catastrophically; it improved `K=4` mean and tied `K=8`
+  mean on fresh generation.
+- However, it did not satisfy the promotion rule because the main operating
+  point is `K=8`, and the fresh mean did not improve there.
+- The cached replay gain was therefore not strong enough to justify replacing
+  round 4.
+
+Project takeaway:
+
+- Round 4 remains the official `best_current`.
+- Round 7 is a useful provisional/diagnostic result showing that larger
+  pointwise focused mining is safer than pairwise rounds 5 and 6.
+- The next improvement should investigate why round 7 helps some seeds but
+  regresses seed `56`, rather than promoting it or immediately scaling the same
+  recipe again.
 
 ## Recommended Next Entries
 
-- Run the fresh multiseed round-4-vs-round-7 comparison using
-  `configs/vcsr_multiseed_round7_compare.yaml`.
-- Promote round 7 only if the fresh gate supports the cached replay result.
+- Analyze round-7 fresh gate changed rows, especially seed `56` at `K=8`.
+- Keep round 4 as the promoted default.
 - Selective prediction / abstention experiments only after the ranker baseline
   is actually stable

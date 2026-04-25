@@ -1,0 +1,10 @@
+{
+  "total_rows": 50,
+  "completed_rows": 50,
+  "remaining_rows": 0,
+  "elapsed_sec": 1188.9534680843353,
+  "avg_sec_per_row": 23.779069361686705,
+  "eta_sec": 0.0,
+  "current_row_name": "gripper_holding_to_drop_and_pickup_balls_in_grippers_1_1_1_1_balls_in_rooms_3_0_0_0_0",
+  "current_domain": "gripper"
+}

@@ -3,8 +3,8 @@
 This document captures the current project-level recommendation for VCSR after
 the first verifier-ranked best-of-K pilot, fixed-pool replay evaluation, four
 ranking-aligned verifier training rounds, the first repeated fresh held-out
-multi-seed comparison, a fixed-round-4 selector analysis, and the focused
-pointwise round-7 replay gate.
+multi-seed comparison, a fixed-round-4 selector analysis, the focused
+pointwise round-7 replay gate, and the fresh round-4-vs-round-7 multiseed gate.
 
 ## Goal
 
@@ -47,6 +47,9 @@ decisions:
 - The corrected "improve round 4" direction is now supported:
   a larger round-4-style pointwise round 7 passed cached replay against round 4
   at `K=8` while tying at `K=4`.
+- The fresh multiseed gate did not justify promotion:
+  round 7 improved mean `K=4`, but tied mean `K=8`, which is the main
+  best-of-K operating point.
 
 ## Key Evidence
 
@@ -236,12 +239,19 @@ Replay gate result:
 - row-level `K=8`: `4` helped, `1` hurt
 - acceptance: round 7 passed cached replay but is not promoted yet
 
+Fresh multiseed round-4-vs-round-7 gate:
+
+- mean fresh `K=4`: round 4 `0.4000`, round 7 `0.4133`
+- mean fresh `K=8`: round 4 `0.4200`, round 7 `0.4200`
+- seed-wise at `K=8`: round 7 won seeds `57` and `58`, but regressed seed
+  `56` enough to erase the mean gain
+
 This changes the recommendation again:
 
 - the round-4-style pointwise direction is worth continuing
-- round 7 is the leading provisional successor
-- round 4 remains `best_current` until a fresh multiseed gate confirms the
-  replay result
+- round 7 is a useful provisional/diagnostic result
+- round 4 remains `best_current` because round 7 did not improve the fresh
+  `K=8` mean
 
 ## What We Should Not Over-Prioritize Right Now
 
@@ -255,7 +265,7 @@ This changes the recommendation again:
 - running another pairwise/listwise retrain before understanding why rounds 5
   and 6 both failed replay
 - adding margin/fallback selector policies unless they pass cached replay first
-- promoting round 7 from cached replay alone
+- promoting round 7 after the fresh gate tied `K=8`
 
 ## Bottom Line
 
@@ -279,9 +289,9 @@ So the clearest path from here is:
 - treat hybrid pairwise round 5 as a useful negative result
 - treat conservative ranking round 6 as a second negative result
 - treat fixed-round-4 selector heuristics as a third useful negative result
-- treat focused pointwise round 7 as the leading provisional successor
-- run fresh multiseed round-4-vs-round-7 evaluation before promotion
+- treat focused pointwise round 7 as a useful but non-promoted diagnostic
+- analyze why round 7 helps some seeds but regresses seed `56`
 
-If round 7 passes the fresh gate, it becomes the new best paper-facing
-candidate. If it fails, round 4 remains the stable result and we should look for
-new signal beyond small verifier-only training changes.
+Round 4 remains the stable paper-facing verifier. If we continue improving the
+verifier, the next step should be targeted row-level analysis of round 7's fresh
+wins/losses, not promotion and not another blind scale-up.
