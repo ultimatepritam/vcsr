@@ -1,0 +1,1110 @@
+{
+  "experiment": {
+    "name": "vcsr_bestofk_round3_holdout_eval",
+    "seed": 62
+  },
+  "dataset": {
+    "split": "test",
+    "domains": [
+      "blocksworld",
+      "gripper"
+    ],
+    "rows_evaluated": 50
+  },
+  "generation": {
+    "configured_total_k": 8,
+    "evaluated_k_values": [
+      1,
+      4,
+      8
+    ]
+  },
+  "verifier": {
+    "selection_metadata": "results/verifier/best_current/selection.yaml"
+  },
+  "comparisons": {
+    "1": {
+      "policies": {
+        "greedy_first": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 48,
+            "solve_count": 0,
+            "equiv_count": 23,
+            "error_count": 2,
+            "parse_rate": 0.96,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.46,
+            "equiv_given_parse": 0.4791666666666667
+          },
+          "stratified": {
+            "all": {
+              "total": 50,
+              "parse_count": 48,
+              "solve_count": 0,
+              "equiv_count": 23,
+              "error_count": 2,
+              "parse_rate": 0.96,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.46,
+              "equiv_given_parse": 0.4791666666666667
+            },
+            "domain=blocksworld": {
+              "total": 26,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 23,
+              "error_count": 2,
+              "parse_rate": 0.9230769230769231,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.8846153846153846,
+              "equiv_given_parse": 0.9583333333333334
+            },
+            "domain=gripper": {
+              "total": 24,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=abstract": {
+              "total": 24,
+              "parse_count": 22,
+              "solve_count": 0,
+              "equiv_count": 9,
+              "error_count": 2,
+              "parse_rate": 0.9166666666666666,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.375,
+              "equiv_given_parse": 0.4090909090909091
+            },
+            "goal=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "init=abstract": {
+              "total": 24,
+              "parse_count": 22,
+              "solve_count": 0,
+              "equiv_count": 9,
+              "error_count": 2,
+              "parse_rate": 0.9166666666666666,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.375,
+              "equiv_given_parse": 0.4090909090909091
+            },
+            "init=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "style=abstract/abstract": {
+              "total": 24,
+              "parse_count": 22,
+              "solve_count": 0,
+              "equiv_count": 9,
+              "error_count": 2,
+              "parse_rate": 0.9166666666666666,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.375,
+              "equiv_given_parse": 0.4090909090909091
+            },
+            "style=explicit/explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 0.96,
+            "avg_equivalent_candidates": 0.46,
+            "oracle_bestofk_equiv_rate": 0.46
+          }
+        },
+        "random_parseable": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 48,
+            "solve_count": 0,
+            "equiv_count": 23,
+            "error_count": 2,
+            "parse_rate": 0.96,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.46,
+            "equiv_given_parse": 0.4791666666666667
+          },
+          "stratified": {
+            "all": {
+              "total": 50,
+              "parse_count": 48,
+              "solve_count": 0,
+              "equiv_count": 23,
+              "error_count": 2,
+              "parse_rate": 0.96,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.46,
+              "equiv_given_parse": 0.4791666666666667
+            },
+            "domain=blocksworld": {
+              "total": 26,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 23,
+              "error_count": 2,
+              "parse_rate": 0.9230769230769231,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.8846153846153846,
+              "equiv_given_parse": 0.9583333333333334
+            },
+            "domain=gripper": {
+              "total": 24,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=abstract": {
+              "total": 24,
+              "parse_count": 22,
+              "solve_count": 0,
+              "equiv_count": 9,
+              "error_count": 2,
+              "parse_rate": 0.9166666666666666,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.375,
+              "equiv_given_parse": 0.4090909090909091
+            },
+            "goal=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "init=abstract": {
+              "total": 24,
+              "parse_count": 22,
+              "solve_count": 0,
+              "equiv_count": 9,
+              "error_count": 2,
+              "parse_rate": 0.9166666666666666,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.375,
+              "equiv_given_parse": 0.4090909090909091
+            },
+            "init=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "style=abstract/abstract": {
+              "total": 24,
+              "parse_count": 22,
+              "solve_count": 0,
+              "equiv_count": 9,
+              "error_count": 2,
+              "parse_rate": 0.9166666666666666,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.375,
+              "equiv_given_parse": 0.4090909090909091
+            },
+            "style=explicit/explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 0.96,
+            "avg_equivalent_candidates": 0.46,
+            "oracle_bestofk_equiv_rate": 0.46
+          }
+        },
+        "verifier_ranked": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 48,
+            "solve_count": 0,
+            "equiv_count": 23,
+            "error_count": 2,
+            "parse_rate": 0.96,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.46,
+            "equiv_given_parse": 0.4791666666666667
+          },
+          "stratified": {
+            "all": {
+              "total": 50,
+              "parse_count": 48,
+              "solve_count": 0,
+              "equiv_count": 23,
+              "error_count": 2,
+              "parse_rate": 0.96,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.46,
+              "equiv_given_parse": 0.4791666666666667
+            },
+            "domain=blocksworld": {
+              "total": 26,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 23,
+              "error_count": 2,
+              "parse_rate": 0.9230769230769231,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.8846153846153846,
+              "equiv_given_parse": 0.9583333333333334
+            },
+            "domain=gripper": {
+              "total": 24,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=abstract": {
+              "total": 24,
+              "parse_count": 22,
+              "solve_count": 0,
+              "equiv_count": 9,
+              "error_count": 2,
+              "parse_rate": 0.9166666666666666,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.375,
+              "equiv_given_parse": 0.4090909090909091
+            },
+            "goal=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "init=abstract": {
+              "total": 24,
+              "parse_count": 22,
+              "solve_count": 0,
+              "equiv_count": 9,
+              "error_count": 2,
+              "parse_rate": 0.9166666666666666,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.375,
+              "equiv_given_parse": 0.4090909090909091
+            },
+            "init=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "style=abstract/abstract": {
+              "total": 24,
+              "parse_count": 22,
+              "solve_count": 0,
+              "equiv_count": 9,
+              "error_count": 2,
+              "parse_rate": 0.9166666666666666,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.375,
+              "equiv_given_parse": 0.4090909090909091
+            },
+            "style=explicit/explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 0.96,
+            "avg_equivalent_candidates": 0.46,
+            "oracle_bestofk_equiv_rate": 0.46
+          }
+        }
+      }
+    },
+    "4": {
+      "policies": {
+        "greedy_first": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 48,
+            "solve_count": 0,
+            "equiv_count": 23,
+            "error_count": 2,
+            "parse_rate": 0.96,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.46,
+            "equiv_given_parse": 0.4791666666666667
+          },
+          "stratified": {
+            "all": {
+              "total": 50,
+              "parse_count": 48,
+              "solve_count": 0,
+              "equiv_count": 23,
+              "error_count": 2,
+              "parse_rate": 0.96,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.46,
+              "equiv_given_parse": 0.4791666666666667
+            },
+            "domain=blocksworld": {
+              "total": 26,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 23,
+              "error_count": 2,
+              "parse_rate": 0.9230769230769231,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.8846153846153846,
+              "equiv_given_parse": 0.9583333333333334
+            },
+            "domain=gripper": {
+              "total": 24,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=abstract": {
+              "total": 24,
+              "parse_count": 22,
+              "solve_count": 0,
+              "equiv_count": 9,
+              "error_count": 2,
+              "parse_rate": 0.9166666666666666,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.375,
+              "equiv_given_parse": 0.4090909090909091
+            },
+            "goal=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "init=abstract": {
+              "total": 24,
+              "parse_count": 22,
+              "solve_count": 0,
+              "equiv_count": 9,
+              "error_count": 2,
+              "parse_rate": 0.9166666666666666,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.375,
+              "equiv_given_parse": 0.4090909090909091
+            },
+            "init=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "style=abstract/abstract": {
+              "total": 24,
+              "parse_count": 22,
+              "solve_count": 0,
+              "equiv_count": 9,
+              "error_count": 2,
+              "parse_rate": 0.9166666666666666,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.375,
+              "equiv_given_parse": 0.4090909090909091
+            },
+            "style=explicit/explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 3.82,
+            "avg_equivalent_candidates": 1.68,
+            "oracle_bestofk_equiv_rate": 0.5
+          }
+        },
+        "random_parseable": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 49,
+            "solve_count": 0,
+            "equiv_count": 22,
+            "error_count": 1,
+            "parse_rate": 0.98,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.44,
+            "equiv_given_parse": 0.4489795918367347
+          },
+          "stratified": {
+            "all": {
+              "total": 50,
+              "parse_count": 49,
+              "solve_count": 0,
+              "equiv_count": 22,
+              "error_count": 1,
+              "parse_rate": 0.98,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.44,
+              "equiv_given_parse": 0.4489795918367347
+            },
+            "domain=blocksworld": {
+              "total": 26,
+              "parse_count": 25,
+              "solve_count": 0,
+              "equiv_count": 22,
+              "error_count": 1,
+              "parse_rate": 0.9615384615384616,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.8461538461538461,
+              "equiv_given_parse": 0.88
+            },
+            "domain=gripper": {
+              "total": 24,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=abstract": {
+              "total": 24,
+              "parse_count": 23,
+              "solve_count": 0,
+              "equiv_count": 8,
+              "error_count": 1,
+              "parse_rate": 0.9583333333333334,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.34782608695652173
+            },
+            "goal=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "init=abstract": {
+              "total": 24,
+              "parse_count": 23,
+              "solve_count": 0,
+              "equiv_count": 8,
+              "error_count": 1,
+              "parse_rate": 0.9583333333333334,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.34782608695652173
+            },
+            "init=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "style=abstract/abstract": {
+              "total": 24,
+              "parse_count": 23,
+              "solve_count": 0,
+              "equiv_count": 8,
+              "error_count": 1,
+              "parse_rate": 0.9583333333333334,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.34782608695652173
+            },
+            "style=explicit/explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 3.82,
+            "avg_equivalent_candidates": 1.68,
+            "oracle_bestofk_equiv_rate": 0.5
+          }
+        },
+        "verifier_ranked": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 49,
+            "solve_count": 0,
+            "equiv_count": 24,
+            "error_count": 1,
+            "parse_rate": 0.98,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.48,
+            "equiv_given_parse": 0.4897959183673469
+          },
+          "stratified": {
+            "all": {
+              "total": 50,
+              "parse_count": 49,
+              "solve_count": 0,
+              "equiv_count": 24,
+              "error_count": 1,
+              "parse_rate": 0.98,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.48,
+              "equiv_given_parse": 0.4897959183673469
+            },
+            "domain=blocksworld": {
+              "total": 26,
+              "parse_count": 25,
+              "solve_count": 0,
+              "equiv_count": 24,
+              "error_count": 1,
+              "parse_rate": 0.9615384615384616,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.9230769230769231,
+              "equiv_given_parse": 0.96
+            },
+            "domain=gripper": {
+              "total": 24,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=abstract": {
+              "total": 24,
+              "parse_count": 23,
+              "solve_count": 0,
+              "equiv_count": 10,
+              "error_count": 1,
+              "parse_rate": 0.9583333333333334,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.4166666666666667,
+              "equiv_given_parse": 0.43478260869565216
+            },
+            "goal=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "init=abstract": {
+              "total": 24,
+              "parse_count": 23,
+              "solve_count": 0,
+              "equiv_count": 10,
+              "error_count": 1,
+              "parse_rate": 0.9583333333333334,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.4166666666666667,
+              "equiv_given_parse": 0.43478260869565216
+            },
+            "init=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "style=abstract/abstract": {
+              "total": 24,
+              "parse_count": 23,
+              "solve_count": 0,
+              "equiv_count": 10,
+              "error_count": 1,
+              "parse_rate": 0.9583333333333334,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.4166666666666667,
+              "equiv_given_parse": 0.43478260869565216
+            },
+            "style=explicit/explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 3.82,
+            "avg_equivalent_candidates": 1.68,
+            "oracle_bestofk_equiv_rate": 0.5
+          }
+        }
+      }
+    },
+    "8": {
+      "policies": {
+        "greedy_first": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 48,
+            "solve_count": 0,
+            "equiv_count": 23,
+            "error_count": 2,
+            "parse_rate": 0.96,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.46,
+            "equiv_given_parse": 0.4791666666666667
+          },
+          "stratified": {
+            "all": {
+              "total": 50,
+              "parse_count": 48,
+              "solve_count": 0,
+              "equiv_count": 23,
+              "error_count": 2,
+              "parse_rate": 0.96,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.46,
+              "equiv_given_parse": 0.4791666666666667
+            },
+            "domain=blocksworld": {
+              "total": 26,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 23,
+              "error_count": 2,
+              "parse_rate": 0.9230769230769231,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.8846153846153846,
+              "equiv_given_parse": 0.9583333333333334
+            },
+            "domain=gripper": {
+              "total": 24,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=abstract": {
+              "total": 24,
+              "parse_count": 22,
+              "solve_count": 0,
+              "equiv_count": 9,
+              "error_count": 2,
+              "parse_rate": 0.9166666666666666,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.375,
+              "equiv_given_parse": 0.4090909090909091
+            },
+            "goal=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "init=abstract": {
+              "total": 24,
+              "parse_count": 22,
+              "solve_count": 0,
+              "equiv_count": 9,
+              "error_count": 2,
+              "parse_rate": 0.9166666666666666,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.375,
+              "equiv_given_parse": 0.4090909090909091
+            },
+            "init=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "style=abstract/abstract": {
+              "total": 24,
+              "parse_count": 22,
+              "solve_count": 0,
+              "equiv_count": 9,
+              "error_count": 2,
+              "parse_rate": 0.9166666666666666,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.375,
+              "equiv_given_parse": 0.4090909090909091
+            },
+            "style=explicit/explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 7.68,
+            "avg_equivalent_candidates": 3.36,
+            "oracle_bestofk_equiv_rate": 0.5
+          }
+        },
+        "random_parseable": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solve_count": 0,
+            "equiv_count": 22,
+            "error_count": 0,
+            "parse_rate": 1.0,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.44,
+            "equiv_given_parse": 0.44
+          },
+          "stratified": {
+            "all": {
+              "total": 50,
+              "parse_count": 50,
+              "solve_count": 0,
+              "equiv_count": 22,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.44,
+              "equiv_given_parse": 0.44
+            },
+            "domain=blocksworld": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 22,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.8461538461538461,
+              "equiv_given_parse": 0.8461538461538461
+            },
+            "domain=gripper": {
+              "total": 24,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=abstract": {
+              "total": 24,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 8,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "goal=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "init=abstract": {
+              "total": 24,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 8,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "init=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "style=abstract/abstract": {
+              "total": 24,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 8,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "style=explicit/explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 7.68,
+            "avg_equivalent_candidates": 3.36,
+            "oracle_bestofk_equiv_rate": 0.5
+          }
+        },
+        "verifier_ranked": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solve_count": 0,
+            "equiv_count": 25,
+            "error_count": 0,
+            "parse_rate": 1.0,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.5
+          },
+          "stratified": {
+            "all": {
+              "total": 50,
+              "parse_count": 50,
+              "solve_count": 0,
+              "equiv_count": 25,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5,
+              "equiv_given_parse": 0.5
+            },
+            "domain=blocksworld": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 25,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.9615384615384616,
+              "equiv_given_parse": 0.9615384615384616
+            },
+            "domain=gripper": {
+              "total": 24,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=abstract": {
+              "total": 24,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 11,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.4583333333333333,
+              "equiv_given_parse": 0.4583333333333333
+            },
+            "goal=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "init=abstract": {
+              "total": 24,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 11,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.4583333333333333,
+              "equiv_given_parse": 0.4583333333333333
+            },
+            "init=explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            },
+            "style=abstract/abstract": {
+              "total": 24,
+              "parse_count": 24,
+              "solve_count": 0,
+              "equiv_count": 11,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.4583333333333333,
+              "equiv_given_parse": 0.4583333333333333
+            },
+            "style=explicit/explicit": {
+              "total": 26,
+              "parse_count": 26,
+              "solve_count": 0,
+              "equiv_count": 14,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.5384615384615384,
+              "equiv_given_parse": 0.5384615384615384
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 7.68,
+            "avg_equivalent_candidates": 3.36,
+            "oracle_bestofk_equiv_rate": 0.5
+          }
+        }
+      }
+    }
+  }
+}

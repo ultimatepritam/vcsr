@@ -314,6 +314,23 @@ Result:
 - gripper repair equivalence: `0.2500`
 - accepted by cached pilot gate: `true`
 
+Fresh fixed-pool repair gate:
+
+- generated fresh candidate pools once for seeds `62`, `63`, and `64`
+- repaired only round-4 `K=8` selected failures on those same pools
+- rows per seed: `50`
+- plain round-4 `verifier_ranked` mean `K=8`: `0.5000`
+- repair-augmented mean `K=8`: `0.5467`
+- mean delta: `+0.0467`
+- per-seed deltas: `+0.0000`, `+0.0600`, `+0.0800`
+- repaired failures: `73`
+- helped / hurt / tied: `7 / 0 / 66`
+- repair parse rate: `1.0000`
+- blocksworld repair equivalence: `0.7000` (`7 / 10`)
+- gripper repair equivalence: `0.0000` (`0 / 63`)
+- acceptance: **not accepted yet**, because the mean gain is below the pre-set
+  `+0.10` threshold and the improvement is domain-concentrated
+
 This changes the recommendation again:
 
 - the round-4-style pointwise direction is worth continuing
@@ -329,6 +346,8 @@ This changes the recommendation again:
 - repair is now the strongest next direction because it adds new information at
   the failure point rather than trying to squeeze more from the same scalar
   verifier score
+- but repair should become domain-aware before it is promoted or scaled:
+  blocksworld repair works; gripper repair currently does not
 
 ## What We Should Not Over-Prioritize Right Now
 
@@ -344,6 +363,7 @@ This changes the recommendation again:
 - adding margin/fallback selector policies unless they pass cached replay first
 - promoting round 7 after the fresh gate tied `K=8`
 - claiming repair is solved from cached failures alone
+- scaling the current generic repair prompt over gripper-heavy pools
 
 ## Bottom Line
 
@@ -376,11 +396,14 @@ So the clearest path from here is:
 - treat the cached repair pilot as the first strong Phase 3 positive signal:
   `23 / 30` known round-4 failures were repaired to equivalent PDDL with
   `29 / 30` parseable repairs
-- do not promote a repair policy yet, because the pilot used cached known
-  failures and must pass a fresh fixed-pool gate
+- treat the fresh repair gate as a partial positive result: it improved mean
+  `K=8` from `0.5000` to `0.5467` with zero hurt rows, but did not pass the
+  stricter acceptance gate
+- do not promote the generic repair policy yet, because its gains are entirely
+  from blocksworld and gripper repair failed on this fresh gate
 
 Round 4 remains the stable paper-facing verifier. The next step should be a
-fresh fixed-pool repair gate: generate new pools once, select round-4 failures,
-repair them once, and compare original round-4 selection against repair-augmented
-selection on identical candidates. More checkpoint training and simple planner
-reranking are both lower-priority now.
+domain-aware repair iteration: preserve the blocksworld repair recipe, diagnose
+why gripper repairs remain non-equivalent despite parsing, and add a gripper
+specific repair prompt or structured feedback before another fresh gate. More
+checkpoint training and simple planner reranking are both lower-priority now.

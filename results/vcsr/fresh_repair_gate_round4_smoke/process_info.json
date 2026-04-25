@@ -1,0 +1,6 @@
+{
+  "pid": 24516,
+  "started_at": 1777120529.119768,
+  "config": "configs\\vcsr_fresh_repair_gate_smoke.yaml",
+  "output_dir": "results\\vcsr\\fresh_repair_gate_round4_smoke"
+}

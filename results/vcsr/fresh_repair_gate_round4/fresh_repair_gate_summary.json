@@ -1,0 +1,195 @@
+{
+  "base_config": "configs/vcsr_bestofk_round3_holdout_eval.yaml",
+  "rows_per_seed": 50,
+  "seeds": [
+    62,
+    63,
+    64
+  ],
+  "seed_reports": [
+    {
+      "seed": 62,
+      "candidate_dump": "results\\vcsr\\fresh_repair_gate_round4\\seed_62\\pool\\candidate_dump.jsonl",
+      "repair_dir": "results\\vcsr\\fresh_repair_gate_round4\\seed_62\\repair",
+      "rows": 50,
+      "baseline_k8_equiv_rate": 0.5,
+      "repair_augmented_k8_equiv_rate": 0.5,
+      "delta_k8": 0.0,
+      "repair_metrics": {
+        "total": 26,
+        "original_equiv_count": 0,
+        "repair_parse_count": 26,
+        "repair_solvable_count": 9,
+        "repair_equiv_count": 0,
+        "original_equiv_rate": 0.0,
+        "repair_parse_rate": 1.0,
+        "repair_solvable_rate": 0.34615384615384615,
+        "repair_equiv_rate": 0.0,
+        "repair_equiv_given_parse": 0.0,
+        "helped": 0,
+        "hurt": 0,
+        "tied": 26
+      },
+      "outcome_counts": [
+        [
+          "both_fail",
+          26
+        ]
+      ]
+    },
+    {
+      "seed": 63,
+      "candidate_dump": "results\\vcsr\\fresh_repair_gate_round4\\seed_63\\pool\\candidate_dump.jsonl",
+      "repair_dir": "results\\vcsr\\fresh_repair_gate_round4\\seed_63\\repair",
+      "rows": 50,
+      "baseline_k8_equiv_rate": 0.5,
+      "repair_augmented_k8_equiv_rate": 0.56,
+      "delta_k8": 0.06000000000000005,
+      "repair_metrics": {
+        "total": 23,
+        "original_equiv_count": 0,
+        "repair_parse_count": 23,
+        "repair_solvable_count": 10,
+        "repair_equiv_count": 3,
+        "original_equiv_rate": 0.0,
+        "repair_parse_rate": 1.0,
+        "repair_solvable_rate": 0.43478260869565216,
+        "repair_equiv_rate": 0.13043478260869565,
+        "repair_equiv_given_parse": 0.13043478260869565,
+        "helped": 3,
+        "hurt": 0,
+        "tied": 20
+      },
+      "outcome_counts": [
+        [
+          "both_fail",
+          20
+        ],
+        [
+          "repair_helped",
+          3
+        ]
+      ]
+    },
+    {
+      "seed": 64,
+      "candidate_dump": "results\\vcsr\\fresh_repair_gate_round4\\seed_64\\pool\\candidate_dump.jsonl",
+      "repair_dir": "results\\vcsr\\fresh_repair_gate_round4\\seed_64\\repair",
+      "rows": 50,
+      "baseline_k8_equiv_rate": 0.5,
+      "repair_augmented_k8_equiv_rate": 0.58,
+      "delta_k8": 0.07999999999999996,
+      "repair_metrics": {
+        "total": 24,
+        "original_equiv_count": 0,
+        "repair_parse_count": 24,
+        "repair_solvable_count": 14,
+        "repair_equiv_count": 4,
+        "original_equiv_rate": 0.0,
+        "repair_parse_rate": 1.0,
+        "repair_solvable_rate": 0.5833333333333334,
+        "repair_equiv_rate": 0.16666666666666666,
+        "repair_equiv_given_parse": 0.16666666666666666,
+        "helped": 4,
+        "hurt": 0,
+        "tied": 20
+      },
+      "outcome_counts": [
+        [
+          "both_fail",
+          20
+        ],
+        [
+          "repair_helped",
+          4
+        ]
+      ]
+    }
+  ],
+  "mean_metrics": {
+    "baseline_k8_equiv_rate": 0.5,
+    "repair_augmented_k8_equiv_rate": 0.5466666666666666,
+    "mean_delta_k8": 0.04666666666666667,
+    "baseline_k8_values": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "repair_augmented_k8_values": [
+      0.5,
+      0.56,
+      0.58
+    ],
+    "repair_parse_rate": 1.0,
+    "repair_equiv_rate": 0.0958904109589041,
+    "total_helped": 7,
+    "total_hurt": 0,
+    "total_repaired_failures": 73
+  },
+  "domain_breakdown": {
+    "blocksworld": {
+      "total": 10,
+      "original_equiv_count": 0,
+      "repair_parse_count": 10,
+      "repair_solvable_count": 10,
+      "repair_equiv_count": 7,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 1.0,
+      "repair_equiv_rate": 0.7,
+      "repair_equiv_given_parse": 0.7,
+      "helped": 7,
+      "hurt": 0,
+      "tied": 3
+    },
+    "gripper": {
+      "total": 63,
+      "original_equiv_count": 0,
+      "repair_parse_count": 63,
+      "repair_solvable_count": 23,
+      "repair_equiv_count": 0,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 0.36507936507936506,
+      "repair_equiv_rate": 0.0,
+      "repair_equiv_given_parse": 0.0,
+      "helped": 0,
+      "hurt": 0,
+      "tied": 63
+    }
+  },
+  "style_breakdown": {
+    "abstract/abstract": {
+      "total": 43,
+      "original_equiv_count": 0,
+      "repair_parse_count": 43,
+      "repair_solvable_count": 31,
+      "repair_equiv_count": 7,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 0.7209302325581395,
+      "repair_equiv_rate": 0.16279069767441862,
+      "repair_equiv_given_parse": 0.16279069767441862,
+      "helped": 7,
+      "hurt": 0,
+      "tied": 36
+    },
+    "explicit/explicit": {
+      "total": 30,
+      "original_equiv_count": 0,
+      "repair_parse_count": 30,
+      "repair_solvable_count": 2,
+      "repair_equiv_count": 0,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 0.06666666666666667,
+      "repair_equiv_rate": 0.0,
+      "repair_equiv_given_parse": 0.0,
+      "helped": 0,
+      "hurt": 0,
+      "tied": 30
+    }
+  },
+  "accepted": false,
+  "recommendation": "Repair does not yet pass the fresh fixed-pool gate; inspect failures before scaling repair."
+}

@@ -1881,12 +1881,62 @@ Interpretation:
   where candidate pools are generated once, round-4 failures are repaired, and
   the repaired policy is compared against the original round-4 selection.
 
+### Phase 3 Fresh Fixed-Pool Repair Gate
+
+- Goal: test whether the cached repair result survives fresh candidate pools
+  generated once per seed.
+- Config:
+  [configs/vcsr_fresh_repair_gate.yaml](/e:/Engineering/vcsr/configs/vcsr_fresh_repair_gate.yaml)
+- Smoke config:
+  [configs/vcsr_fresh_repair_gate_smoke.yaml](/e:/Engineering/vcsr/configs/vcsr_fresh_repair_gate_smoke.yaml)
+- Script:
+  [scripts/run_fresh_repair_gate.py](/e:/Engineering/vcsr/scripts/run_fresh_repair_gate.py)
+- Output:
+  [results/vcsr/fresh_repair_gate_round4](/e:/Engineering/vcsr/results/vcsr/fresh_repair_gate_round4)
+- Seeds: `62`, `63`, `64`
+- Rows per seed: `50`
+- Status: completed, **positive but below acceptance gate**
+
+Mean `K=8` equivalence:
+
+- plain round-4 `verifier_ranked`: `0.5000`
+- repair-augmented selection: `0.5467`
+- mean delta: `+0.0467`
+
+Per-seed `K=8`:
+
+- seed `62`: `0.5000 -> 0.5000`
+- seed `63`: `0.5000 -> 0.5600`
+- seed `64`: `0.5000 -> 0.5800`
+
+Repair outcomes:
+
+- total repaired failures: `73`
+- helped / hurt / tied: `7 / 0 / 66`
+- repair parse rate: `1.0000`
+- repair equivalence rate over repaired failures: `0.0959`
+- `blocksworld`: `7 / 10` helped, repair equivalence `0.7000`
+- `gripper`: `0 / 63` helped, repair equivalence `0.0000`
+
+Interpretation:
+
+- Repair is real and safe on this gate: no rows were hurt, and two of three
+  fresh seeds improved.
+- The effect is not yet strong enough to accept as the next main system policy:
+  the mean gain is below the pre-set `+0.10` threshold.
+- The repair prompt appears highly effective for blocksworld failures but
+  ineffective for gripper failures.
+- The next repair work should be domain-aware: keep the current repair approach
+  for blocksworld, but design a gripper-specific repair prompt or structured
+  feedback before scaling.
+
 ## Recommended Next Entries
 
 - Keep round 4 as the promoted default.
 - If continuing model work, do not blindly repeat round 7. The identical-pool
   gate shows only a tiny `K=8` gain with a `K=4` regression.
-- Run the fresh fixed-pool repair gate next; the cached 30-row repair pilot
-  passed strongly, but it is not final evidence yet.
+- Analyze and improve repair by domain. The fresh repair gate improved mean
+  `K=8` without hurting rows, but missed the acceptance threshold because
+  gripper repairs failed almost completely.
 - Selective prediction / abstention experiments only after selection or repair
   has a stronger baseline.

@@ -159,12 +159,14 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] **Run fresh identical-pool round 4 vs round 7 verifier comparison**
 - [x] **Run Phase 3 cached planner/search ablation with round 4 frozen**
 - [x] **Run Phase 3 cached repair pilot with round 4 frozen**
+- [x] **Run Phase 3 fresh fixed-pool repair gate**
 
 ### Phase 3: Search and Repair (Weeks 5-6)
 
 - [x] Best-of-K + planner-filter ablations
 - [x] Cached repair loop + analysis
-- [ ] Fresh fixed-pool repair gate
+- [x] Fresh fixed-pool repair gate
+- [ ] Domain-aware repair iteration
 
 ### Phase 4: Paper and Release (Weeks 7-8)
 
@@ -174,10 +176,10 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Run the fresh fixed-pool repair gate**
-   The cached repair pilot passed strongly, converting `23 / 30` round-4
-   selected failures into equivalent repaired PDDL. The next useful check is
-   whether this survives fresh fixed-pool evaluation.
+1. **Run a domain-aware repair iteration**
+   The fresh fixed-pool repair gate improved mean `K=8` without hurting rows,
+   but all successes were blocksworld. The next useful step is a
+   gripper-specific repair diagnosis/prompt, not more verifier training.
 2. **Replay remains the checkpoint-selection rule**
    Continue to judge new verifier checkpoints primarily by replay on cached
    pools, not by offline AUC alone.
@@ -255,10 +257,18 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
   non-equivalent PDDL, and generated one repair per row. Repair parse rate was
   `0.9667`, repair equivalence was `0.7667`, and helped / hurt / tied was
   `23 / 0 / 7`.
+- Phase 3 fresh fixed-pool repair gate is complete under
+  `results/vcsr/fresh_repair_gate_round4/`. It generated fresh pools once for
+  seeds `62`, `63`, and `64`, then repaired round-4 `K=8` selected failures on
+  those same pools. Mean `K=8` improved from `0.5000` to `0.5467`, with
+  helped / hurt / tied `7 / 0 / 66`, but it did not pass the stricter
+  acceptance gate. All helped rows were blocksworld; gripper repair was
+  `0 / 63`.
 - `results/verifier/best_current/selection.yaml` should remain pointed at round
   4.
 - Current next-step bias: do not blindly retrain or add more simple selector
-  heuristics. Run the fresh fixed-pool repair gate next.
+  heuristics. Improve repair with domain-specific feedback, especially for
+  gripper.
 
 ## Long-Run Visibility Rule
 

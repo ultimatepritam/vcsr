@@ -60,6 +60,11 @@ tools/             External tool installs (Fast Downward, VAL)
   failures into equivalent PDDL, with `29 / 30` repaired candidates parseable.
   This is promising but still needs a fresh fixed-pool repair gate before it is
   treated as a paper-facing system result.
+- The fresh fixed-pool repair gate is complete:
+  repair-augmented selection improved mean `K=8` from `0.5000` to `0.5467`
+  across seeds `62-64`, with zero hurt rows. It did not pass the stricter
+  acceptance gate because the gain was below `+0.10` and all successes were
+  blocksworld; gripper repair failed on this gate.
 
 ## Quick Start
 
@@ -179,6 +184,9 @@ python scripts/analyze_search_ablation.py
 
 # 34. Cached repair pilot with round 4 frozen
 python scripts/run_repair_pilot.py --config configs/vcsr_repair_pilot.yaml
+
+# 35. Fresh fixed-pool repair gate
+python scripts/run_fresh_repair_gate.py --config configs/vcsr_fresh_repair_gate.yaml
 ```
 
 ## Windows E: Drive Setup

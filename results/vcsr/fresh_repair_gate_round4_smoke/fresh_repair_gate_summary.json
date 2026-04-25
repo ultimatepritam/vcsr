@@ -1,0 +1,110 @@
+{
+  "base_config": "configs/vcsr_bestofk_round3_holdout_eval.yaml",
+  "rows_per_seed": 5,
+  "seeds": [
+    65
+  ],
+  "seed_reports": [
+    {
+      "seed": 65,
+      "candidate_dump": "results\\vcsr\\fresh_repair_gate_round4_smoke\\seed_65\\pool\\candidate_dump.jsonl",
+      "repair_dir": "results\\vcsr\\fresh_repair_gate_round4_smoke\\seed_65\\repair",
+      "rows": 5,
+      "baseline_k8_equiv_rate": 0.2,
+      "repair_augmented_k8_equiv_rate": 0.4,
+      "delta_k8": 0.2,
+      "repair_metrics": {
+        "total": 2,
+        "original_equiv_count": 0,
+        "repair_parse_count": 2,
+        "repair_solvable_count": 2,
+        "repair_equiv_count": 1,
+        "original_equiv_rate": 0.0,
+        "repair_parse_rate": 1.0,
+        "repair_solvable_rate": 1.0,
+        "repair_equiv_rate": 0.5,
+        "repair_equiv_given_parse": 0.5,
+        "helped": 1,
+        "hurt": 0,
+        "tied": 1
+      },
+      "outcome_counts": [
+        [
+          "repair_helped",
+          1
+        ],
+        [
+          "both_fail",
+          1
+        ]
+      ]
+    }
+  ],
+  "mean_metrics": {
+    "baseline_k8_equiv_rate": 0.2,
+    "repair_augmented_k8_equiv_rate": 0.4,
+    "mean_delta_k8": 0.2,
+    "baseline_k8_values": [
+      0.2
+    ],
+    "repair_augmented_k8_values": [
+      0.4
+    ],
+    "repair_parse_rate": 1.0,
+    "repair_equiv_rate": 0.5,
+    "total_helped": 1,
+    "total_hurt": 0,
+    "total_repaired_failures": 2
+  },
+  "domain_breakdown": {
+    "blocksworld": {
+      "total": 1,
+      "original_equiv_count": 0,
+      "repair_parse_count": 1,
+      "repair_solvable_count": 1,
+      "repair_equiv_count": 1,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 1.0,
+      "repair_equiv_rate": 1.0,
+      "repair_equiv_given_parse": 1.0,
+      "helped": 1,
+      "hurt": 0,
+      "tied": 0
+    },
+    "gripper": {
+      "total": 1,
+      "original_equiv_count": 0,
+      "repair_parse_count": 1,
+      "repair_solvable_count": 1,
+      "repair_equiv_count": 0,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 1.0,
+      "repair_equiv_rate": 0.0,
+      "repair_equiv_given_parse": 0.0,
+      "helped": 0,
+      "hurt": 0,
+      "tied": 1
+    }
+  },
+  "style_breakdown": {
+    "abstract/abstract": {
+      "total": 2,
+      "original_equiv_count": 0,
+      "repair_parse_count": 2,
+      "repair_solvable_count": 2,
+      "repair_equiv_count": 1,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 1.0,
+      "repair_equiv_rate": 0.5,
+      "repair_equiv_given_parse": 0.5,
+      "helped": 1,
+      "hurt": 0,
+      "tied": 1
+    }
+  },
+  "accepted": false,
+  "recommendation": "Repair does not yet pass the fresh fixed-pool gate; inspect failures before scaling repair."
+}
