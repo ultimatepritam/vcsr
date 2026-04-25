@@ -54,7 +54,12 @@ tools/             External tool installs (Fast Downward, VAL)
   `best_current`.
 - Phase 3 cached planner/search ablation is complete:
   simple solvability-based policies did not beat round-4 `verifier_ranked`, so
-  the next system step is a small repair-loop pilot.
+  the next system step was a small repair-loop pilot.
+- Phase 3 cached repair pilot is complete:
+  one OpenRouter repair call converted `23 / 30` cached round-4 selected
+  failures into equivalent PDDL, with `29 / 30` repaired candidates parseable.
+  This is promising but still needs a fresh fixed-pool repair gate before it is
+  treated as a paper-facing system result.
 
 ## Quick Start
 
@@ -171,6 +176,9 @@ python scripts/run_fixed_pool_verifier_compare.py --config configs/vcsr_fixed_po
 
 # 33. Cached planner/search ablation with round 4 frozen
 python scripts/analyze_search_ablation.py
+
+# 34. Cached repair pilot with round 4 frozen
+python scripts/run_repair_pilot.py --config configs/vcsr_repair_pilot.yaml
 ```
 
 ## Windows E: Drive Setup

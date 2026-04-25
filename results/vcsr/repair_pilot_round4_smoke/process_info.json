@@ -1,0 +1,6 @@
+{
+  "pid": 24960,
+  "started_at": 1777118737.9094498,
+  "config": "configs\\vcsr_repair_pilot.yaml",
+  "output_dir": "results\\vcsr\\repair_pilot_round4_smoke"
+}

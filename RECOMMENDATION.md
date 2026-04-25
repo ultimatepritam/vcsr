@@ -291,6 +291,29 @@ Phase 3 cached search ablation:
   pool, so it failed the acceptance gate
 - no planner/search policy justifies fresh generation spend
 
+Phase 3 cached repair pilot:
+
+- selected cached `K=8` rows where promoted round-4 `verifier_ranked` chose
+  parseable but non-equivalent PDDL
+- kept round 4 frozen
+- did not train a verifier
+- did not generate new best-of-K pools
+- used one OpenRouter repair call per selected failure
+- prompt feedback included parse status, planner solvability, and verifier
+  score, but not gold PDDL or equivalence labels
+
+Result:
+
+- rows repaired: `30`
+- original selected equivalence: `0.0000`
+- repair parse rate: `0.9667`
+- repair equivalence rate: `0.7667`
+- repair equivalence given parse: `0.7931`
+- helped / hurt / tied: `23 / 0 / 7`
+- blocksworld repair equivalence: `0.8462`
+- gripper repair equivalence: `0.2500`
+- accepted by cached pilot gate: `true`
+
 This changes the recommendation again:
 
 - the round-4-style pointwise direction is worth continuing
@@ -303,6 +326,9 @@ This changes the recommendation again:
   justify promotion
 - simple planner/solvability search is also done, and it does not solve the
   remaining selector problem
+- repair is now the strongest next direction because it adds new information at
+  the failure point rather than trying to squeeze more from the same scalar
+  verifier score
 
 ## What We Should Not Over-Prioritize Right Now
 
@@ -317,10 +343,11 @@ This changes the recommendation again:
   and 6 both failed replay
 - adding margin/fallback selector policies unless they pass cached replay first
 - promoting round 7 after the fresh gate tied `K=8`
+- claiming repair is solved from cached failures alone
 
 ## Bottom Line
 
-My view is now cautiously positive.
+My view is now materially more positive, but still gated.
 
 Round 4 is not a failure.
 It moved the verifier in the right direction:
@@ -346,8 +373,14 @@ So the clearest path from here is:
   is below the promotion threshold because `K=4` regressed
 - treat the Phase 3 planner/search ablation as a negative result for simple
   solvability filtering
-- do not promote round 7 and do not blindly scale the same recipe again
+- treat the cached repair pilot as the first strong Phase 3 positive signal:
+  `23 / 30` known round-4 failures were repaired to equivalent PDDL with
+  `29 / 30` parseable repairs
+- do not promote a repair policy yet, because the pilot used cached known
+  failures and must pass a fresh fixed-pool gate
 
-Round 4 remains the stable paper-facing verifier. If we continue improving the
-system, the next step should be a small repair-loop pilot. More checkpoint
-training and simple planner reranking are both lower-priority now.
+Round 4 remains the stable paper-facing verifier. The next step should be a
+fresh fixed-pool repair gate: generate new pools once, select round-4 failures,
+repair them once, and compare original round-4 selection against repair-augmented
+selection on identical candidates. More checkpoint training and simple planner
+reranking are both lower-priority now.

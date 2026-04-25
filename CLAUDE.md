@@ -158,11 +158,13 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] **Analyze round-7 fresh gate row-level wins/losses**
 - [x] **Run fresh identical-pool round 4 vs round 7 verifier comparison**
 - [x] **Run Phase 3 cached planner/search ablation with round 4 frozen**
+- [x] **Run Phase 3 cached repair pilot with round 4 frozen**
 
 ### Phase 3: Search and Repair (Weeks 5-6)
 
-- [ ] Best-of-K + planner-filter ablations
-- [ ] Repair loop + analysis
+- [x] Best-of-K + planner-filter ablations
+- [x] Cached repair loop + analysis
+- [ ] Fresh fixed-pool repair gate
 
 ### Phase 4: Paper and Release (Weeks 7-8)
 
@@ -172,10 +174,10 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Start the small repair-loop pilot**
-   The Phase 3 cached search ablation is complete. Simple planner solvability
-   filtering did not pass, so the next useful system improvement is repair, not
-   another selector heuristic.
+1. **Run the fresh fixed-pool repair gate**
+   The cached repair pilot passed strongly, converting `23 / 30` round-4
+   selected failures into equivalent repaired PDDL. The next useful check is
+   whether this survives fresh fixed-pool evaluation.
 2. **Replay remains the checkpoint-selection rule**
    Continue to judge new verifier checkpoints primarily by replay on cached
    pools, not by offline AUC alone.
@@ -247,10 +249,16 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
   `results/vcsr/search_ablation_round4/`. Simple solvability-based policies did
   not pass the cached gate. `solvable_then_verifier` improved mean `K=8` only
   from `0.4714` to `0.4750`, and the gain came from just one row / one pool.
+- Phase 3 cached repair pilot is complete under
+  `results/vcsr/repair_pilot_round4/`. It kept round 4 frozen, selected cached
+  `K=8` failures where round-4 `verifier_ranked` chose parseable
+  non-equivalent PDDL, and generated one repair per row. Repair parse rate was
+  `0.9667`, repair equivalence was `0.7667`, and helped / hurt / tied was
+  `23 / 0 / 7`.
 - `results/verifier/best_current/selection.yaml` should remain pointed at round
   4.
 - Current next-step bias: do not blindly retrain or add more simple selector
-  heuristics. Build the small repair-loop pilot next.
+  heuristics. Run the fresh fixed-pool repair gate next.
 
 ## Long-Run Visibility Rule
 

@@ -1826,12 +1826,67 @@ Project takeaway:
 - Move to a small repair-loop pilot rather than more fixed-pool selector
   variants.
 
+### Phase 3 Cached Repair Pilot With Round 4 Frozen
+
+- Goal: test whether one targeted repair call can convert cached round-4
+  verifier-selected failures into equivalent PDDL.
+- Config:
+  [configs/vcsr_repair_pilot.yaml](/e:/Engineering/vcsr/configs/vcsr_repair_pilot.yaml)
+- Script:
+  [scripts/run_repair_pilot.py](/e:/Engineering/vcsr/scripts/run_repair_pilot.py)
+- Output:
+  [results/vcsr/repair_pilot_round4](/e:/Engineering/vcsr/results/vcsr/repair_pilot_round4)
+- Status: completed, **promising cached result**
+
+Setup:
+
+- round 4 remained frozen as `best_current`
+- no verifier training
+- no new best-of-K pool generation
+- selected cached `K=8` rows where round-4 `verifier_ranked` chose parseable
+  but non-equivalent PDDL
+- generated exactly one repair per selected failure through OpenRouter
+- repair prompt used parse status, planner solvability, and verifier score, but
+  did not reveal gold PDDL or equivalence labels
+
+Smoke result:
+
+- `2 / 2` repairs parsed
+- `2 / 2` repairs were equivalent
+- proxy-cleared OpenRouter calls succeeded after adding explicit proxy cleanup
+
+Full 30-row pilot:
+
+- rows repaired: `30`
+- original selected equivalence: `0.0000`
+- repair parse rate: `0.9667`
+- repair equivalence rate: `0.7667`
+- repair equivalence given parse: `0.7931`
+- helped / hurt / tied: `23 / 0 / 7`
+- accepted by pilot gate: `true`
+
+Breakdown:
+
+- `blocksworld`: `22 / 26` helped, repair equivalence `0.8462`
+- `gripper`: `1 / 4` helped, repair equivalence `0.2500`
+- `abstract/abstract`: `22 / 28` helped, repair equivalence `0.7857`
+- `explicit/explicit`: `1 / 2` helped, repair equivalence `0.5000`
+
+Interpretation:
+
+- Repair is now the strongest Phase 3 direction seen so far.
+- The result should not be treated as final paper evidence because these were
+  cached known failures selected for repairability.
+- It is strong enough to justify the next spend: a fresh fixed-pool repair gate
+  where candidate pools are generated once, round-4 failures are repaired, and
+  the repaired policy is compared against the original round-4 selection.
+
 ## Recommended Next Entries
 
 - Keep round 4 as the promoted default.
 - If continuing model work, do not blindly repeat round 7. The identical-pool
   gate shows only a tiny `K=8` gain with a `K=4` regression.
-- Start the small repair-loop pilot next; fixed-pool planner/search ablations
-  did not pass.
+- Run the fresh fixed-pool repair gate next; the cached 30-row repair pilot
+  passed strongly, but it is not final evidence yet.
 - Selective prediction / abstention experiments only after selection or repair
   has a stronger baseline.
