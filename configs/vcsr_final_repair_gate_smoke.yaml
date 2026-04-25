@@ -1,0 +1,13 @@
+base_config: configs/vcsr_bestofk_final_repair.yaml
+output_dir: results/vcsr/final_repair_gate_round4_smoke
+max_rows: 3
+seeds:
+  - 66
+force: false
+
+acceptance:
+  k: 8
+  min_mean_delta: 0.10
+  min_nonnegative_seeds: 1
+  max_large_regression: -0.05
+  min_repair_parse_rate: 0.90

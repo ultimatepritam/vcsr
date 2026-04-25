@@ -1,0 +1,6 @@
+{
+  "pid": 13752,
+  "started_at": 1777151428.642374,
+  "config": "configs/vcsr_bestofk_final_repair.yaml",
+  "output_dir": "results\\vcsr\\final_repair_gate_round4\\seed_55"
+}

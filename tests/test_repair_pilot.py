@@ -1,6 +1,7 @@
 import unittest
 
 from generation.prompts import make_repair_prompt
+from scripts.run_verifier_bestofk import should_attempt_repair
 from scripts.run_repair_pilot import RepairCase, build_feedback, select_repair_candidate_from_scored
 
 
@@ -96,6 +97,34 @@ class RepairPilotTests(unittest.TestCase):
         self.assertIn("(ball ballN)", prompt)
         self.assertIn("(gripper gripperN)", prompt)
         self.assertIn("room1, room2", prompt)
+
+    def test_repair_policy_does_not_repair_unparseable_selection(self) -> None:
+        self.assertFalse(
+            should_attempt_repair(
+                k=8,
+                selected_index=0,
+                selected_parseable=False,
+                repair_cfg={"enabled": True, "K": 8},
+            )
+        )
+
+    def test_repair_policy_only_repairs_configured_k(self) -> None:
+        self.assertFalse(
+            should_attempt_repair(
+                k=1,
+                selected_index=0,
+                selected_parseable=True,
+                repair_cfg={"enabled": True, "K": 8},
+            )
+        )
+        self.assertTrue(
+            should_attempt_repair(
+                k=8,
+                selected_index=0,
+                selected_parseable=True,
+                repair_cfg={"enabled": True, "K": 8},
+            )
+        )
 
 
 if __name__ == "__main__":

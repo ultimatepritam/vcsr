@@ -2,9 +2,9 @@
 
 This document captures the current project-level recommendation for VCSR after
 the first verifier-ranked best-of-K pilot, fixed-pool replay evaluation, four
-ranking-aligned verifier training rounds, the first repeated fresh held-out
-multi-seed comparison, a fixed-round-4 selector analysis, the focused
-pointwise round-7 replay gate, and the fresh round-4-vs-round-7 multiseed gate.
+ranking-aligned verifier training rounds, repeated fresh held-out comparisons,
+fixed-round-4 selector analysis, focused pointwise round 7, planner/search
+ablations, and the final repair-augmented VCSR gate.
 
 ## Goal
 
@@ -15,7 +15,9 @@ decisions:
 - rank multiple generated PDDL candidates for the same natural-language input
 - choose semantically equivalent candidates more reliably than greedy decoding
   or simple non-verifier baselines
-- later support abstention and repair with trustworthy confidence estimates
+- use targeted repair to recover from verifier-selected but semantically wrong
+  candidates without exposing gold PDDL to the generator
+- later support abstention with trustworthy confidence estimates
 
 ## What We Now Know
 
@@ -62,6 +64,10 @@ decisions:
   simple Planetarium-oracle solvability signals did not beat round-4
   `verifier_ranked` on cached replay. Solvability is useful diagnostics, but
   not a strong semantic selector.
+- Domain-aware repair is the strongest system result so far.
+- The final fresh gate on untouched seeds `51-55` passed strongly:
+  repair-augmented VCSR improved mean `K=8` equivalence from `0.4200` to
+  `0.7720`.
 
 ## Key Evidence
 
@@ -113,15 +119,21 @@ This tells us three important things:
 
 ## Main Conclusion
 
-Round 4 is now the stronger end-to-end candidate, but the promotion story is
-still asymmetric across `K`.
+Round 4 remains the frozen promoted verifier, but the paper-facing system is no
+longer verifier ranking alone. The strongest current system is:
+
+1. generate best-of-`K` candidates
+2. select with the frozen round-4 verifier
+3. apply one domain-aware repair call to the selected parseable `K=8` candidate
+4. evaluate/report the repair-augmented outcome
 
 My current judgment is:
 
 - **round 4 is now the promoted `best_current` verifier in the repo**
 - **round 3 remains the strongest historical replay-backed baseline**
-- **interpret the promotion case as strongest for `K=8`, not as a universal
-  across-the-board win**
+- **repair-augmented VCSR is now the paper-facing system result**
+- **plain verifier-ranked selection alone should be framed as an important
+  baseline, not the final system**
 
 Why:
 
@@ -131,301 +143,95 @@ Why:
 - so round 4 looks promotion-worthy if our project emphasis is best-of-`8`
   ranking, but not yet as a claim that the selector is uniformly dominant
 
-So the project bottleneck is no longer "can we make the verifier better?".
-We already did.
-The bottleneck is now "how narrowly and honestly do we frame the gain in the
-paper and the repo decision?".
+So the project bottleneck has shifted again. It is no longer "can the verifier
+help?" or "can repair work on hand-picked cached failures?". The final gate now
+shows that domain-aware repair survives untouched fresh seeds. The remaining
+work is paper framing, artifact hygiene, and careful caveat analysis.
 
 ## Recommendation
 
 ### Highest-Priority Next Step
 
-Now that round 4 has been promoted, keep it as the default verifier and treat
-the first pairwise round-5 run as a completed but non-promoted experiment:
+Use the final repair-augmented result as the main paper-facing system result:
 
-- round 4 is the default verifier
-- the strongest repeated fresh held-out evidence is at `K=8`
-- `K=4` remains mixed enough that it should not be oversold
-- hybrid pairwise round 5 is implemented and trained, but did not beat round 4
-  on replay
+- round 4 remains the default verifier
+- `verifier_ranked` remains the plain best-of-K baseline
+- `verifier_ranked_repair` is the new system policy at the main `K=8`
+  operating point
+- seeds `51-55` are final evidence and must not be reused for prompt tuning,
+  checkpoint selection, or policy design
 
-### Promotion Rule
+### Final Gate Result
 
-The promotion decision has now been made.
+Final fresh repair gate:
 
-The rule we are implicitly adopting is:
+- output:
+  [results/vcsr/final_repair_gate_round4](/E:/Engineering/vcsr/results/vcsr/final_repair_gate_round4)
+- seeds: `51`, `52`, `53`, `54`, `55`
+- rows per seed: `50`
+- mean `K=8` plain round-4 `verifier_ranked`: `0.4200`
+- mean `K=8` repair-augmented `verifier_ranked_repair`: `0.7720`
+- mean delta: `+0.3520`
+- repair parse rate: `0.9840`
+- helped / hurt / tied: `104 / 16 / 130`
 
-- we are willing to promote on the basis of the stronger repeated held-out
-  improvement at `K=8`
-- we still require the documentation to say plainly that `K=4` is not a clean
-  win
+This passes the pre-set acceptance gate by a wide margin.
 
 ### Modeling Recommendation
 
-Do **not** change backbone yet.
+Do **not** train another verifier before writing the current result.
 
-DeBERTa is still a reasonable verifier backbone for this phase because:
+The sequence of negative and positive evidence is now clear:
 
-- it is a cross-encoder and can jointly read NL plus candidate PDDL
-- it is fast enough for many iterations on available hardware
-- the current evidence still points more strongly to ranking robustness than to
-  a hard capacity ceiling
+- pairwise round 5 did not beat round 4
+- conservative ranking round 6 did not beat round 4
+- focused pointwise round 7 was safe but not promotion-worthy
+- simple planner/search policies did not move the needle
+- domain-aware repair produced the first large final-gate improvement
 
-If future fresh held-out checks still show the verifier hovering near
-`greedy_first` and `random_parseable`, especially at `K=4`, then the next real
-escalation should be an objective change, not an architecture change:
+That means the next research direction should be paper assembly and careful
+analysis, not another blind modeling run.
 
-- pairwise ranking loss
-- listwise ranking supervision
-- or another explicitly within-pool ranking objective
+If there is time after the paper-facing result is frozen, the most useful
+follow-up is a confidence/domain-gated repair policy, because the final gate
+also showed an important caveat:
 
-The first hybrid pairwise attempt was the right class of experiment, but this
-specific recipe should **not** be promoted:
+- gripper: `96` helped, `0` hurt
+- blocksworld: `8` helped, `16` hurt
+- unconditional repair is a huge net win, but can damage already-correct
+  blocksworld selections
 
-- it tied round 4 at `K=4` and regressed at `K=8` on
-  `bestofk_round4_holdout_eval_clean`
-- it regressed at both `K=4` and `K=8` on `bestofk_round3_holdout_eval`
-- its pairwise validation split was small (`38` examples)
-- the mined pairs were entirely `blocksworld`, with heavy
-  `abstract/abstract` concentration
+The right paper framing is therefore:
 
-So the next modeling move should be a better-controlled ranking objective, not
-a blind rerun of round 5.
-
-We tried that better-controlled ranking experiment as round 6:
-
-- warm start from round 4
-- larger cached-pool ranking set
-- explicit pairwise dev file
-- pointwise-dominant hybrid loss
-- replay gate before fresh generation
-
-Round 6 also failed the replay gate:
-
-- mean replay `K=4`: round 4 `0.5000`, round 6 `0.4733`
-- mean replay `K=8`: round 4 `0.5156`, round 6 `0.4978`
-
-That changed the recommendation, so we ran a fixed-round-4 selector analysis
-instead of another training run.
-
-Fixed-round-4 selector analysis tested:
-
-- margin fallback to greedy
-- top-score gap fallback to greedy
-- round-3/round-4 agreement fallback
-- row-wise score normalization
-- index-penalized ranking
-
-The result was also negative:
-
-- mean cached replay at `K=4`: round-4 `verifier_ranked` stayed best at
-  `0.5050`
-- mean cached replay at `K=8`: round-4 `verifier_ranked` stayed best or tied at
-  `0.5167`
-- the strongest changed policies either regressed or tied with no useful
-  helped-over-hurt pattern
-- oracle-positive misses often had tiny top-score gaps, but simple fallback
-  rules hurt more correct selections than they rescued
-
-This is not a project failure. It is a useful boundary:
-
-- round 4 is not trivially improvable by simple score-use heuristics
-- another small pairwise/listwise retrain is unlikely to be the right next move
-- the next improvement probably needs genuinely new signal, not just a
-  different way to squeeze the same scalar score
-
-We then tested the corrected interpretation: do what made round 4 work, but
-larger and cleaner.
-
-Focused pointwise round 7:
-
-- warm-started from promoted round 4
-- used pure pointwise BCE, not pairwise/listwise loss
-- mined `788` parseable cached-pool examples across `K=4` and `K=8`
-- kept the original verifier validation split fixed
-
-Replay gate result:
-
-- mean replay `K=4`: round 4 `0.5050`, round 7 `0.5050`
-- mean replay `K=8`: round 4 `0.5167`, round 7 `0.5283`
-- row-level `K=8`: `4` helped, `1` hurt
-- acceptance: round 7 passed cached replay but is not promoted yet
-
-Fresh multiseed round-4-vs-round-7 gate:
-
-- mean fresh `K=4`: round 4 `0.4000`, round 7 `0.4133`
-- mean fresh `K=8`: round 4 `0.4200`, round 7 `0.4200`
-- seed-wise at `K=8`: round 7 won seeds `57` and `58`, but regressed seed
-  `56` enough to erase the mean gain
-
-Round-7 fresh row-level analysis:
-
-- `K=4`: round 7 helped `7` rows, hurt `5`, tied `138`
-- `K=8`: round 7 helped `11` rows, hurt `11`, tied `128`
-- seed `56`, `K=8`: round 7 helped `3`, hurt `7`
-- seed `56`, `K=8`: `6` of `7` hurt rows were selector losses with an
-  equivalent candidate still available in the round-7 pool
-- round 7 improved `blocksworld` but regressed sparse `gripper` successes
-
-Fresh identical-pool round-4-vs-round-7 gate:
-
-- seeds: `59`, `60`, `61`
-- `K=4`: round 4 `0.4067`, round 7 `0.3933`, delta `-0.0133`
-- `K=8`: round 4 `0.4400`, round 7 `0.4467`, delta `+0.0067`
-- `K=4` head-to-head: round 7 wins `0`, losses `1`, ties `2`
-- `K=8` head-to-head: round 7 wins `1`, losses `0`, ties `2`
-
-Phase 3 cached search ablation:
-
-- `K=4` mean:
-  - `verifier_ranked`: `0.4500`
-  - `solvable_then_verifier`: `0.4500`
-  - `verifier_then_solvable_tiebreak`: `0.4500`
-  - `parse_solvable_index`: `0.4179`
-- `K=8` mean:
-  - `verifier_ranked`: `0.4714`
-  - `solvable_then_verifier`: `0.4750`
-  - `verifier_then_solvable_tiebreak`: `0.4714`
-  - `parse_solvable_index`: `0.4179`
-- `solvable_then_verifier` gained only one `K=8` row and not in more than one
-  pool, so it failed the acceptance gate
-- no planner/search policy justifies fresh generation spend
-
-Phase 3 cached repair pilot:
-
-- selected cached `K=8` rows where promoted round-4 `verifier_ranked` chose
-  parseable but non-equivalent PDDL
-- kept round 4 frozen
-- did not train a verifier
-- did not generate new best-of-K pools
-- used one OpenRouter repair call per selected failure
-- prompt feedback included parse status, planner solvability, and verifier
-  score, but not gold PDDL or equivalence labels
-
-Result:
-
-- rows repaired: `30`
-- original selected equivalence: `0.0000`
-- repair parse rate: `0.9667`
-- repair equivalence rate: `0.7667`
-- repair equivalence given parse: `0.7931`
-- helped / hurt / tied: `23 / 0 / 7`
-- blocksworld repair equivalence: `0.8462`
-- gripper repair equivalence: `0.2500`
-- accepted by cached pilot gate: `true`
-
-Fresh fixed-pool repair gate:
-
-- generated fresh candidate pools once for seeds `62`, `63`, and `64`
-- repaired only round-4 `K=8` selected failures on those same pools
-- rows per seed: `50`
-- plain round-4 `verifier_ranked` mean `K=8`: `0.5000`
-- repair-augmented mean `K=8`: `0.5467`
-- mean delta: `+0.0467`
-- per-seed deltas: `+0.0000`, `+0.0600`, `+0.0800`
-- repaired failures: `73`
-- helped / hurt / tied: `7 / 0 / 66`
-- repair parse rate: `1.0000`
-- blocksworld repair equivalence: `0.7000` (`7 / 10`)
-- gripper repair equivalence: `0.0000` (`0 / 63`)
-- acceptance: **not accepted yet**, because the mean gain is below the pre-set
-  `+0.10` threshold and the improvement is domain-concentrated
-
-Domain-aware repair gate:
-
-- diagnosed gripper failure as prompt/schema mismatch, not repair infeasibility
-- added a Planetarium-specific gripper repair prompt:
-  untyped `:objects`, `:requirements :strips`, unary `(room ...)`, `(ball ...)`,
-  `(gripper ...)` facts, exact room/ball/gripper names, no free facts for
-  grippers that are carrying balls
-- cached gripper-only prompt pilot repaired `61 / 63` gripper failures
-- then reused the same fresh pools from seeds `62`, `63`, and `64`
-- no new best-of-K generation was used for the domain-aware gate
-- plain round-4 `verifier_ranked` mean `K=8`: `0.5000`
-- domain-aware repair-augmented mean `K=8`: `0.9600`
-- per-seed domain-aware `K=8`: `1.0000`, `0.9000`, `0.9800`
-- repaired failures: `73`
-- helped / hurt / tied: `69 / 0 / 4`
-- repaired-failure parse rate: `1.0000`
-- blocksworld repair equivalence: `0.8000` (`8 / 10`)
-- gripper repair equivalence: `0.9683` (`61 / 63`)
-- acceptance: **passed**
-
-This changes the recommendation again:
-
-- the round-4-style pointwise direction is worth continuing
-- round 7 is a useful provisional/diagnostic result
-- round 4 remains `best_current` because round 7 did not improve the fresh
-  `K=8` mean
-- another blind focused-pointwise scale-up is not justified without a cleaner
-  identical-pool evaluation design or genuinely new signal
-- the cleaner identical-pool evaluation is now done, and it still does not
-  justify promotion
-- simple planner/solvability search is also done, and it does not solve the
-  remaining selector problem
-- repair is now the strongest next direction because it adds new information at
-  the failure point rather than trying to squeeze more from the same scalar
-  verifier score
-- domain-aware repair is now the strongest system direction and should be
-  integrated into the main best-of-K entrypoint before more verifier training
+- main result: repair-augmented VCSR substantially improves semantic
+  equivalence at `K=8`
+- mechanism: domain-aware repair recovers many verifier-selected failures,
+  especially gripper
+- caveat: unconditional repair may hurt some already-correct blocksworld
+  selections
+- future work: confidence-gated/domain-gated repair and abstention
 
 ## What We Should Not Over-Prioritize Right Now
 
-- promoting round 4 while claiming the selector is now uniformly robust
-- replacing replay with offline AUC as the main checkpoint-selection criterion
-- treating a 1-row difference on a 50-row held-out sample as decisive
-- generic extra epochs on the same data without stronger evaluation
-- architecture changes before we establish whether the current gain is stable
-- promoting pairwise round 5 just because it matches the hypothesized failure
-  mode
-- running another pairwise/listwise retrain before understanding why rounds 5
-  and 6 both failed replay
-- adding margin/fallback selector policies unless they pass cached replay first
-- promoting round 7 after the fresh gate tied `K=8`
-- claiming final paper victory from same-pool repair replay alone
-- scaling the old generic gripper repair prompt
+- more verifier training before writing up the final repair result
+- changing the generator, prompt, verifier checkpoint, or selection policy on
+  seeds `51-55`
+- claiming repair is uniformly harmless across domains
+- treating same-pool repair results as the main evidence now that the final
+  fresh gate exists
+- overfitting a new blocksworld repair gate to remove the `16` hurt rows before
+  documenting the current result
 
 ## Bottom Line
 
-My view is now strongly positive, with one important caveat: the strongest
-repair result is a same-pool gate, not final untouched paper evidence yet.
+This is no longer depressing. This is the first genuinely strong endgame result.
 
-Round 4 is not a failure.
-It moved the verifier in the right direction:
+The paper-facing claim should be:
 
-- better replay performance
-- better offline validation AUC
-- better fresh held-out `verifier_ranked` than round 3 at both `K=4` and `K=8`
-- a repeated multi-seed held-out win pattern at `K=8`
+> Verifier-ranked best-of-K alone is helpful but not uniformly dominant; adding
+> domain-aware repair to the verifier-selected candidate substantially improves
+> semantic equivalence on in-domain Planetarium tasks at the main `K=8`
+> operating point.
 
-But it still did not clear the bar of being obviously better than simple
-baselines at every `K` we care about.
-
-So the clearest path from here is:
-
-- use round 4 as the promoted default verifier
-- keep describing the result as strongest at `K=8`
-- treat hybrid pairwise round 5 as a useful negative result
-- treat conservative ranking round 6 as a second negative result
-- treat fixed-round-4 selector heuristics as a third useful negative result
-- treat focused pointwise round 7 as a useful but non-promoted diagnostic whose
-  fresh row analysis showed equal helped/hurt counts at `K=8`
-- treat the identical-pool round-7 result as a small positive `K=8` signal that
-  is below the promotion threshold because `K=4` regressed
-- treat the Phase 3 planner/search ablation as a negative result for simple
-  solvability filtering
-- treat the cached repair pilot as the first strong Phase 3 positive signal:
-  `23 / 30` known round-4 failures were repaired to equivalent PDDL with
-  `29 / 30` parseable repairs
-- treat the generic fresh repair gate as a useful failure analysis step: it
-  improved mean `K=8` from `0.5000` to `0.5467` but exposed gripper as the
-  blocker
-- treat the domain-aware repair gate as the new strongest Phase 3 result:
-  same-pool `K=8` improved from `0.5000` to `0.9600`, with `69 / 73` failures
-  repaired and zero hurt rows
-
-Round 4 remains the stable paper-facing verifier. The next step should be a
-repair-augmented best-of-K implementation: keep round 4 frozen, run normal
-verifier-ranked selection, repair selected parseable failures when the repair
-stage is enabled, and evaluate on new fresh seeds. More checkpoint training and
-simple planner reranking are both lower-priority now.
+Round 4 remains the stable paper-facing verifier. Repair-augmented selection is
+now the paper-facing VCSR system.

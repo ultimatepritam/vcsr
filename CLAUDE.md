@@ -169,7 +169,8 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] Cached repair loop + analysis
 - [x] Fresh fixed-pool repair gate
 - [x] Domain-aware repair iteration
-- [ ] Integrate repair-augmented best-of-K selection
+- [x] Integrate repair-augmented best-of-K selection
+- [x] Run final fresh repair-augmented VCSR gate on untouched seeds `51-55`
 
 ### Phase 4: Paper and Release (Weeks 7-8)
 
@@ -179,10 +180,10 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Integrate repair-augmented best-of-K selection**
-   Domain-aware repair passed the same-pool gate strongly: `K=8` improved from
-   `0.5000` to `0.9600` on seeds `62-64`, with `69 / 73` failures repaired and
-   zero hurt rows.
+1. **Prepare paper tables and write-up**
+   Final repair-augmented VCSR passed the untouched seed gate: mean `K=8`
+   equivalence improved from `0.4200` with plain round-4 `verifier_ranked` to
+   `0.7720` with `verifier_ranked_repair` on seeds `51-55`.
 2. **Replay remains the checkpoint-selection rule**
    Continue to judge new verifier checkpoints primarily by replay on cached
    pools, not by offline AUC alone.
@@ -193,6 +194,9 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
    Rounds 5 and 6 failed because they pushed pairwise/ranking loss. Round 7 is
    different: it is a larger round-4-style focused pointwise retrain, and it
    passed cached replay but did not pass the fresh promotion gate.
+5. **Do not tune on final seeds**
+   Seeds `51-55` are now final evidence. Do not use them for prompt edits,
+   checkpoint selection, selector-policy design, or repair gating.
 
 ## Current Status Notes
 
@@ -276,11 +280,17 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
   `results/vcsr/fresh_repair_gate_round4_domainaware/`. It reused the exact
   candidate pools from seeds `62`, `63`, and `64` and improved mean `K=8` from
   `0.5000` to `0.9600`. Helped / hurt / tied was `69 / 0 / 4`.
+- Final repair-augmented VCSR gate is complete under
+  `results/vcsr/final_repair_gate_round4/`. It ran untouched seeds `51-55` and
+  improved mean `K=8` from plain round-4 `verifier_ranked` at `0.4200` to
+  `verifier_ranked_repair` at `0.7720`. Repair parse rate was `0.9840`, and
+  helped / hurt / tied was `104 / 16 / 130`.
 - `results/verifier/best_current/selection.yaml` should remain pointed at round
   4.
 - Current next-step bias: do not blindly retrain or add more simple selector
-  heuristics. Integrate repair-augmented selection into the main best-of-K
-  entrypoint, then evaluate on new fresh seeds.
+  heuristics. The next work should be paper-ready analysis: tables, figures,
+  domain/style breakdowns, and a clear caveat that unconditional repair helps
+  gripper dramatically but can hurt some already-correct blocksworld rows.
 
 ## Long-Run Visibility Rule
 

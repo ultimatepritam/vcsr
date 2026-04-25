@@ -1989,12 +1989,65 @@ Interpretation:
 - The next evaluation step should be a fresh held-out repair-augmented run on
   new seeds not used in prompt design.
 
+### Final Fresh Repair-Augmented VCSR Gate
+
+- Goal: validate repair-augmented VCSR on untouched seeds after integrating
+  repair into the main best-of-K entrypoint.
+- Config:
+  [configs/vcsr_bestofk_final_repair.yaml](/e:/Engineering/vcsr/configs/vcsr_bestofk_final_repair.yaml)
+- Gate config:
+  [configs/vcsr_final_repair_gate.yaml](/e:/Engineering/vcsr/configs/vcsr_final_repair_gate.yaml)
+- Smoke config:
+  [configs/vcsr_final_repair_gate_smoke.yaml](/e:/Engineering/vcsr/configs/vcsr_final_repair_gate_smoke.yaml)
+- Script:
+  [scripts/run_final_repair_gate.py](/e:/Engineering/vcsr/scripts/run_final_repair_gate.py)
+- Main entrypoint updated:
+  [scripts/run_verifier_bestofk.py](/e:/Engineering/vcsr/scripts/run_verifier_bestofk.py)
+- Output:
+  [results/vcsr/final_repair_gate_round4](/e:/Engineering/vcsr/results/vcsr/final_repair_gate_round4)
+- Seeds: `51`, `52`, `53`, `54`, `55`
+- Rows per seed: `50`
+- Status: completed, **passes final fresh gate**
+
+Mean `K=8` equivalence:
+
+- plain round-4 `verifier_ranked`: `0.4200`
+- repair-augmented `verifier_ranked_repair`: `0.7720`
+- mean delta: `+0.3520`
+
+Per-seed `K=8`:
+
+- seed `51`: `0.3600 -> 0.7800`
+- seed `52`: `0.4200 -> 0.7800`
+- seed `53`: `0.5200 -> 0.8000`
+- seed `54`: `0.3400 -> 0.7600`
+- seed `55`: `0.4600 -> 0.7400`
+
+Repair outcomes over `250` repaired selections:
+
+- helped / hurt / tied: `104 / 16 / 130`
+- repaired PDDL parse rate: `0.9840`
+- repaired PDDL equivalence rate: `0.7600`
+- `gripper`: `96` helped, `0` hurt, `26` both fail, `2` both success
+- `blocksworld`: `8` helped, `16` hurt, `15` both fail, `87` both success
+
+Interpretation:
+
+- This is now the paper-facing system result.
+- Repair-augmented VCSR passes the final fresh gate by a large margin at the
+  main operating point `K=8`.
+- The core mechanism is clear: round-4 verifier-ranked selection often fails on
+  gripper, and domain-aware repair converts many of those failures.
+- Caveat: unconditional repair can hurt already-correct blocksworld selections.
+  The net result remains strongly positive, but a later production system should
+  consider confidence-gated repair or domain-specific repair policies.
+
 ## Recommended Next Entries
 
 - Keep round 4 as the promoted default.
 - If continuing model work, do not blindly repeat round 7. The identical-pool
   gate shows only a tiny `K=8` gain with a `K=4` regression.
-- Implement repair-augmented selection in the main best-of-K entrypoint. The
-  same-pool domain-aware repair gate passed strongly.
+- Use repair-augmented VCSR as the paper-facing system result. The final fresh
+  gate passed strongly on untouched seeds `51-55`.
 - Selective prediction / abstention experiments only after selection or repair
   has a stronger baseline.

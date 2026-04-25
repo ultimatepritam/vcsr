@@ -1,0 +1,1133 @@
+{
+  "experiment": {
+    "name": "vcsr_bestofk_final_repair",
+    "seed": 66
+  },
+  "dataset": {
+    "split": "test",
+    "domains": [
+      "blocksworld",
+      "gripper"
+    ],
+    "rows_evaluated": 3
+  },
+  "generation": {
+    "configured_total_k": 8,
+    "evaluated_k_values": [
+      1,
+      4,
+      8
+    ]
+  },
+  "verifier": {
+    "selection_metadata": "results/verifier/best_current/selection.yaml"
+  },
+  "comparisons": {
+    "1": {
+      "policies": {
+        "greedy_first": {
+          "metrics": {
+            "total": 3,
+            "parse_count": 3,
+            "solve_count": 0,
+            "equiv_count": 1,
+            "error_count": 0,
+            "parse_rate": 1.0,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.3333333333333333,
+            "equiv_given_parse": 0.3333333333333333
+          },
+          "stratified": {
+            "all": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "domain=blocksworld": {
+              "total": 1,
+              "parse_count": 1,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "domain=gripper": {
+              "total": 2,
+              "parse_count": 2,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "init=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "style=explicit/explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 1.0,
+            "avg_equivalent_candidates": 0.3333333333333333,
+            "oracle_bestofk_equiv_rate": 0.3333333333333333
+          }
+        },
+        "random_parseable": {
+          "metrics": {
+            "total": 3,
+            "parse_count": 3,
+            "solve_count": 0,
+            "equiv_count": 1,
+            "error_count": 0,
+            "parse_rate": 1.0,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.3333333333333333,
+            "equiv_given_parse": 0.3333333333333333
+          },
+          "stratified": {
+            "all": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "domain=blocksworld": {
+              "total": 1,
+              "parse_count": 1,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "domain=gripper": {
+              "total": 2,
+              "parse_count": 2,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "init=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "style=explicit/explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 1.0,
+            "avg_equivalent_candidates": 0.3333333333333333,
+            "oracle_bestofk_equiv_rate": 0.3333333333333333
+          }
+        },
+        "verifier_ranked": {
+          "metrics": {
+            "total": 3,
+            "parse_count": 3,
+            "solve_count": 0,
+            "equiv_count": 1,
+            "error_count": 0,
+            "parse_rate": 1.0,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.3333333333333333,
+            "equiv_given_parse": 0.3333333333333333
+          },
+          "stratified": {
+            "all": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "domain=blocksworld": {
+              "total": 1,
+              "parse_count": 1,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "domain=gripper": {
+              "total": 2,
+              "parse_count": 2,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "init=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "style=explicit/explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 1.0,
+            "avg_equivalent_candidates": 0.3333333333333333,
+            "oracle_bestofk_equiv_rate": 0.3333333333333333
+          }
+        },
+        "verifier_ranked_repair": {
+          "metrics": {
+            "total": 3,
+            "parse_count": 3,
+            "solve_count": 0,
+            "equiv_count": 1,
+            "error_count": 0,
+            "parse_rate": 1.0,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.3333333333333333,
+            "equiv_given_parse": 0.3333333333333333
+          },
+          "stratified": {
+            "all": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "domain=blocksworld": {
+              "total": 1,
+              "parse_count": 1,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "domain=gripper": {
+              "total": 2,
+              "parse_count": 2,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "init=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "style=explicit/explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 1.0,
+            "avg_equivalent_candidates": 0.3333333333333333,
+            "oracle_bestofk_equiv_rate": 0.3333333333333333
+          }
+        }
+      }
+    },
+    "4": {
+      "policies": {
+        "greedy_first": {
+          "metrics": {
+            "total": 3,
+            "parse_count": 3,
+            "solve_count": 0,
+            "equiv_count": 1,
+            "error_count": 0,
+            "parse_rate": 1.0,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.3333333333333333,
+            "equiv_given_parse": 0.3333333333333333
+          },
+          "stratified": {
+            "all": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "domain=blocksworld": {
+              "total": 1,
+              "parse_count": 1,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "domain=gripper": {
+              "total": 2,
+              "parse_count": 2,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "init=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "style=explicit/explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 4.0,
+            "avg_equivalent_candidates": 1.3333333333333333,
+            "oracle_bestofk_equiv_rate": 0.3333333333333333
+          }
+        },
+        "random_parseable": {
+          "metrics": {
+            "total": 3,
+            "parse_count": 3,
+            "solve_count": 0,
+            "equiv_count": 1,
+            "error_count": 0,
+            "parse_rate": 1.0,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.3333333333333333,
+            "equiv_given_parse": 0.3333333333333333
+          },
+          "stratified": {
+            "all": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "domain=blocksworld": {
+              "total": 1,
+              "parse_count": 1,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "domain=gripper": {
+              "total": 2,
+              "parse_count": 2,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "init=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "style=explicit/explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 4.0,
+            "avg_equivalent_candidates": 1.3333333333333333,
+            "oracle_bestofk_equiv_rate": 0.3333333333333333
+          }
+        },
+        "verifier_ranked": {
+          "metrics": {
+            "total": 3,
+            "parse_count": 3,
+            "solve_count": 0,
+            "equiv_count": 1,
+            "error_count": 0,
+            "parse_rate": 1.0,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.3333333333333333,
+            "equiv_given_parse": 0.3333333333333333
+          },
+          "stratified": {
+            "all": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "domain=blocksworld": {
+              "total": 1,
+              "parse_count": 1,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "domain=gripper": {
+              "total": 2,
+              "parse_count": 2,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "init=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "style=explicit/explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 4.0,
+            "avg_equivalent_candidates": 1.3333333333333333,
+            "oracle_bestofk_equiv_rate": 0.3333333333333333
+          }
+        },
+        "verifier_ranked_repair": {
+          "metrics": {
+            "total": 3,
+            "parse_count": 3,
+            "solve_count": 0,
+            "equiv_count": 1,
+            "error_count": 0,
+            "parse_rate": 1.0,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.3333333333333333,
+            "equiv_given_parse": 0.3333333333333333
+          },
+          "stratified": {
+            "all": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "domain=blocksworld": {
+              "total": 1,
+              "parse_count": 1,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "domain=gripper": {
+              "total": 2,
+              "parse_count": 2,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "init=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "style=explicit/explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 4.0,
+            "avg_equivalent_candidates": 1.3333333333333333,
+            "oracle_bestofk_equiv_rate": 0.3333333333333333
+          }
+        }
+      }
+    },
+    "8": {
+      "policies": {
+        "greedy_first": {
+          "metrics": {
+            "total": 3,
+            "parse_count": 3,
+            "solve_count": 0,
+            "equiv_count": 1,
+            "error_count": 0,
+            "parse_rate": 1.0,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.3333333333333333,
+            "equiv_given_parse": 0.3333333333333333
+          },
+          "stratified": {
+            "all": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "domain=blocksworld": {
+              "total": 1,
+              "parse_count": 1,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "domain=gripper": {
+              "total": 2,
+              "parse_count": 2,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "init=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "style=explicit/explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 8.0,
+            "avg_equivalent_candidates": 2.6666666666666665,
+            "oracle_bestofk_equiv_rate": 0.3333333333333333
+          }
+        },
+        "random_parseable": {
+          "metrics": {
+            "total": 3,
+            "parse_count": 3,
+            "solve_count": 0,
+            "equiv_count": 1,
+            "error_count": 0,
+            "parse_rate": 1.0,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.3333333333333333,
+            "equiv_given_parse": 0.3333333333333333
+          },
+          "stratified": {
+            "all": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "domain=blocksworld": {
+              "total": 1,
+              "parse_count": 1,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "domain=gripper": {
+              "total": 2,
+              "parse_count": 2,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "init=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "style=explicit/explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 8.0,
+            "avg_equivalent_candidates": 2.6666666666666665,
+            "oracle_bestofk_equiv_rate": 0.3333333333333333
+          }
+        },
+        "verifier_ranked": {
+          "metrics": {
+            "total": 3,
+            "parse_count": 3,
+            "solve_count": 0,
+            "equiv_count": 1,
+            "error_count": 0,
+            "parse_rate": 1.0,
+            "solve_rate": 0.0,
+            "equiv_rate": 0.3333333333333333,
+            "equiv_given_parse": 0.3333333333333333
+          },
+          "stratified": {
+            "all": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "domain=blocksworld": {
+              "total": 1,
+              "parse_count": 1,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "domain=gripper": {
+              "total": 2,
+              "parse_count": 2,
+              "solve_count": 0,
+              "equiv_count": 0,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            },
+            "goal=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "init=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            },
+            "style=explicit/explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.3333333333333333,
+              "equiv_given_parse": 0.3333333333333333
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 8.0,
+            "avg_equivalent_candidates": 2.6666666666666665,
+            "oracle_bestofk_equiv_rate": 0.3333333333333333
+          }
+        },
+        "verifier_ranked_repair": {
+          "metrics": {
+            "total": 3,
+            "parse_count": 3,
+            "solve_count": 0,
+            "equiv_count": 3,
+            "error_count": 0,
+            "parse_rate": 1.0,
+            "solve_rate": 0.0,
+            "equiv_rate": 1.0,
+            "equiv_given_parse": 1.0
+          },
+          "stratified": {
+            "all": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 3,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "domain=blocksworld": {
+              "total": 1,
+              "parse_count": 1,
+              "solve_count": 0,
+              "equiv_count": 1,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "domain=gripper": {
+              "total": 2,
+              "parse_count": 2,
+              "solve_count": 0,
+              "equiv_count": 2,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "goal=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 3,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "init=explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 3,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            },
+            "style=explicit/explicit": {
+              "total": 3,
+              "parse_count": 3,
+              "solve_count": 0,
+              "equiv_count": 3,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 1.0,
+              "equiv_given_parse": 1.0
+            }
+          },
+          "candidate_pool": {
+            "avg_parseable_candidates": 8.0,
+            "avg_equivalent_candidates": 2.6666666666666665,
+            "oracle_bestofk_equiv_rate": 0.3333333333333333
+          }
+        }
+      }
+    }
+  },
+  "repair": {
+    "enabled": true,
+    "metrics": {
+      "total": 3,
+      "repair_parse_count": 3,
+      "repair_equiv_count": 3,
+      "repair_parse_rate": 1.0,
+      "repair_equiv_rate": 1.0,
+      "repair_equiv_given_parse": 1.0,
+      "helped": 2,
+      "hurt": 0,
+      "tied": 1
+    },
+    "outcome_counts": [
+      [
+        "repair_helped",
+        2
+      ],
+      [
+        "both_success",
+        1
+      ]
+    ],
+    "domain_breakdown": {
+      "blocksworld": {
+        "total": 1,
+        "repair_parse_count": 1,
+        "repair_equiv_count": 1,
+        "repair_parse_rate": 1.0,
+        "repair_equiv_rate": 1.0,
+        "repair_equiv_given_parse": 1.0,
+        "helped": 0,
+        "hurt": 0,
+        "tied": 1
+      },
+      "gripper": {
+        "total": 2,
+        "repair_parse_count": 2,
+        "repair_equiv_count": 2,
+        "repair_parse_rate": 1.0,
+        "repair_equiv_rate": 1.0,
+        "repair_equiv_given_parse": 1.0,
+        "helped": 2,
+        "hurt": 0,
+        "tied": 0
+      }
+    },
+    "style_breakdown": {
+      "explicit/explicit": {
+        "total": 3,
+        "repair_parse_count": 3,
+        "repair_equiv_count": 3,
+        "repair_parse_rate": 1.0,
+        "repair_equiv_rate": 1.0,
+        "repair_equiv_given_parse": 1.0,
+        "helped": 2,
+        "hurt": 0,
+        "tied": 1
+      }
+    },
+    "repair_outputs": "results\\vcsr\\final_repair_gate_round4_smoke\\seed_66\\repair_outputs.jsonl"
+  }
+}

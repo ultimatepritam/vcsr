@@ -58,8 +58,8 @@ tools/             External tool installs (Fast Downward, VAL)
 - Phase 3 cached repair pilot is complete:
   one OpenRouter repair call converted `23 / 30` cached round-4 selected
   failures into equivalent PDDL, with `29 / 30` repaired candidates parseable.
-  This is promising but still needs a fresh fixed-pool repair gate before it is
-  treated as a paper-facing system result.
+  This motivated the fresh repair gates that ultimately led to the final
+  repair-augmented result.
 - The fresh fixed-pool repair gate is complete:
   repair-augmented selection improved mean `K=8` from `0.5000` to `0.5467`
   across seeds `62-64`, with zero hurt rows. It did not pass the stricter
@@ -69,6 +69,10 @@ tools/             External tool installs (Fast Downward, VAL)
   after adding a Planetarium-specific gripper repair prompt, repair-augmented
   `K=8` on the same seeds `62-64` improved from `0.5000` to `0.9600`, with
   `69 / 73` selected failures repaired and zero hurt rows.
+- Final repair-augmented VCSR gate is complete and passed on untouched seeds
+  `51-55`: mean `K=8` equivalence improved from plain round-4
+  `verifier_ranked` at `0.4200` to repair-augmented
+  `verifier_ranked_repair` at `0.7720`, with repair parse rate `0.9840`.
 
 ## Quick Start
 
@@ -197,6 +201,9 @@ python scripts/run_gripper_repair_prompt_pilot.py --config configs/vcsr_gripper_
 
 # 37. Same-pool domain-aware repair gate
 python scripts/run_fresh_repair_gate.py --config configs/vcsr_fresh_repair_gate_domainaware_replay.yaml
+
+# 38. Final fresh repair-augmented VCSR gate on untouched seeds 51-55
+python scripts/run_final_repair_gate.py --config configs/vcsr_final_repair_gate.yaml
 ```
 
 ## Windows E: Drive Setup
@@ -399,6 +406,7 @@ Key downstream artifacts:
 | `results/vcsr/multiseed_round7_compare/fresh_gate_analysis/` | Row-level analysis showing round 7 helped and hurt equally at `K=8`, with seed-56 losses mostly due to selection despite available equivalents |
 | `results/vcsr/fixed_pool_round7_compare/` | Fresh identical-pool comparison showing round 7 slightly improves `K=8` but regresses `K=4`, so it is still not promoted |
 | `results/vcsr/search_ablation_round4/` | Phase 3 cached planner/search ablation showing solvability-based policies do not pass the cached gate |
+| `results/vcsr/final_repair_gate_round4/` | Final fresh repair-augmented VCSR gate on untouched seeds `51-55`; passes with mean `K=8` `0.4200 -> 0.7720` |
 
 Current project conclusion from these pilots:
 
@@ -436,18 +444,25 @@ Current project conclusion from these pilots:
 - Phase 3 cached planner/search ablation is complete:
   `solvable_then_verifier` tied `K=4` and improved `K=8` by only one row across
   `280` decisions, so no search policy was accepted.
-- Round 7 is not promoted; round 4 remains the current best.
+- Round 7 is not promoted; round 4 remains the current best verifier.
+- Repair-augmented VCSR is now the strongest system result:
+  final untouched seeds `51-55` show mean `K=8` equivalence improving from
+  `0.4200` with plain round-4 `verifier_ranked` to `0.7720` with
+  `verifier_ranked_repair`.
+- The main caveat is domain asymmetry:
+  repair strongly rescues gripper failures, while unconditional repair can hurt
+  already-correct blocksworld selections.
 
 ## Recommended Next Step
 
 The highest-value next task is now:
 
-- start the small repair-loop pilot; cached planner/search policies did not
-  pass, and another blind verifier retrain is not justified
+- prepare paper tables, figures, and write-up around the final
+  repair-augmented VCSR result
 
 Why this matters:
 
-- The promotion decision has now been made.
+- The final repair gate has now passed on untouched seeds.
 - The strongest positive evidence is at `K=8`, and the docs should say that plainly.
 - Both round 5 and round 6 show that ranking-objective pressure alone is not
   yet producing a stronger selector.
@@ -460,6 +475,8 @@ Why this matters:
   too small to justify promotion.
 - The planner/search ablation shows solvability is not enough to identify
   semantic equivalence.
+- Domain-aware repair adds new information at the failure point and produced
+  the first large final-gate improvement.
 
 See `RECOMMENDATION.md` for the current project-level recommendation.
 
