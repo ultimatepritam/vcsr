@@ -1,0 +1,6 @@
+{
+  "pid": 23988,
+  "started_at": 1777112536.9157233,
+  "config": "configs\\vcsr_fixed_pool_round7_compare.yaml",
+  "output_dir": "results\\vcsr\\fixed_pool_round7_compare"
+}

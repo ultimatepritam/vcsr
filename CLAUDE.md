@@ -155,6 +155,8 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] **Analyze fixed-round-4 selector policies without further training**
 - [x] **Train focused pointwise round 7 from promoted round 4 and run cached replay gate**
 - [x] **Run fresh multiseed round 4 vs round 7 gate**
+- [x] **Analyze round-7 fresh gate row-level wins/losses**
+- [x] **Run fresh identical-pool round 4 vs round 7 verifier comparison**
 
 ### Phase 3: Search and Repair (Weeks 5-6)
 
@@ -169,10 +171,10 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Analyze round-7 fresh wins/losses**
-   Treat round 4 as the default verifier, keep the write-up explicit that the
-   strongest evidence is at `K=8`, and understand why round 7 helps some seeds
-   but regresses seed `56` at `K=8`.
+1. **Stop blind verifier retraining**
+   The identical-pool round-7 gate is now complete. Round 7 has only a tiny
+   clean `K=8` gain and regresses `K=4`, so the next improvement needs genuinely
+   new signal or better candidate-pool diversity, not another same-style retrain.
 2. **Replay remains the checkpoint-selection rule**
    Continue to judge new verifier checkpoints primarily by replay on cached
    pools, not by offline AUC alone.
@@ -231,10 +233,20 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
   `results/vcsr/multiseed_round7_compare/`. Round 7 improved mean `K=4`
   (`0.4000 -> 0.4133`) but tied mean `K=8` (`0.4200 -> 0.4200`), so it is not
   promoted.
+- Round-7 fresh gate analysis is complete under
+  `results/vcsr/multiseed_round7_compare/fresh_gate_analysis/`. At `K=8`,
+  round 7 helped `11` rows and hurt `11` rows across `150` rows. The seed `56`
+  regression was mostly selector loss with equivalents still present (`6` of
+  `7` hurt rows), not just missing candidate-pool oracle availability.
+- Fresh identical-pool round-4-vs-round-7 comparison is complete under
+  `results/vcsr/fixed_pool_round7_compare/`. On the same generated candidate
+  pools, round 7 regressed `K=4` (`0.4067 -> 0.3933`) and only slightly
+  improved `K=8` (`0.4400 -> 0.4467`), so it is not promoted.
 - `results/verifier/best_current/selection.yaml` should remain pointed at round
   4.
-- Current next-step bias: analyze round-7 changed rows, especially seed `56` at
-  `K=8`, before more training.
+- Current next-step bias: do not blindly retrain. The clean verifier comparison
+  has already been run; future work should add genuinely new signal, improve
+  candidate-pool diversity, or move toward search/repair.
 
 ## Long-Run Visibility Rule
 

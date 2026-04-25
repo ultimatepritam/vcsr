@@ -1684,9 +1684,99 @@ Project takeaway:
   regresses seed `56`, rather than promoting it or immediately scaling the same
   recipe again.
 
+### Round 7 Fresh Gate Row-Level Analysis
+
+- Goal: explain the fresh round-4-vs-round-7 gate, especially the seed `56`
+  `K=8` regression.
+- Script:
+  [scripts/analyze_round7_fresh_gate.py](/e:/Engineering/vcsr/scripts/analyze_round7_fresh_gate.py)
+- Output:
+  [results/vcsr/multiseed_round7_compare/fresh_gate_analysis](/e:/Engineering/vcsr/results/vcsr/multiseed_round7_compare/fresh_gate_analysis)
+- Status: completed
+
+Top-line verifier-ranked row analysis:
+
+- `K=4`
+  - rows: `150`
+  - round 4: `0.4000`
+  - round 7: `0.4133`
+  - helped / hurt / tied: `7 / 5 / 138`
+- `K=8`
+  - rows: `150`
+  - round 4: `0.4200`
+  - round 7: `0.4200`
+  - helped / hurt / tied: `11 / 11 / 128`
+
+Seed `56`, `K=8` focus:
+
+- round 7 helped `3` rows and hurt `7` rows
+- `6` of the `7` hurt rows still had an equivalent candidate available in the
+  round-7 pool, so this was mostly within-pool selector loss, not only
+  generation/pool bad luck
+- `1` hurt row was an oracle-availability loss where the round-7 pool had no
+  equivalent candidate
+- most hurt rows were `blocksworld` `abstract/abstract`; one was `gripper`
+  `abstract/abstract`
+
+Domain/style read:
+
+- round 7 improved `blocksworld` mean equivalence at both `K=4` and `K=8`
+- round 7 regressed `gripper`, where oracle-positive signal is sparse and
+  brittle in these samples
+- round 7 helped `abstract/abstract` slightly, but also caused most of the
+  seed-56 hard losses there
+
+Project takeaway:
+
+- Round 7 is not a promotion candidate.
+- The round-4-style pointwise direction is still the safest modeling direction
+  seen so far, but simply scaling focused pointwise mining is not guaranteed to
+  improve fresh `K=8`.
+- The next improvement should isolate verifier effects on identical fresh
+  candidate pools or improve candidate-pool diversity; another blind retrain is
+  not justified by this evidence.
+
+### Fresh Fixed-Pool Round 4 vs Round 7 Comparison
+
+- Goal: separate verifier quality from generation-pool variance by generating
+  each fresh pool once, then replaying round 4 and round 7 on the exact same
+  candidates.
+- Config:
+  [configs/vcsr_fixed_pool_round7_compare.yaml](/e:/Engineering/vcsr/configs/vcsr_fixed_pool_round7_compare.yaml)
+- Script:
+  [scripts/run_fixed_pool_verifier_compare.py](/e:/Engineering/vcsr/scripts/run_fixed_pool_verifier_compare.py)
+- Output:
+  [results/vcsr/fixed_pool_round7_compare](/e:/Engineering/vcsr/results/vcsr/fixed_pool_round7_compare)
+- Seeds: `59`, `60`, `61`
+- Status: completed, **round 7 not promoted**
+
+Mean fixed-pool verifier-ranked equivalence:
+
+- `K=4`
+  - round 4: `0.4067`
+  - round 7: `0.3933`
+  - delta: `-0.0133`
+  - seed-wise: `0` wins, `1` loss, `2` ties
+- `K=8`
+  - round 4: `0.4400`
+  - round 7: `0.4467`
+  - delta: `+0.0067`
+  - seed-wise: `1` win, `0` losses, `2` ties
+
+Interpretation:
+
+- Identical-pool replay confirms that round 7 has a small real `K=8`
+  selection advantage over round 4 on these fresh pools.
+- The advantage is too small to justify promotion because `K=4` regresses and
+  the `K=8` gain is only one row across `150` examples.
+- Round 4 remains the official `best_current`.
+- Round 7 remains useful evidence that focused pointwise mining can help, but
+  not enough to replace the promoted baseline.
+
 ## Recommended Next Entries
 
-- Analyze round-7 fresh gate changed rows, especially seed `56` at `K=8`.
 - Keep round 4 as the promoted default.
+- If continuing model work, do not blindly repeat round 7. The identical-pool
+  gate shows only a tiny `K=8` gain with a `K=4` regression.
 - Selective prediction / abstention experiments only after the ranker baseline
   is actually stable

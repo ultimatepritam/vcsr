@@ -50,6 +50,14 @@ decisions:
 - The fresh multiseed gate did not justify promotion:
   round 7 improved mean `K=4`, but tied mean `K=8`, which is the main
   best-of-K operating point.
+- The row-level fresh-gate analysis explains the tie:
+  at `K=8`, round 7 helped `11` rows and hurt `11` rows across `150` rows.
+  On seed `56`, where round 7 regressed by `-0.0800`, `6` of `7` hurt rows
+  still had an equivalent candidate available in the round-7 pool, meaning the
+  loss was mostly within-pool selection rather than only generation variance.
+- The identical-pool fresh gate gives the cleanest round-7 read:
+  round 7 gains only `+0.0067` at `K=8` and regresses `-0.0133` at `K=4`.
+  That is a real but too-small `K=8` selector gain, not a promotion case.
 
 ## Key Evidence
 
@@ -246,12 +254,33 @@ Fresh multiseed round-4-vs-round-7 gate:
 - seed-wise at `K=8`: round 7 won seeds `57` and `58`, but regressed seed
   `56` enough to erase the mean gain
 
+Round-7 fresh row-level analysis:
+
+- `K=4`: round 7 helped `7` rows, hurt `5`, tied `138`
+- `K=8`: round 7 helped `11` rows, hurt `11`, tied `128`
+- seed `56`, `K=8`: round 7 helped `3`, hurt `7`
+- seed `56`, `K=8`: `6` of `7` hurt rows were selector losses with an
+  equivalent candidate still available in the round-7 pool
+- round 7 improved `blocksworld` but regressed sparse `gripper` successes
+
+Fresh identical-pool round-4-vs-round-7 gate:
+
+- seeds: `59`, `60`, `61`
+- `K=4`: round 4 `0.4067`, round 7 `0.3933`, delta `-0.0133`
+- `K=8`: round 4 `0.4400`, round 7 `0.4467`, delta `+0.0067`
+- `K=4` head-to-head: round 7 wins `0`, losses `1`, ties `2`
+- `K=8` head-to-head: round 7 wins `1`, losses `0`, ties `2`
+
 This changes the recommendation again:
 
 - the round-4-style pointwise direction is worth continuing
 - round 7 is a useful provisional/diagnostic result
 - round 4 remains `best_current` because round 7 did not improve the fresh
   `K=8` mean
+- another blind focused-pointwise scale-up is not justified without a cleaner
+  identical-pool evaluation design or genuinely new signal
+- the cleaner identical-pool evaluation is now done, and it still does not
+  justify promotion
 
 ## What We Should Not Over-Prioritize Right Now
 
@@ -289,9 +318,14 @@ So the clearest path from here is:
 - treat hybrid pairwise round 5 as a useful negative result
 - treat conservative ranking round 6 as a second negative result
 - treat fixed-round-4 selector heuristics as a third useful negative result
-- treat focused pointwise round 7 as a useful but non-promoted diagnostic
-- analyze why round 7 helps some seeds but regresses seed `56`
+- treat focused pointwise round 7 as a useful but non-promoted diagnostic whose
+  fresh row analysis showed equal helped/hurt counts at `K=8`
+- treat the identical-pool round-7 result as a small positive `K=8` signal that
+  is below the promotion threshold because `K=4` regressed
+- do not promote round 7 and do not blindly scale the same recipe again
 
 Round 4 remains the stable paper-facing verifier. If we continue improving the
-verifier, the next step should be targeted row-level analysis of round 7's fresh
-wins/losses, not promotion and not another blind scale-up.
+verifier, the next step should bring in genuinely new signal or improve
+candidate-pool diversity. The identical-pool gate has already separated model
+error from generation variance, and round 7's clean gain is too small to be the
+next paper-facing checkpoint.

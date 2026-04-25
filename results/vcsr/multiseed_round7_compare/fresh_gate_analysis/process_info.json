@@ -1,0 +1,16 @@
+{
+  "pid": 23564,
+  "started_at": 1777111663.6199245,
+  "input_dir": "results\\vcsr\\multiseed_round7_compare",
+  "baseline_name": "round4_best_current",
+  "candidate_name": "round7_focused_pointwise",
+  "seeds": [
+    56,
+    57,
+    58
+  ],
+  "k_values": [
+    4,
+    8
+  ]
+}

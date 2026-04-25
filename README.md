@@ -46,8 +46,12 @@ tools/             External tool installs (Fast Downward, VAL)
   `K=8` while tying at `K=4`.
 - Fresh multiseed evaluation did **not** justify promoting round 7:
   it improved mean `K=4` but tied mean `K=8`.
-- The main open question is now why round 7 helps some fresh seeds but regresses
-  others, especially seed `56` at `K=8`.
+- Row-level fresh-gate analysis shows why round 7 is not promoted:
+  at `K=8`, it helped `11` rows and hurt `11` rows across `150` rows, and the
+  seed `56` regression was mostly selector loss with equivalents still present.
+- Fresh identical-pool comparison confirms the promotion decision:
+  round 7 has a tiny clean `K=8` gain but regresses `K=4`, so round 4 remains
+  `best_current`.
 
 ## Quick Start
 
@@ -155,6 +159,12 @@ python scripts/calibrate_verifier.py --config configs/verifier_focused_round7.ya
 
 # 30. Fresh multiseed gate for round 4 vs round 7, after cached replay passes
 python scripts/run_multiseed_holdout_compare.py --config configs/vcsr_multiseed_round7_compare.yaml
+
+# 31. Row-level analysis of the fresh round-7 gate
+python scripts/analyze_round7_fresh_gate.py
+
+# 32. Fresh fixed-pool verifier comparison for round 4 vs round 7
+python scripts/run_fixed_pool_verifier_compare.py --config configs/vcsr_fixed_pool_round7_compare.yaml
 ```
 
 ## Windows E: Drive Setup
@@ -354,6 +364,8 @@ Key downstream artifacts:
 | `results/vcsr/round4_selection_analysis/` | Fixed-round-4 selector-policy analysis showing simple score-use policies do not beat round-4 `verifier_ranked` |
 | `results/vcsr/replay_compare_round4_vs_round7_focused/` | Fixed-pool replay gate showing focused pointwise round 7 improves mean `K=8` while tying `K=4` |
 | `results/vcsr/multiseed_round7_compare/` | Fresh multiseed gate showing round 7 improves `K=4` mean but ties round 4 at `K=8`, so it is not promoted |
+| `results/vcsr/multiseed_round7_compare/fresh_gate_analysis/` | Row-level analysis showing round 7 helped and hurt equally at `K=8`, with seed-56 losses mostly due to selection despite available equivalents |
+| `results/vcsr/fixed_pool_round7_compare/` | Fresh identical-pool comparison showing round 7 slightly improves `K=8` but regresses `K=4`, so it is still not promoted |
 
 Current project conclusion from these pilots:
 
@@ -382,14 +394,21 @@ Current project conclusion from these pilots:
   mean `K=8` improved by `+0.0117`, while mean `K=4` tied round 4.
 - Fresh multiseed evaluation is also complete:
   round 7 improved `K=4` mean by `+0.0133`, but tied `K=8` mean at `0.4200`.
+- Round-7 fresh row analysis is complete:
+  at `K=8`, round 7 helped `11` rows and hurt `11`; seed `56` had `6` selector
+  losses with an equivalent candidate still available.
+- Fresh identical-pool round-4-vs-round-7 comparison is complete:
+  `K=4` regressed from `0.4067` to `0.3933`, while `K=8` only improved from
+  `0.4400` to `0.4467`.
 - Round 7 is not promoted; round 4 remains the current best.
 
 ## Recommended Next Step
 
 The highest-value next task is now:
 
-- analyze the round-7 fresh changed rows, especially the seed `56` `K=8`
-  regression
+- avoid another blind verifier retrain; the next improvement should add
+  genuinely new signal, improve candidate-pool diversity, or move toward
+  search/repair
 
 Why this matters:
 
@@ -400,7 +419,10 @@ Why this matters:
 - The fixed-model selector analysis shows that simple score-use heuristics are
   also not enough.
 - Round 7 was the first post-round-4 training result to pass cached replay, but
-  fresh generation did not preserve the `K=8` mean gain.
+  fresh generation did not preserve the `K=8` mean gain, and row-level analysis
+  shows the remaining issue is not just pool luck.
+- The identical-pool follow-up confirms that round 7's clean verifier gain is
+  too small to justify promotion.
 
 See `RECOMMENDATION.md` for the current project-level recommendation.
 
