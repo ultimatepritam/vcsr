@@ -86,6 +86,13 @@ def make_repair_prompt(
     Returns:
         The formatted repair prompt string.
     """
+    if domain == "gripper":
+        return make_gripper_repair_prompt(
+            natural_language=natural_language,
+            candidate_pddl=candidate_pddl,
+            feedback=feedback,
+        )
+
     parts = [
         "You are an expert AI planning assistant. A candidate PDDL problem was generated "
         "from a natural language description but may contain errors. Fix the PDDL to "
@@ -109,6 +116,56 @@ def make_repair_prompt(
 
     parts.append("Corrected PDDL problem definition:")
 
+    return "\n".join(parts)
+
+
+def make_gripper_repair_prompt(
+    natural_language: str,
+    candidate_pddl: str,
+    feedback: str = "",
+) -> str:
+    """Build a stricter Planetarium-style gripper repair prompt."""
+    parts = [
+        "You are repairing a Planetarium gripper-domain PDDL problem.",
+        "Output ONLY the corrected PDDL problem definition -- no explanations.",
+        "",
+        "Planetarium gripper PDDL conventions:",
+        "- Use (:domain gripper).",
+        "- Use (:requirements :strips). Do NOT use :typing.",
+        "- List objects in one untyped :objects list.",
+        "- Room names must be room1, room2, room3, ... when the task says first room, second room, etc.",
+        "- Ball names must be ball1, ball2, ball3, ... exactly as in the task.",
+        "- Gripper names must be gripper1, gripper2, gripper3, ... exactly as in the task.",
+        "- The :init must include unary type facts for every object: (room roomN), (ball ballN), and (gripper gripperN).",
+        "- The :init must include exactly one (at-robby roomN) fact matching the task.",
+        "- The :init must include every described (at ball room), (carry ball gripper), and (free gripper) fact.",
+        "- A gripper that is carrying a ball is NOT free; do not include (free gripperN) for any gripper in a (carry ball gripperN) fact.",
+        "- The :goal must include every requested goal fact and only requested goal facts.",
+        "- Do not add (free gripperN) to the goal unless the natural-language goal explicitly says that gripper should be free.",
+        "- For 'bring all balls into the room which already has the least balls', choose the room with the fewest initial balls and put every ball there in the goal.",
+        "- For juggle/swap carrying tasks, preserve the exact requested final ball-to-gripper assignments and free grippers.",
+        "- Do not invent rooma/roomb, left/right grippers, typed declarations, or missing unary facts.",
+        "",
+        f"Task description:\n{natural_language}",
+        "",
+        f"Candidate PDDL (may contain errors):\n{candidate_pddl}",
+        "",
+    ]
+    if feedback:
+        parts.append(f"Non-oracle feedback: {feedback}")
+        parts.append("")
+    parts.extend(
+        [
+            "Before writing the final PDDL, internally check:",
+            "1. number and names of rooms, balls, and grippers",
+            "2. all unary object facts are present in :init",
+            "3. all carry/free/at facts from the initial state are present",
+            "4. every goal fact from the natural-language task is present",
+            "5. no typed object syntax is used",
+            "",
+            "Corrected PDDL problem definition:",
+        ]
+    )
     return "\n".join(parts)
 
 

@@ -65,6 +65,10 @@ tools/             External tool installs (Fast Downward, VAL)
   across seeds `62-64`, with zero hurt rows. It did not pass the stricter
   acceptance gate because the gain was below `+0.10` and all successes were
   blocksworld; gripper repair failed on this gate.
+- Domain-aware repair now passes the same-pool fresh repair gate:
+  after adding a Planetarium-specific gripper repair prompt, repair-augmented
+  `K=8` on the same seeds `62-64` improved from `0.5000` to `0.9600`, with
+  `69 / 73` selected failures repaired and zero hurt rows.
 
 ## Quick Start
 
@@ -187,6 +191,12 @@ python scripts/run_repair_pilot.py --config configs/vcsr_repair_pilot.yaml
 
 # 35. Fresh fixed-pool repair gate
 python scripts/run_fresh_repair_gate.py --config configs/vcsr_fresh_repair_gate.yaml
+
+# 36. Gripper-specific repair prompt pilot
+python scripts/run_gripper_repair_prompt_pilot.py --config configs/vcsr_gripper_repair_prompt_pilot.yaml
+
+# 37. Same-pool domain-aware repair gate
+python scripts/run_fresh_repair_gate.py --config configs/vcsr_fresh_repair_gate_domainaware_replay.yaml
 ```
 
 ## Windows E: Drive Setup

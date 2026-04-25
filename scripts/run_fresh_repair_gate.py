@@ -391,7 +391,12 @@ def main() -> None:
         repair_dir = seed_dir / "repair"
         pool_dir.mkdir(parents=True, exist_ok=True)
         repair_dir.mkdir(parents=True, exist_ok=True)
-        candidate_dump = pool_dir / "candidate_dump.jsonl"
+        source_root = cfg["pool_generation"].get("source_root")
+        candidate_dump = (
+            Path(source_root) / f"seed_{seed}" / "pool" / "candidate_dump.jsonl"
+            if source_root
+            else pool_dir / "candidate_dump.jsonl"
+        )
 
         _write_progress(
             output_dir,
@@ -401,7 +406,9 @@ def main() -> None:
             started_at=started_at,
             seed=seed,
         )
-        if force or not candidate_dump.exists():
+        if source_root:
+            logger.info("Using source candidate pool for seed %s: %s", seed, candidate_dump)
+        elif force or not candidate_dump.exists():
             logger.info("Generating fresh candidate pool for seed %s", seed)
             _run_command(
                 [
@@ -436,7 +443,8 @@ def main() -> None:
             seed=seed,
         )
         repair_outputs = repair_dir / "repair_outputs.jsonl"
-        if force or not repair_outputs.exists():
+        force_repairs = bool(cfg.get("force_repairs", False))
+        if force or force_repairs or not repair_outputs.exists():
             cases = _select_top_round4_failures(
                 candidate_dump=candidate_dump,
                 scorer=scorer,
@@ -474,7 +482,7 @@ def main() -> None:
                 repair_rows = [json.loads(line) for line in f if line.strip()]
         completed_steps += 1
 
-        pool_metrics = _read_aggregate_metrics(pool_dir / "aggregate_metrics.json")
+        pool_metrics = _read_aggregate_metrics(candidate_dump.parent / "aggregate_metrics.json")
         baseline_k8 = _baseline_equiv_rate(pool_metrics, int(repair_cfg.get("K", 8)))
         total_rows = int(pool_metrics["comparisons"][str(repair_cfg.get("K", 8))]["policies"]["verifier_ranked"]["metrics"]["total"])
         repair_metrics = _metrics(repair_rows)

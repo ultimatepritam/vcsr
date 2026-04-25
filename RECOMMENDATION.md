@@ -331,6 +331,26 @@ Fresh fixed-pool repair gate:
 - acceptance: **not accepted yet**, because the mean gain is below the pre-set
   `+0.10` threshold and the improvement is domain-concentrated
 
+Domain-aware repair gate:
+
+- diagnosed gripper failure as prompt/schema mismatch, not repair infeasibility
+- added a Planetarium-specific gripper repair prompt:
+  untyped `:objects`, `:requirements :strips`, unary `(room ...)`, `(ball ...)`,
+  `(gripper ...)` facts, exact room/ball/gripper names, no free facts for
+  grippers that are carrying balls
+- cached gripper-only prompt pilot repaired `61 / 63` gripper failures
+- then reused the same fresh pools from seeds `62`, `63`, and `64`
+- no new best-of-K generation was used for the domain-aware gate
+- plain round-4 `verifier_ranked` mean `K=8`: `0.5000`
+- domain-aware repair-augmented mean `K=8`: `0.9600`
+- per-seed domain-aware `K=8`: `1.0000`, `0.9000`, `0.9800`
+- repaired failures: `73`
+- helped / hurt / tied: `69 / 0 / 4`
+- repaired-failure parse rate: `1.0000`
+- blocksworld repair equivalence: `0.8000` (`8 / 10`)
+- gripper repair equivalence: `0.9683` (`61 / 63`)
+- acceptance: **passed**
+
 This changes the recommendation again:
 
 - the round-4-style pointwise direction is worth continuing
@@ -346,8 +366,8 @@ This changes the recommendation again:
 - repair is now the strongest next direction because it adds new information at
   the failure point rather than trying to squeeze more from the same scalar
   verifier score
-- but repair should become domain-aware before it is promoted or scaled:
-  blocksworld repair works; gripper repair currently does not
+- domain-aware repair is now the strongest system direction and should be
+  integrated into the main best-of-K entrypoint before more verifier training
 
 ## What We Should Not Over-Prioritize Right Now
 
@@ -362,12 +382,13 @@ This changes the recommendation again:
   and 6 both failed replay
 - adding margin/fallback selector policies unless they pass cached replay first
 - promoting round 7 after the fresh gate tied `K=8`
-- claiming repair is solved from cached failures alone
-- scaling the current generic repair prompt over gripper-heavy pools
+- claiming final paper victory from same-pool repair replay alone
+- scaling the old generic gripper repair prompt
 
 ## Bottom Line
 
-My view is now materially more positive, but still gated.
+My view is now strongly positive, with one important caveat: the strongest
+repair result is a same-pool gate, not final untouched paper evidence yet.
 
 Round 4 is not a failure.
 It moved the verifier in the right direction:
@@ -396,14 +417,15 @@ So the clearest path from here is:
 - treat the cached repair pilot as the first strong Phase 3 positive signal:
   `23 / 30` known round-4 failures were repaired to equivalent PDDL with
   `29 / 30` parseable repairs
-- treat the fresh repair gate as a partial positive result: it improved mean
-  `K=8` from `0.5000` to `0.5467` with zero hurt rows, but did not pass the
-  stricter acceptance gate
-- do not promote the generic repair policy yet, because its gains are entirely
-  from blocksworld and gripper repair failed on this fresh gate
+- treat the generic fresh repair gate as a useful failure analysis step: it
+  improved mean `K=8` from `0.5000` to `0.5467` but exposed gripper as the
+  blocker
+- treat the domain-aware repair gate as the new strongest Phase 3 result:
+  same-pool `K=8` improved from `0.5000` to `0.9600`, with `69 / 73` failures
+  repaired and zero hurt rows
 
 Round 4 remains the stable paper-facing verifier. The next step should be a
-domain-aware repair iteration: preserve the blocksworld repair recipe, diagnose
-why gripper repairs remain non-equivalent despite parsing, and add a gripper
-specific repair prompt or structured feedback before another fresh gate. More
-checkpoint training and simple planner reranking are both lower-priority now.
+repair-augmented best-of-K implementation: keep round 4 frozen, run normal
+verifier-ranked selection, repair selected parseable failures when the repair
+stage is enabled, and evaluate on new fresh seeds. More checkpoint training and
+simple planner reranking are both lower-priority now.

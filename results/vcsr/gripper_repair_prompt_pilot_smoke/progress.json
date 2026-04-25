@@ -1,0 +1,10 @@
+{
+  "stage": "complete",
+  "total_rows": 3,
+  "completed_rows": 3,
+  "remaining_rows": 0,
+  "elapsed_sec": 49.80541682243347,
+  "avg_sec_per_row": 16.601805607477825,
+  "eta_sec": 0.0,
+  "current_case": ""
+}

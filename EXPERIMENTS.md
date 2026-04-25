@@ -1930,13 +1930,71 @@ Interpretation:
   for blocksworld, but design a gripper-specific repair prompt or structured
   feedback before scaling.
 
+### Phase 3 Domain-Aware Repair Gate
+
+- Goal: fix the gripper repair failure mode from the fresh repair gate without
+  retraining the verifier or generating new candidate pools.
+- Gripper prompt-pilot config:
+  [configs/vcsr_gripper_repair_prompt_pilot.yaml](/e:/Engineering/vcsr/configs/vcsr_gripper_repair_prompt_pilot.yaml)
+- Domain-aware same-pool gate config:
+  [configs/vcsr_fresh_repair_gate_domainaware_replay.yaml](/e:/Engineering/vcsr/configs/vcsr_fresh_repair_gate_domainaware_replay.yaml)
+- Gripper prompt script:
+  [scripts/run_gripper_repair_prompt_pilot.py](/e:/Engineering/vcsr/scripts/run_gripper_repair_prompt_pilot.py)
+- Gate script:
+  [scripts/run_fresh_repair_gate.py](/e:/Engineering/vcsr/scripts/run_fresh_repair_gate.py)
+- Gripper prompt output:
+  [results/vcsr/gripper_repair_prompt_pilot](/e:/Engineering/vcsr/results/vcsr/gripper_repair_prompt_pilot)
+- Domain-aware gate output:
+  [results/vcsr/fresh_repair_gate_round4_domainaware](/e:/Engineering/vcsr/results/vcsr/fresh_repair_gate_round4_domainaware)
+- Status: completed, **passes fresh fixed-pool repair gate**
+
+Diagnosis:
+
+- Generic repair failed gripper because it produced superficially plausible PDDL
+  that violated Planetarium gripper conventions.
+- The most important issue was schema mismatch: typed `:objects` and missing
+  unary `(room ...)`, `(ball ...)`, and `(gripper ...)` facts.
+- A second issue was adding `(free gripperN)` for grippers that were already
+  carrying balls, or adding free-gripper goals that were not requested.
+
+Gripper-specific prompt pilot:
+
+- cached gripper failures: `63`
+- repair parse rate: `1.0000`
+- repair equivalence rate: `0.9683`
+- helped / hurt / tied: `61 / 0 / 2`
+- `abstract/abstract`: `32 / 33` helped
+- `explicit/explicit`: `29 / 30` helped
+
+Same-pool domain-aware repair gate:
+
+- reused the exact fresh pools from seeds `62`, `63`, and `64`
+- no new best-of-K generation
+- plain round-4 `verifier_ranked` mean `K=8`: `0.5000`
+- domain-aware repair-augmented mean `K=8`: `0.9600`
+- per-seed repair-augmented `K=8`: `1.0000`, `0.9000`, `0.9800`
+- helped / hurt / tied: `69 / 0 / 4`
+- repaired-failure parse rate: `1.0000`
+- repaired-failure equivalence rate: `0.9452`
+- `blocksworld`: `8 / 10` helped
+- `gripper`: `61 / 63` helped
+
+Interpretation:
+
+- This is the strongest system result so far.
+- The result validates Phase 3: verifier-ranked best-of-K finds a candidate,
+  then targeted domain-aware repair can recover many verifier-selected failures.
+- The next engineering step is to implement repair-augmented selection in the
+  main best-of-K entrypoint as an optional policy/stage.
+- The next evaluation step should be a fresh held-out repair-augmented run on
+  new seeds not used in prompt design.
+
 ## Recommended Next Entries
 
 - Keep round 4 as the promoted default.
 - If continuing model work, do not blindly repeat round 7. The identical-pool
   gate shows only a tiny `K=8` gain with a `K=4` regression.
-- Analyze and improve repair by domain. The fresh repair gate improved mean
-  `K=8` without hurting rows, but missed the acceptance threshold because
-  gripper repairs failed almost completely.
+- Implement repair-augmented selection in the main best-of-K entrypoint. The
+  same-pool domain-aware repair gate passed strongly.
 - Selective prediction / abstention experiments only after selection or repair
   has a stronger baseline.

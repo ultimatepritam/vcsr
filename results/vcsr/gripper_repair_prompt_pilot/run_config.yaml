@@ -1,0 +1,28 @@
+experiment:
+  name: gripper_repair_prompt_pilot
+  seed: 42
+inputs:
+  repair_outputs:
+  - results/vcsr/fresh_repair_gate_round4/seed_62/repair/repair_outputs.jsonl
+  - results/vcsr/fresh_repair_gate_round4/seed_63/repair/repair_outputs.jsonl
+  - results/vcsr/fresh_repair_gate_round4/seed_64/repair/repair_outputs.jsonl
+  pool_root: results/vcsr/fresh_repair_gate_round4
+selection:
+  verifier_selection: results/verifier/best_current/selection.yaml
+  domain: gripper
+  max_rows: 63
+  scoring_batch_size: 8
+generation:
+  clear_proxy_env: true
+  backends:
+  - type: openrouter
+    K: 1
+  temperature: 0.2
+  top_p: 0.9
+  max_new_tokens: 1024
+  retry_attempts: 3
+  retry_delay_sec: 2
+evaluation:
+  equivalence_timeout_sec: 0
+output:
+  dir: results/vcsr/gripper_repair_prompt_pilot

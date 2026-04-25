@@ -1,5 +1,6 @@
 import unittest
 
+from generation.prompts import make_repair_prompt
 from scripts.run_repair_pilot import RepairCase, build_feedback, select_repair_candidate_from_scored
 
 
@@ -81,6 +82,20 @@ class RepairPilotTests(unittest.TestCase):
         self.assertNotIn("SECRET_GOLD", feedback)
         self.assertNotIn("BAD_PDDL", feedback)
         self.assertNotIn("equivalent", feedback.lower())
+
+    def test_gripper_repair_prompt_uses_planetarium_conventions(self) -> None:
+        prompt = make_repair_prompt(
+            natural_language="You have 2 rooms. Gripper gripper1 is free.",
+            candidate_pddl="(define (problem bad))",
+            domain="gripper",
+            feedback="parseable candidate",
+        )
+        self.assertIn("Do NOT use :typing", prompt)
+        self.assertIn("Use (:requirements :strips)", prompt)
+        self.assertIn("(room roomN)", prompt)
+        self.assertIn("(ball ballN)", prompt)
+        self.assertIn("(gripper gripperN)", prompt)
+        self.assertIn("room1, room2", prompt)
 
 
 if __name__ == "__main__":

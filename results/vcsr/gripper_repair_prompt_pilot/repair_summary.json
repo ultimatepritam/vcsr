@@ -1,0 +1,101 @@
+{
+  "config": {
+    "experiment": {
+      "name": "gripper_repair_prompt_pilot",
+      "seed": 42
+    },
+    "inputs": {
+      "repair_outputs": [
+        "results/vcsr/fresh_repair_gate_round4/seed_62/repair/repair_outputs.jsonl",
+        "results/vcsr/fresh_repair_gate_round4/seed_63/repair/repair_outputs.jsonl",
+        "results/vcsr/fresh_repair_gate_round4/seed_64/repair/repair_outputs.jsonl"
+      ],
+      "pool_root": "results/vcsr/fresh_repair_gate_round4"
+    },
+    "selection": {
+      "verifier_selection": "results/verifier/best_current/selection.yaml",
+      "domain": "gripper",
+      "max_rows": 63,
+      "scoring_batch_size": 8
+    },
+    "generation": {
+      "clear_proxy_env": true,
+      "backends": [
+        {
+          "type": "openrouter",
+          "K": 1
+        }
+      ],
+      "temperature": 0.2,
+      "top_p": 0.9,
+      "max_new_tokens": 1024,
+      "retry_attempts": 3,
+      "retry_delay_sec": 2
+    },
+    "evaluation": {
+      "equivalence_timeout_sec": 0
+    },
+    "output": {
+      "dir": "results/vcsr/gripper_repair_prompt_pilot"
+    }
+  },
+  "metrics": {
+    "total": 63,
+    "original_equiv_count": 0,
+    "repair_parse_count": 63,
+    "repair_solvable_count": 63,
+    "repair_equiv_count": 61,
+    "original_equiv_rate": 0.0,
+    "repair_parse_rate": 1.0,
+    "repair_solvable_rate": 1.0,
+    "repair_equiv_rate": 0.9682539682539683,
+    "repair_equiv_given_parse": 0.9682539682539683,
+    "helped": 61,
+    "hurt": 0,
+    "tied": 2
+  },
+  "outcome_counts": [
+    [
+      "repair_helped",
+      61
+    ],
+    [
+      "both_fail",
+      2
+    ]
+  ],
+  "style_breakdown": {
+    "abstract/abstract": {
+      "total": 33,
+      "original_equiv_count": 0,
+      "repair_parse_count": 33,
+      "repair_solvable_count": 33,
+      "repair_equiv_count": 32,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 1.0,
+      "repair_equiv_rate": 0.9696969696969697,
+      "repair_equiv_given_parse": 0.9696969696969697,
+      "helped": 32,
+      "hurt": 0,
+      "tied": 1
+    },
+    "explicit/explicit": {
+      "total": 30,
+      "original_equiv_count": 0,
+      "repair_parse_count": 30,
+      "repair_solvable_count": 30,
+      "repair_equiv_count": 29,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 1.0,
+      "repair_equiv_rate": 0.9666666666666667,
+      "repair_equiv_given_parse": 0.9666666666666667,
+      "helped": 29,
+      "hurt": 0,
+      "tied": 1
+    }
+  },
+  "accepted": true,
+  "recommendation": "Gripper-specific repair is promising; rerun the fresh repair gate with domain-aware routing."
+}

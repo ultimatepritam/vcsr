@@ -160,13 +160,16 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] **Run Phase 3 cached planner/search ablation with round 4 frozen**
 - [x] **Run Phase 3 cached repair pilot with round 4 frozen**
 - [x] **Run Phase 3 fresh fixed-pool repair gate**
+- [x] **Run Phase 3 domain-aware gripper repair prompt pilot**
+- [x] **Run Phase 3 same-pool domain-aware repair gate**
 
 ### Phase 3: Search and Repair (Weeks 5-6)
 
 - [x] Best-of-K + planner-filter ablations
 - [x] Cached repair loop + analysis
 - [x] Fresh fixed-pool repair gate
-- [ ] Domain-aware repair iteration
+- [x] Domain-aware repair iteration
+- [ ] Integrate repair-augmented best-of-K selection
 
 ### Phase 4: Paper and Release (Weeks 7-8)
 
@@ -176,10 +179,10 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Run a domain-aware repair iteration**
-   The fresh fixed-pool repair gate improved mean `K=8` without hurting rows,
-   but all successes were blocksworld. The next useful step is a
-   gripper-specific repair diagnosis/prompt, not more verifier training.
+1. **Integrate repair-augmented best-of-K selection**
+   Domain-aware repair passed the same-pool gate strongly: `K=8` improved from
+   `0.5000` to `0.9600` on seeds `62-64`, with `69 / 73` failures repaired and
+   zero hurt rows.
 2. **Replay remains the checkpoint-selection rule**
    Continue to judge new verifier checkpoints primarily by replay on cached
    pools, not by offline AUC alone.
@@ -264,11 +267,20 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
   helped / hurt / tied `7 / 0 / 66`, but it did not pass the stricter
   acceptance gate. All helped rows were blocksworld; gripper repair was
   `0 / 63`.
+- Gripper-specific repair prompt pilot is complete under
+  `results/vcsr/gripper_repair_prompt_pilot/`. The generic gripper failure was
+  mainly a Planetarium schema mismatch: typed objects and missing unary
+  `(room ...)`, `(ball ...)`, and `(gripper ...)` facts. The domain-specific
+  prompt repaired `61 / 63` gripper failures with parse rate `1.0000`.
+- Phase 3 same-pool domain-aware repair gate is complete under
+  `results/vcsr/fresh_repair_gate_round4_domainaware/`. It reused the exact
+  candidate pools from seeds `62`, `63`, and `64` and improved mean `K=8` from
+  `0.5000` to `0.9600`. Helped / hurt / tied was `69 / 0 / 4`.
 - `results/verifier/best_current/selection.yaml` should remain pointed at round
   4.
 - Current next-step bias: do not blindly retrain or add more simple selector
-  heuristics. Improve repair with domain-specific feedback, especially for
-  gripper.
+  heuristics. Integrate repair-augmented selection into the main best-of-K
+  entrypoint, then evaluate on new fresh seeds.
 
 ## Long-Run Visibility Rule
 
