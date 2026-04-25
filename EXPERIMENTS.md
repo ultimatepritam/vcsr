@@ -1773,10 +1773,65 @@ Interpretation:
 - Round 7 remains useful evidence that focused pointwise mining can help, but
   not enough to replace the promoted baseline.
 
+### Phase 3 Search Ablation With Round 4 Frozen
+
+- Goal: test whether non-learned planner/search signals improve selected
+  semantic equivalence over plain round-4 `verifier_ranked`.
+- Script:
+  [scripts/analyze_search_ablation.py](/e:/Engineering/vcsr/scripts/analyze_search_ablation.py)
+- Output:
+  [results/vcsr/search_ablation_round4](/e:/Engineering/vcsr/results/vcsr/search_ablation_round4)
+- Status: completed, **no search policy accepted**
+
+Policies tested:
+
+- `verifier_ranked`
+- `solvable_then_verifier`
+- `verifier_then_solvable_tiebreak`
+- `parse_solvable_index`
+
+Mean cached-pool results across `280` row decisions:
+
+- `K=4`
+  - `verifier_ranked`: `0.4500`
+  - `solvable_then_verifier`: `0.4500`
+  - `verifier_then_solvable_tiebreak`: `0.4500`
+  - `parse_solvable_index`: `0.4179`
+- `K=8`
+  - `verifier_ranked`: `0.4714`
+  - `solvable_then_verifier`: `0.4750`
+  - `verifier_then_solvable_tiebreak`: `0.4714`
+  - `parse_solvable_index`: `0.4179`
+
+Candidate-pool diagnostics:
+
+- `K=4` oracle-best-of-K equivalence: `0.4893`
+- `K=8` oracle-best-of-K equivalence: `0.5214`
+- `K=4` solvable-best-of-K rate: `0.7679`
+- `K=8` solvable-best-of-K rate: `0.8107`
+
+Interpretation:
+
+- Planner solvability is common but not discriminative enough for semantic
+  equivalence.
+- `solvable_then_verifier` gained only one `K=8` row and did not improve in
+  more than one pool, so it fails the cached acceptance gate.
+- `parse_solvable_index` is clearly worse; solvability alone is not a selector.
+- No search policy justifies fresh generation spend.
+
+Project takeaway:
+
+- Round 4 remains the best selector.
+- Simple planner filtering/reranking is not enough.
+- Move to a small repair-loop pilot rather than more fixed-pool selector
+  variants.
+
 ## Recommended Next Entries
 
 - Keep round 4 as the promoted default.
 - If continuing model work, do not blindly repeat round 7. The identical-pool
   gate shows only a tiny `K=8` gain with a `K=4` regression.
-- Selective prediction / abstention experiments only after the ranker baseline
-  is actually stable
+- Start the small repair-loop pilot next; fixed-pool planner/search ablations
+  did not pass.
+- Selective prediction / abstention experiments only after selection or repair
+  has a stronger baseline.

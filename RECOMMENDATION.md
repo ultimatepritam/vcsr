@@ -58,6 +58,10 @@ decisions:
 - The identical-pool fresh gate gives the cleanest round-7 read:
   round 7 gains only `+0.0067` at `K=8` and regresses `-0.0133` at `K=4`.
   That is a real but too-small `K=8` selector gain, not a promotion case.
+- The first Phase 3 search ablation is complete:
+  simple Planetarium-oracle solvability signals did not beat round-4
+  `verifier_ranked` on cached replay. Solvability is useful diagnostics, but
+  not a strong semantic selector.
 
 ## Key Evidence
 
@@ -271,6 +275,22 @@ Fresh identical-pool round-4-vs-round-7 gate:
 - `K=4` head-to-head: round 7 wins `0`, losses `1`, ties `2`
 - `K=8` head-to-head: round 7 wins `1`, losses `0`, ties `2`
 
+Phase 3 cached search ablation:
+
+- `K=4` mean:
+  - `verifier_ranked`: `0.4500`
+  - `solvable_then_verifier`: `0.4500`
+  - `verifier_then_solvable_tiebreak`: `0.4500`
+  - `parse_solvable_index`: `0.4179`
+- `K=8` mean:
+  - `verifier_ranked`: `0.4714`
+  - `solvable_then_verifier`: `0.4750`
+  - `verifier_then_solvable_tiebreak`: `0.4714`
+  - `parse_solvable_index`: `0.4179`
+- `solvable_then_verifier` gained only one `K=8` row and not in more than one
+  pool, so it failed the acceptance gate
+- no planner/search policy justifies fresh generation spend
+
 This changes the recommendation again:
 
 - the round-4-style pointwise direction is worth continuing
@@ -281,6 +301,8 @@ This changes the recommendation again:
   identical-pool evaluation design or genuinely new signal
 - the cleaner identical-pool evaluation is now done, and it still does not
   justify promotion
+- simple planner/solvability search is also done, and it does not solve the
+  remaining selector problem
 
 ## What We Should Not Over-Prioritize Right Now
 
@@ -322,10 +344,10 @@ So the clearest path from here is:
   fresh row analysis showed equal helped/hurt counts at `K=8`
 - treat the identical-pool round-7 result as a small positive `K=8` signal that
   is below the promotion threshold because `K=4` regressed
+- treat the Phase 3 planner/search ablation as a negative result for simple
+  solvability filtering
 - do not promote round 7 and do not blindly scale the same recipe again
 
 Round 4 remains the stable paper-facing verifier. If we continue improving the
-verifier, the next step should bring in genuinely new signal or improve
-candidate-pool diversity. The identical-pool gate has already separated model
-error from generation variance, and round 7's clean gain is too small to be the
-next paper-facing checkpoint.
+system, the next step should be a small repair-loop pilot. More checkpoint
+training and simple planner reranking are both lower-priority now.

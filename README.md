@@ -52,6 +52,9 @@ tools/             External tool installs (Fast Downward, VAL)
 - Fresh identical-pool comparison confirms the promotion decision:
   round 7 has a tiny clean `K=8` gain but regresses `K=4`, so round 4 remains
   `best_current`.
+- Phase 3 cached planner/search ablation is complete:
+  simple solvability-based policies did not beat round-4 `verifier_ranked`, so
+  the next system step is a small repair-loop pilot.
 
 ## Quick Start
 
@@ -165,6 +168,9 @@ python scripts/analyze_round7_fresh_gate.py
 
 # 32. Fresh fixed-pool verifier comparison for round 4 vs round 7
 python scripts/run_fixed_pool_verifier_compare.py --config configs/vcsr_fixed_pool_round7_compare.yaml
+
+# 33. Cached planner/search ablation with round 4 frozen
+python scripts/analyze_search_ablation.py
 ```
 
 ## Windows E: Drive Setup
@@ -366,6 +372,7 @@ Key downstream artifacts:
 | `results/vcsr/multiseed_round7_compare/` | Fresh multiseed gate showing round 7 improves `K=4` mean but ties round 4 at `K=8`, so it is not promoted |
 | `results/vcsr/multiseed_round7_compare/fresh_gate_analysis/` | Row-level analysis showing round 7 helped and hurt equally at `K=8`, with seed-56 losses mostly due to selection despite available equivalents |
 | `results/vcsr/fixed_pool_round7_compare/` | Fresh identical-pool comparison showing round 7 slightly improves `K=8` but regresses `K=4`, so it is still not promoted |
+| `results/vcsr/search_ablation_round4/` | Phase 3 cached planner/search ablation showing solvability-based policies do not pass the cached gate |
 
 Current project conclusion from these pilots:
 
@@ -400,15 +407,17 @@ Current project conclusion from these pilots:
 - Fresh identical-pool round-4-vs-round-7 comparison is complete:
   `K=4` regressed from `0.4067` to `0.3933`, while `K=8` only improved from
   `0.4400` to `0.4467`.
+- Phase 3 cached planner/search ablation is complete:
+  `solvable_then_verifier` tied `K=4` and improved `K=8` by only one row across
+  `280` decisions, so no search policy was accepted.
 - Round 7 is not promoted; round 4 remains the current best.
 
 ## Recommended Next Step
 
 The highest-value next task is now:
 
-- avoid another blind verifier retrain; the next improvement should add
-  genuinely new signal, improve candidate-pool diversity, or move toward
-  search/repair
+- start the small repair-loop pilot; cached planner/search policies did not
+  pass, and another blind verifier retrain is not justified
 
 Why this matters:
 
@@ -423,6 +432,8 @@ Why this matters:
   shows the remaining issue is not just pool luck.
 - The identical-pool follow-up confirms that round 7's clean verifier gain is
   too small to justify promotion.
+- The planner/search ablation shows solvability is not enough to identify
+  semantic equivalence.
 
 See `RECOMMENDATION.md` for the current project-level recommendation.
 

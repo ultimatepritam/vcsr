@@ -1,0 +1,18 @@
+{
+  "pid": 21736,
+  "started_at": 1777117406.9800618,
+  "selection": "results/verifier/best_current/selection.yaml",
+  "pools": [
+    "results\\vcsr\\bestofk_round4_holdout_eval_clean\\candidate_dump.jsonl",
+    "results\\vcsr\\fixed_pool_round7_compare\\pools\\seed_59\\candidate_dump.jsonl",
+    "results\\vcsr\\fixed_pool_round7_compare\\pools\\seed_60\\candidate_dump.jsonl",
+    "results\\vcsr\\fixed_pool_round7_compare\\pools\\seed_61\\candidate_dump.jsonl",
+    "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+    "results\\vcsr\\bestofk_pilot\\candidate_dump.jsonl"
+  ],
+  "k_values": [
+    4,
+    8
+  ],
+  "output_dir": "results\\vcsr\\search_ablation_round4"
+}

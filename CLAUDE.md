@@ -157,6 +157,7 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] **Run fresh multiseed round 4 vs round 7 gate**
 - [x] **Analyze round-7 fresh gate row-level wins/losses**
 - [x] **Run fresh identical-pool round 4 vs round 7 verifier comparison**
+- [x] **Run Phase 3 cached planner/search ablation with round 4 frozen**
 
 ### Phase 3: Search and Repair (Weeks 5-6)
 
@@ -171,10 +172,10 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 
 ## What To Work On Next
 
-1. **Stop blind verifier retraining**
-   The identical-pool round-7 gate is now complete. Round 7 has only a tiny
-   clean `K=8` gain and regresses `K=4`, so the next improvement needs genuinely
-   new signal or better candidate-pool diversity, not another same-style retrain.
+1. **Start the small repair-loop pilot**
+   The Phase 3 cached search ablation is complete. Simple planner solvability
+   filtering did not pass, so the next useful system improvement is repair, not
+   another selector heuristic.
 2. **Replay remains the checkpoint-selection rule**
    Continue to judge new verifier checkpoints primarily by replay on cached
    pools, not by offline AUC alone.
@@ -242,11 +243,14 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
   `results/vcsr/fixed_pool_round7_compare/`. On the same generated candidate
   pools, round 7 regressed `K=4` (`0.4067 -> 0.3933`) and only slightly
   improved `K=8` (`0.4400 -> 0.4467`), so it is not promoted.
+- Phase 3 cached search ablation is complete under
+  `results/vcsr/search_ablation_round4/`. Simple solvability-based policies did
+  not pass the cached gate. `solvable_then_verifier` improved mean `K=8` only
+  from `0.4714` to `0.4750`, and the gain came from just one row / one pool.
 - `results/verifier/best_current/selection.yaml` should remain pointed at round
   4.
-- Current next-step bias: do not blindly retrain. The clean verifier comparison
-  has already been run; future work should add genuinely new signal, improve
-  candidate-pool diversity, or move toward search/repair.
+- Current next-step bias: do not blindly retrain or add more simple selector
+  heuristics. Build the small repair-loop pilot next.
 
 ## Long-Run Visibility Rule
 

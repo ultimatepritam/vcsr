@@ -1,0 +1,3406 @@
+{
+  "verifier_selection": "results/verifier/best_current/selection.yaml",
+  "pools": [
+    "results\\vcsr\\bestofk_round4_holdout_eval_clean\\candidate_dump.jsonl",
+    "results\\vcsr\\fixed_pool_round7_compare\\pools\\seed_59\\candidate_dump.jsonl",
+    "results\\vcsr\\fixed_pool_round7_compare\\pools\\seed_60\\candidate_dump.jsonl",
+    "results\\vcsr\\fixed_pool_round7_compare\\pools\\seed_61\\candidate_dump.jsonl",
+    "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+    "results\\vcsr\\bestofk_pilot\\candidate_dump.jsonl"
+  ],
+  "k_values": [
+    4,
+    8
+  ],
+  "policies": [
+    "verifier_ranked",
+    "solvable_then_verifier",
+    "verifier_then_solvable_tiebreak",
+    "parse_solvable_index"
+  ],
+  "tie_margin": 0.02,
+  "mean_metrics": {
+    "4": {
+      "verifier_ranked": {
+        "metrics": {
+          "total": 280,
+          "parse_count": 278,
+          "solvable_count": 195,
+          "equiv_count": 126,
+          "parse_rate": 0.9928571428571429,
+          "solvable_rate": 0.6964285714285714,
+          "equiv_rate": 0.45,
+          "equiv_given_parse": 0.45323741007194246
+        },
+        "domain_breakdown": {
+          "blocksworld": {
+            "total": 157,
+            "parse_count": 157,
+            "solvable_count": 153,
+            "equiv_count": 126,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.9745222929936306,
+            "equiv_rate": 0.802547770700637,
+            "equiv_given_parse": 0.802547770700637
+          },
+          "gripper": {
+            "total": 123,
+            "parse_count": 121,
+            "solvable_count": 42,
+            "equiv_count": 0,
+            "parse_rate": 0.983739837398374,
+            "solvable_rate": 0.34146341463414637,
+            "equiv_rate": 0.0,
+            "equiv_given_parse": 0.0
+          }
+        },
+        "style_breakdown": {
+          "abstract/abstract": {
+            "total": 162,
+            "parse_count": 160,
+            "solvable_count": 121,
+            "equiv_count": 55,
+            "parse_rate": 0.9876543209876543,
+            "solvable_rate": 0.7469135802469136,
+            "equiv_rate": 0.3395061728395062,
+            "equiv_given_parse": 0.34375
+          },
+          "explicit/explicit": {
+            "total": 118,
+            "parse_count": 118,
+            "solvable_count": 74,
+            "equiv_count": 71,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.6271186440677966,
+            "equiv_rate": 0.6016949152542372,
+            "equiv_given_parse": 0.6016949152542372
+          }
+        },
+        "helped_vs_verifier_ranked": 0,
+        "hurt_vs_verifier_ranked": 0,
+        "tied_vs_verifier_ranked": 280
+      },
+      "solvable_then_verifier": {
+        "metrics": {
+          "total": 280,
+          "parse_count": 215,
+          "solvable_count": 215,
+          "equiv_count": 126,
+          "parse_rate": 0.7678571428571429,
+          "solvable_rate": 0.7678571428571429,
+          "equiv_rate": 0.45,
+          "equiv_given_parse": 0.586046511627907
+        },
+        "domain_breakdown": {
+          "blocksworld": {
+            "total": 157,
+            "parse_count": 154,
+            "solvable_count": 154,
+            "equiv_count": 126,
+            "parse_rate": 0.9808917197452229,
+            "solvable_rate": 0.9808917197452229,
+            "equiv_rate": 0.802547770700637,
+            "equiv_given_parse": 0.8181818181818182
+          },
+          "gripper": {
+            "total": 123,
+            "parse_count": 61,
+            "solvable_count": 61,
+            "equiv_count": 0,
+            "parse_rate": 0.4959349593495935,
+            "solvable_rate": 0.4959349593495935,
+            "equiv_rate": 0.0,
+            "equiv_given_parse": 0.0
+          }
+        },
+        "style_breakdown": {
+          "abstract/abstract": {
+            "total": 162,
+            "parse_count": 138,
+            "solvable_count": 138,
+            "equiv_count": 55,
+            "parse_rate": 0.8518518518518519,
+            "solvable_rate": 0.8518518518518519,
+            "equiv_rate": 0.3395061728395062,
+            "equiv_given_parse": 0.39855072463768115
+          },
+          "explicit/explicit": {
+            "total": 118,
+            "parse_count": 77,
+            "solvable_count": 77,
+            "equiv_count": 71,
+            "parse_rate": 0.652542372881356,
+            "solvable_rate": 0.652542372881356,
+            "equiv_rate": 0.6016949152542372,
+            "equiv_given_parse": 0.922077922077922
+          }
+        },
+        "helped_vs_verifier_ranked": 0,
+        "hurt_vs_verifier_ranked": 0,
+        "tied_vs_verifier_ranked": 280
+      },
+      "verifier_then_solvable_tiebreak": {
+        "metrics": {
+          "total": 280,
+          "parse_count": 278,
+          "solvable_count": 215,
+          "equiv_count": 126,
+          "parse_rate": 0.9928571428571429,
+          "solvable_rate": 0.7678571428571429,
+          "equiv_rate": 0.45,
+          "equiv_given_parse": 0.45323741007194246
+        },
+        "domain_breakdown": {
+          "blocksworld": {
+            "total": 157,
+            "parse_count": 157,
+            "solvable_count": 154,
+            "equiv_count": 126,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.9808917197452229,
+            "equiv_rate": 0.802547770700637,
+            "equiv_given_parse": 0.802547770700637
+          },
+          "gripper": {
+            "total": 123,
+            "parse_count": 121,
+            "solvable_count": 61,
+            "equiv_count": 0,
+            "parse_rate": 0.983739837398374,
+            "solvable_rate": 0.4959349593495935,
+            "equiv_rate": 0.0,
+            "equiv_given_parse": 0.0
+          }
+        },
+        "style_breakdown": {
+          "abstract/abstract": {
+            "total": 162,
+            "parse_count": 160,
+            "solvable_count": 138,
+            "equiv_count": 55,
+            "parse_rate": 0.9876543209876543,
+            "solvable_rate": 0.8518518518518519,
+            "equiv_rate": 0.3395061728395062,
+            "equiv_given_parse": 0.34375
+          },
+          "explicit/explicit": {
+            "total": 118,
+            "parse_count": 118,
+            "solvable_count": 77,
+            "equiv_count": 71,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.652542372881356,
+            "equiv_rate": 0.6016949152542372,
+            "equiv_given_parse": 0.6016949152542372
+          }
+        },
+        "helped_vs_verifier_ranked": 0,
+        "hurt_vs_verifier_ranked": 0,
+        "tied_vs_verifier_ranked": 280
+      },
+      "parse_solvable_index": {
+        "metrics": {
+          "total": 280,
+          "parse_count": 215,
+          "solvable_count": 215,
+          "equiv_count": 117,
+          "parse_rate": 0.7678571428571429,
+          "solvable_rate": 0.7678571428571429,
+          "equiv_rate": 0.41785714285714287,
+          "equiv_given_parse": 0.5441860465116279
+        },
+        "domain_breakdown": {
+          "blocksworld": {
+            "total": 157,
+            "parse_count": 154,
+            "solvable_count": 154,
+            "equiv_count": 117,
+            "parse_rate": 0.9808917197452229,
+            "solvable_rate": 0.9808917197452229,
+            "equiv_rate": 0.7452229299363057,
+            "equiv_given_parse": 0.7597402597402597
+          },
+          "gripper": {
+            "total": 123,
+            "parse_count": 61,
+            "solvable_count": 61,
+            "equiv_count": 0,
+            "parse_rate": 0.4959349593495935,
+            "solvable_rate": 0.4959349593495935,
+            "equiv_rate": 0.0,
+            "equiv_given_parse": 0.0
+          }
+        },
+        "style_breakdown": {
+          "abstract/abstract": {
+            "total": 162,
+            "parse_count": 138,
+            "solvable_count": 138,
+            "equiv_count": 47,
+            "parse_rate": 0.8518518518518519,
+            "solvable_rate": 0.8518518518518519,
+            "equiv_rate": 0.29012345679012347,
+            "equiv_given_parse": 0.34057971014492755
+          },
+          "explicit/explicit": {
+            "total": 118,
+            "parse_count": 77,
+            "solvable_count": 77,
+            "equiv_count": 70,
+            "parse_rate": 0.652542372881356,
+            "solvable_rate": 0.652542372881356,
+            "equiv_rate": 0.5932203389830508,
+            "equiv_given_parse": 0.9090909090909091
+          }
+        },
+        "helped_vs_verifier_ranked": 1,
+        "hurt_vs_verifier_ranked": 10,
+        "tied_vs_verifier_ranked": 269
+      }
+    },
+    "8": {
+      "verifier_ranked": {
+        "metrics": {
+          "total": 280,
+          "parse_count": 279,
+          "solvable_count": 195,
+          "equiv_count": 132,
+          "parse_rate": 0.9964285714285714,
+          "solvable_rate": 0.6964285714285714,
+          "equiv_rate": 0.4714285714285714,
+          "equiv_given_parse": 0.4731182795698925
+        },
+        "domain_breakdown": {
+          "blocksworld": {
+            "total": 157,
+            "parse_count": 157,
+            "solvable_count": 153,
+            "equiv_count": 131,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.9745222929936306,
+            "equiv_rate": 0.8343949044585988,
+            "equiv_given_parse": 0.8343949044585988
+          },
+          "gripper": {
+            "total": 123,
+            "parse_count": 122,
+            "solvable_count": 42,
+            "equiv_count": 1,
+            "parse_rate": 0.991869918699187,
+            "solvable_rate": 0.34146341463414637,
+            "equiv_rate": 0.008130081300813009,
+            "equiv_given_parse": 0.00819672131147541
+          }
+        },
+        "style_breakdown": {
+          "abstract/abstract": {
+            "total": 162,
+            "parse_count": 161,
+            "solvable_count": 121,
+            "equiv_count": 61,
+            "parse_rate": 0.9938271604938271,
+            "solvable_rate": 0.7469135802469136,
+            "equiv_rate": 0.3765432098765432,
+            "equiv_given_parse": 0.37888198757763975
+          },
+          "explicit/explicit": {
+            "total": 118,
+            "parse_count": 118,
+            "solvable_count": 74,
+            "equiv_count": 71,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.6271186440677966,
+            "equiv_rate": 0.6016949152542372,
+            "equiv_given_parse": 0.6016949152542372
+          }
+        },
+        "helped_vs_verifier_ranked": 0,
+        "hurt_vs_verifier_ranked": 0,
+        "tied_vs_verifier_ranked": 280
+      },
+      "solvable_then_verifier": {
+        "metrics": {
+          "total": 280,
+          "parse_count": 227,
+          "solvable_count": 227,
+          "equiv_count": 133,
+          "parse_rate": 0.8107142857142857,
+          "solvable_rate": 0.8107142857142857,
+          "equiv_rate": 0.475,
+          "equiv_given_parse": 0.5859030837004405
+        },
+        "domain_breakdown": {
+          "blocksworld": {
+            "total": 157,
+            "parse_count": 156,
+            "solvable_count": 156,
+            "equiv_count": 132,
+            "parse_rate": 0.9936305732484076,
+            "solvable_rate": 0.9936305732484076,
+            "equiv_rate": 0.8407643312101911,
+            "equiv_given_parse": 0.8461538461538461
+          },
+          "gripper": {
+            "total": 123,
+            "parse_count": 71,
+            "solvable_count": 71,
+            "equiv_count": 1,
+            "parse_rate": 0.5772357723577236,
+            "solvable_rate": 0.5772357723577236,
+            "equiv_rate": 0.008130081300813009,
+            "equiv_given_parse": 0.014084507042253521
+          }
+        },
+        "style_breakdown": {
+          "abstract/abstract": {
+            "total": 162,
+            "parse_count": 150,
+            "solvable_count": 150,
+            "equiv_count": 62,
+            "parse_rate": 0.9259259259259259,
+            "solvable_rate": 0.9259259259259259,
+            "equiv_rate": 0.38271604938271603,
+            "equiv_given_parse": 0.41333333333333333
+          },
+          "explicit/explicit": {
+            "total": 118,
+            "parse_count": 77,
+            "solvable_count": 77,
+            "equiv_count": 71,
+            "parse_rate": 0.652542372881356,
+            "solvable_rate": 0.652542372881356,
+            "equiv_rate": 0.6016949152542372,
+            "equiv_given_parse": 0.922077922077922
+          }
+        },
+        "helped_vs_verifier_ranked": 1,
+        "hurt_vs_verifier_ranked": 0,
+        "tied_vs_verifier_ranked": 279
+      },
+      "verifier_then_solvable_tiebreak": {
+        "metrics": {
+          "total": 280,
+          "parse_count": 279,
+          "solvable_count": 225,
+          "equiv_count": 132,
+          "parse_rate": 0.9964285714285714,
+          "solvable_rate": 0.8035714285714286,
+          "equiv_rate": 0.4714285714285714,
+          "equiv_given_parse": 0.4731182795698925
+        },
+        "domain_breakdown": {
+          "blocksworld": {
+            "total": 157,
+            "parse_count": 157,
+            "solvable_count": 154,
+            "equiv_count": 131,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.9808917197452229,
+            "equiv_rate": 0.8343949044585988,
+            "equiv_given_parse": 0.8343949044585988
+          },
+          "gripper": {
+            "total": 123,
+            "parse_count": 122,
+            "solvable_count": 71,
+            "equiv_count": 1,
+            "parse_rate": 0.991869918699187,
+            "solvable_rate": 0.5772357723577236,
+            "equiv_rate": 0.008130081300813009,
+            "equiv_given_parse": 0.00819672131147541
+          }
+        },
+        "style_breakdown": {
+          "abstract/abstract": {
+            "total": 162,
+            "parse_count": 161,
+            "solvable_count": 148,
+            "equiv_count": 61,
+            "parse_rate": 0.9938271604938271,
+            "solvable_rate": 0.9135802469135802,
+            "equiv_rate": 0.3765432098765432,
+            "equiv_given_parse": 0.37888198757763975
+          },
+          "explicit/explicit": {
+            "total": 118,
+            "parse_count": 118,
+            "solvable_count": 77,
+            "equiv_count": 71,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.652542372881356,
+            "equiv_rate": 0.6016949152542372,
+            "equiv_given_parse": 0.6016949152542372
+          }
+        },
+        "helped_vs_verifier_ranked": 0,
+        "hurt_vs_verifier_ranked": 0,
+        "tied_vs_verifier_ranked": 280
+      },
+      "parse_solvable_index": {
+        "metrics": {
+          "total": 280,
+          "parse_count": 227,
+          "solvable_count": 227,
+          "equiv_count": 117,
+          "parse_rate": 0.8107142857142857,
+          "solvable_rate": 0.8107142857142857,
+          "equiv_rate": 0.41785714285714287,
+          "equiv_given_parse": 0.5154185022026432
+        },
+        "domain_breakdown": {
+          "blocksworld": {
+            "total": 157,
+            "parse_count": 156,
+            "solvable_count": 156,
+            "equiv_count": 117,
+            "parse_rate": 0.9936305732484076,
+            "solvable_rate": 0.9936305732484076,
+            "equiv_rate": 0.7452229299363057,
+            "equiv_given_parse": 0.75
+          },
+          "gripper": {
+            "total": 123,
+            "parse_count": 71,
+            "solvable_count": 71,
+            "equiv_count": 0,
+            "parse_rate": 0.5772357723577236,
+            "solvable_rate": 0.5772357723577236,
+            "equiv_rate": 0.0,
+            "equiv_given_parse": 0.0
+          }
+        },
+        "style_breakdown": {
+          "abstract/abstract": {
+            "total": 162,
+            "parse_count": 150,
+            "solvable_count": 150,
+            "equiv_count": 47,
+            "parse_rate": 0.9259259259259259,
+            "solvable_rate": 0.9259259259259259,
+            "equiv_rate": 0.29012345679012347,
+            "equiv_given_parse": 0.31333333333333335
+          },
+          "explicit/explicit": {
+            "total": 118,
+            "parse_count": 77,
+            "solvable_count": 77,
+            "equiv_count": 70,
+            "parse_rate": 0.652542372881356,
+            "solvable_rate": 0.652542372881356,
+            "equiv_rate": 0.5932203389830508,
+            "equiv_given_parse": 0.9090909090909091
+          }
+        },
+        "helped_vs_verifier_ranked": 3,
+        "hurt_vs_verifier_ranked": 18,
+        "tied_vs_verifier_ranked": 259
+      }
+    }
+  },
+  "per_pool": {
+    "bestofk_round4_holdout_eval_clean": {
+      "4": {
+        "verifier_ranked": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 38,
+            "equiv_count": 25,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.76,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.5
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 25,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.8620689655172413,
+              "equiv_given_parse": 0.8620689655172413
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 21,
+              "solvable_count": 9,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.42857142857142855,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 28,
+              "solvable_count": 23,
+              "equiv_count": 12,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.8214285714285714,
+              "equiv_rate": 0.42857142857142855,
+              "equiv_given_parse": 0.42857142857142855
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 22,
+              "solvable_count": 15,
+              "equiv_count": 13,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.6818181818181818,
+              "equiv_rate": 0.5909090909090909,
+              "equiv_given_parse": 0.5909090909090909
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "solvable_then_verifier": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 41,
+            "solvable_count": 41,
+            "equiv_count": 25,
+            "parse_rate": 0.82,
+            "solvable_rate": 0.82,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.6097560975609756
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 25,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.8620689655172413,
+              "equiv_given_parse": 0.8620689655172413
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 12,
+              "solvable_count": 12,
+              "equiv_count": 0,
+              "parse_rate": 0.5714285714285714,
+              "solvable_rate": 0.5714285714285714,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 26,
+              "solvable_count": 26,
+              "equiv_count": 12,
+              "parse_rate": 0.9285714285714286,
+              "solvable_rate": 0.9285714285714286,
+              "equiv_rate": 0.42857142857142855,
+              "equiv_given_parse": 0.46153846153846156
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 15,
+              "solvable_count": 15,
+              "equiv_count": 13,
+              "parse_rate": 0.6818181818181818,
+              "solvable_rate": 0.6818181818181818,
+              "equiv_rate": 0.5909090909090909,
+              "equiv_given_parse": 0.8666666666666667
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "verifier_then_solvable_tiebreak": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 41,
+            "equiv_count": 25,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.82,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.5
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 25,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.8620689655172413,
+              "equiv_given_parse": 0.8620689655172413
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 21,
+              "solvable_count": 12,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.5714285714285714,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 28,
+              "solvable_count": 26,
+              "equiv_count": 12,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.9285714285714286,
+              "equiv_rate": 0.42857142857142855,
+              "equiv_given_parse": 0.42857142857142855
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 22,
+              "solvable_count": 15,
+              "equiv_count": 13,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.6818181818181818,
+              "equiv_rate": 0.5909090909090909,
+              "equiv_given_parse": 0.5909090909090909
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "parse_solvable_index": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 41,
+            "solvable_count": 41,
+            "equiv_count": 24,
+            "parse_rate": 0.82,
+            "solvable_rate": 0.82,
+            "equiv_rate": 0.48,
+            "equiv_given_parse": 0.5853658536585366
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 24,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.8275862068965517,
+              "equiv_given_parse": 0.8275862068965517
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 12,
+              "solvable_count": 12,
+              "equiv_count": 0,
+              "parse_rate": 0.5714285714285714,
+              "solvable_rate": 0.5714285714285714,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 26,
+              "solvable_count": 26,
+              "equiv_count": 11,
+              "parse_rate": 0.9285714285714286,
+              "solvable_rate": 0.9285714285714286,
+              "equiv_rate": 0.39285714285714285,
+              "equiv_given_parse": 0.4230769230769231
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 15,
+              "solvable_count": 15,
+              "equiv_count": 13,
+              "parse_rate": 0.6818181818181818,
+              "solvable_rate": 0.6818181818181818,
+              "equiv_rate": 0.5909090909090909,
+              "equiv_given_parse": 0.8666666666666667
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 1,
+          "tied_vs_verifier_ranked": 49
+        }
+      },
+      "8": {
+        "verifier_ranked": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 37,
+            "equiv_count": 26,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.74,
+            "equiv_rate": 0.52,
+            "equiv_given_parse": 0.52
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 26,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.896551724137931,
+              "equiv_given_parse": 0.896551724137931
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 21,
+              "solvable_count": 8,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.38095238095238093,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 28,
+              "solvable_count": 22,
+              "equiv_count": 13,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.7857142857142857,
+              "equiv_rate": 0.4642857142857143,
+              "equiv_given_parse": 0.4642857142857143
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 22,
+              "solvable_count": 15,
+              "equiv_count": 13,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.6818181818181818,
+              "equiv_rate": 0.5909090909090909,
+              "equiv_given_parse": 0.5909090909090909
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "solvable_then_verifier": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 42,
+            "solvable_count": 42,
+            "equiv_count": 26,
+            "parse_rate": 0.84,
+            "solvable_rate": 0.84,
+            "equiv_rate": 0.52,
+            "equiv_given_parse": 0.6190476190476191
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 26,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.896551724137931,
+              "equiv_given_parse": 0.896551724137931
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 13,
+              "solvable_count": 13,
+              "equiv_count": 0,
+              "parse_rate": 0.6190476190476191,
+              "solvable_rate": 0.6190476190476191,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 27,
+              "solvable_count": 27,
+              "equiv_count": 13,
+              "parse_rate": 0.9642857142857143,
+              "solvable_rate": 0.9642857142857143,
+              "equiv_rate": 0.4642857142857143,
+              "equiv_given_parse": 0.48148148148148145
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 15,
+              "solvable_count": 15,
+              "equiv_count": 13,
+              "parse_rate": 0.6818181818181818,
+              "solvable_rate": 0.6818181818181818,
+              "equiv_rate": 0.5909090909090909,
+              "equiv_given_parse": 0.8666666666666667
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "verifier_then_solvable_tiebreak": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 42,
+            "equiv_count": 26,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.84,
+            "equiv_rate": 0.52,
+            "equiv_given_parse": 0.52
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 26,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.896551724137931,
+              "equiv_given_parse": 0.896551724137931
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 21,
+              "solvable_count": 13,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.6190476190476191,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 28,
+              "solvable_count": 27,
+              "equiv_count": 13,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.9642857142857143,
+              "equiv_rate": 0.4642857142857143,
+              "equiv_given_parse": 0.4642857142857143
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 22,
+              "solvable_count": 15,
+              "equiv_count": 13,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.6818181818181818,
+              "equiv_rate": 0.5909090909090909,
+              "equiv_given_parse": 0.5909090909090909
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "parse_solvable_index": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 42,
+            "solvable_count": 42,
+            "equiv_count": 24,
+            "parse_rate": 0.84,
+            "solvable_rate": 0.84,
+            "equiv_rate": 0.48,
+            "equiv_given_parse": 0.5714285714285714
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 24,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.8275862068965517,
+              "equiv_given_parse": 0.8275862068965517
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 13,
+              "solvable_count": 13,
+              "equiv_count": 0,
+              "parse_rate": 0.6190476190476191,
+              "solvable_rate": 0.6190476190476191,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 27,
+              "solvable_count": 27,
+              "equiv_count": 11,
+              "parse_rate": 0.9642857142857143,
+              "solvable_rate": 0.9642857142857143,
+              "equiv_rate": 0.39285714285714285,
+              "equiv_given_parse": 0.4074074074074074
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 15,
+              "solvable_count": 15,
+              "equiv_count": 13,
+              "parse_rate": 0.6818181818181818,
+              "solvable_rate": 0.6818181818181818,
+              "equiv_rate": 0.5909090909090909,
+              "equiv_given_parse": 0.8666666666666667
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 2,
+          "tied_vs_verifier_ranked": 48
+        }
+      }
+    },
+    "fixed_pool_round7_compare/seed_59": {
+      "4": {
+        "verifier_ranked": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 32,
+            "equiv_count": 25,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.64,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.5
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 27,
+              "parse_count": 27,
+              "solvable_count": 26,
+              "equiv_count": 25,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.9629629629629629,
+              "equiv_rate": 0.9259259259259259,
+              "equiv_given_parse": 0.9259259259259259
+            },
+            "gripper": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 6,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.2608695652173913,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 16,
+              "equiv_count": 9,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.6956521739130435,
+              "equiv_rate": 0.391304347826087,
+              "equiv_given_parse": 0.391304347826087
+            },
+            "explicit/explicit": {
+              "total": 27,
+              "parse_count": 27,
+              "solvable_count": 16,
+              "equiv_count": 16,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.5925925925925926,
+              "equiv_rate": 0.5925925925925926,
+              "equiv_given_parse": 0.5925925925925926
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "solvable_then_verifier": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 36,
+            "solvable_count": 36,
+            "equiv_count": 25,
+            "parse_rate": 0.72,
+            "solvable_rate": 0.72,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.6944444444444444
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 27,
+              "parse_count": 27,
+              "solvable_count": 27,
+              "equiv_count": 25,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.9259259259259259,
+              "equiv_given_parse": 0.9259259259259259
+            },
+            "gripper": {
+              "total": 23,
+              "parse_count": 9,
+              "solvable_count": 9,
+              "equiv_count": 0,
+              "parse_rate": 0.391304347826087,
+              "solvable_rate": 0.391304347826087,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 23,
+              "parse_count": 19,
+              "solvable_count": 19,
+              "equiv_count": 9,
+              "parse_rate": 0.8260869565217391,
+              "solvable_rate": 0.8260869565217391,
+              "equiv_rate": 0.391304347826087,
+              "equiv_given_parse": 0.47368421052631576
+            },
+            "explicit/explicit": {
+              "total": 27,
+              "parse_count": 17,
+              "solvable_count": 17,
+              "equiv_count": 16,
+              "parse_rate": 0.6296296296296297,
+              "solvable_rate": 0.6296296296296297,
+              "equiv_rate": 0.5925925925925926,
+              "equiv_given_parse": 0.9411764705882353
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "verifier_then_solvable_tiebreak": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 36,
+            "equiv_count": 25,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.72,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.5
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 27,
+              "parse_count": 27,
+              "solvable_count": 27,
+              "equiv_count": 25,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.9259259259259259,
+              "equiv_given_parse": 0.9259259259259259
+            },
+            "gripper": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 9,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.391304347826087,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 19,
+              "equiv_count": 9,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.8260869565217391,
+              "equiv_rate": 0.391304347826087,
+              "equiv_given_parse": 0.391304347826087
+            },
+            "explicit/explicit": {
+              "total": 27,
+              "parse_count": 27,
+              "solvable_count": 17,
+              "equiv_count": 16,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.6296296296296297,
+              "equiv_rate": 0.5925925925925926,
+              "equiv_given_parse": 0.5925925925925926
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "parse_solvable_index": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 36,
+            "solvable_count": 36,
+            "equiv_count": 24,
+            "parse_rate": 0.72,
+            "solvable_rate": 0.72,
+            "equiv_rate": 0.48,
+            "equiv_given_parse": 0.6666666666666666
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 27,
+              "parse_count": 27,
+              "solvable_count": 27,
+              "equiv_count": 24,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.8888888888888888,
+              "equiv_given_parse": 0.8888888888888888
+            },
+            "gripper": {
+              "total": 23,
+              "parse_count": 9,
+              "solvable_count": 9,
+              "equiv_count": 0,
+              "parse_rate": 0.391304347826087,
+              "solvable_rate": 0.391304347826087,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 23,
+              "parse_count": 19,
+              "solvable_count": 19,
+              "equiv_count": 8,
+              "parse_rate": 0.8260869565217391,
+              "solvable_rate": 0.8260869565217391,
+              "equiv_rate": 0.34782608695652173,
+              "equiv_given_parse": 0.42105263157894735
+            },
+            "explicit/explicit": {
+              "total": 27,
+              "parse_count": 17,
+              "solvable_count": 17,
+              "equiv_count": 16,
+              "parse_rate": 0.6296296296296297,
+              "solvable_rate": 0.6296296296296297,
+              "equiv_rate": 0.5925925925925926,
+              "equiv_given_parse": 0.9411764705882353
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 1,
+          "tied_vs_verifier_ranked": 49
+        }
+      },
+      "8": {
+        "verifier_ranked": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 33,
+            "equiv_count": 25,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.66,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.5
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 27,
+              "parse_count": 27,
+              "solvable_count": 27,
+              "equiv_count": 25,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.9259259259259259,
+              "equiv_given_parse": 0.9259259259259259
+            },
+            "gripper": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 6,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.2608695652173913,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 17,
+              "equiv_count": 9,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.7391304347826086,
+              "equiv_rate": 0.391304347826087,
+              "equiv_given_parse": 0.391304347826087
+            },
+            "explicit/explicit": {
+              "total": 27,
+              "parse_count": 27,
+              "solvable_count": 16,
+              "equiv_count": 16,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.5925925925925926,
+              "equiv_rate": 0.5925925925925926,
+              "equiv_given_parse": 0.5925925925925926
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "solvable_then_verifier": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 37,
+            "solvable_count": 37,
+            "equiv_count": 25,
+            "parse_rate": 0.74,
+            "solvable_rate": 0.74,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.6756756756756757
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 27,
+              "parse_count": 27,
+              "solvable_count": 27,
+              "equiv_count": 25,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.9259259259259259,
+              "equiv_given_parse": 0.9259259259259259
+            },
+            "gripper": {
+              "total": 23,
+              "parse_count": 10,
+              "solvable_count": 10,
+              "equiv_count": 0,
+              "parse_rate": 0.43478260869565216,
+              "solvable_rate": 0.43478260869565216,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 23,
+              "parse_count": 20,
+              "solvable_count": 20,
+              "equiv_count": 9,
+              "parse_rate": 0.8695652173913043,
+              "solvable_rate": 0.8695652173913043,
+              "equiv_rate": 0.391304347826087,
+              "equiv_given_parse": 0.45
+            },
+            "explicit/explicit": {
+              "total": 27,
+              "parse_count": 17,
+              "solvable_count": 17,
+              "equiv_count": 16,
+              "parse_rate": 0.6296296296296297,
+              "solvable_rate": 0.6296296296296297,
+              "equiv_rate": 0.5925925925925926,
+              "equiv_given_parse": 0.9411764705882353
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "verifier_then_solvable_tiebreak": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 37,
+            "equiv_count": 25,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.74,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.5
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 27,
+              "parse_count": 27,
+              "solvable_count": 27,
+              "equiv_count": 25,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.9259259259259259,
+              "equiv_given_parse": 0.9259259259259259
+            },
+            "gripper": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 10,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.43478260869565216,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 20,
+              "equiv_count": 9,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.8695652173913043,
+              "equiv_rate": 0.391304347826087,
+              "equiv_given_parse": 0.391304347826087
+            },
+            "explicit/explicit": {
+              "total": 27,
+              "parse_count": 27,
+              "solvable_count": 17,
+              "equiv_count": 16,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.6296296296296297,
+              "equiv_rate": 0.5925925925925926,
+              "equiv_given_parse": 0.5925925925925926
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "parse_solvable_index": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 37,
+            "solvable_count": 37,
+            "equiv_count": 24,
+            "parse_rate": 0.74,
+            "solvable_rate": 0.74,
+            "equiv_rate": 0.48,
+            "equiv_given_parse": 0.6486486486486487
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 27,
+              "parse_count": 27,
+              "solvable_count": 27,
+              "equiv_count": 24,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.8888888888888888,
+              "equiv_given_parse": 0.8888888888888888
+            },
+            "gripper": {
+              "total": 23,
+              "parse_count": 10,
+              "solvable_count": 10,
+              "equiv_count": 0,
+              "parse_rate": 0.43478260869565216,
+              "solvable_rate": 0.43478260869565216,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 23,
+              "parse_count": 20,
+              "solvable_count": 20,
+              "equiv_count": 8,
+              "parse_rate": 0.8695652173913043,
+              "solvable_rate": 0.8695652173913043,
+              "equiv_rate": 0.34782608695652173,
+              "equiv_given_parse": 0.4
+            },
+            "explicit/explicit": {
+              "total": 27,
+              "parse_count": 17,
+              "solvable_count": 17,
+              "equiv_count": 16,
+              "parse_rate": 0.6296296296296297,
+              "solvable_rate": 0.6296296296296297,
+              "equiv_rate": 0.5925925925925926,
+              "equiv_given_parse": 0.9411764705882353
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 1,
+          "tied_vs_verifier_ranked": 49
+        }
+      }
+    },
+    "fixed_pool_round7_compare/seed_60": {
+      "4": {
+        "verifier_ranked": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 34,
+            "equiv_count": 20,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.68,
+            "equiv_rate": 0.4,
+            "equiv_given_parse": 0.4
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 30,
+              "parse_count": 30,
+              "solvable_count": 28,
+              "equiv_count": 20,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.9333333333333333,
+              "equiv_rate": 0.6666666666666666,
+              "equiv_given_parse": 0.6666666666666666
+            },
+            "gripper": {
+              "total": 20,
+              "parse_count": 20,
+              "solvable_count": 6,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.3,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 26,
+              "parse_count": 26,
+              "solvable_count": 20,
+              "equiv_count": 6,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.7692307692307693,
+              "equiv_rate": 0.23076923076923078,
+              "equiv_given_parse": 0.23076923076923078
+            },
+            "explicit/explicit": {
+              "total": 24,
+              "parse_count": 24,
+              "solvable_count": 14,
+              "equiv_count": 14,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 0.5833333333333334
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "solvable_then_verifier": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 38,
+            "solvable_count": 38,
+            "equiv_count": 20,
+            "parse_rate": 0.76,
+            "solvable_rate": 0.76,
+            "equiv_rate": 0.4,
+            "equiv_given_parse": 0.5263157894736842
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 30,
+              "parse_count": 28,
+              "solvable_count": 28,
+              "equiv_count": 20,
+              "parse_rate": 0.9333333333333333,
+              "solvable_rate": 0.9333333333333333,
+              "equiv_rate": 0.6666666666666666,
+              "equiv_given_parse": 0.7142857142857143
+            },
+            "gripper": {
+              "total": 20,
+              "parse_count": 10,
+              "solvable_count": 10,
+              "equiv_count": 0,
+              "parse_rate": 0.5,
+              "solvable_rate": 0.5,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 26,
+              "parse_count": 24,
+              "solvable_count": 24,
+              "equiv_count": 6,
+              "parse_rate": 0.9230769230769231,
+              "solvable_rate": 0.9230769230769231,
+              "equiv_rate": 0.23076923076923078,
+              "equiv_given_parse": 0.25
+            },
+            "explicit/explicit": {
+              "total": 24,
+              "parse_count": 14,
+              "solvable_count": 14,
+              "equiv_count": 14,
+              "parse_rate": 0.5833333333333334,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 1.0
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "verifier_then_solvable_tiebreak": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 38,
+            "equiv_count": 20,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.76,
+            "equiv_rate": 0.4,
+            "equiv_given_parse": 0.4
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 30,
+              "parse_count": 30,
+              "solvable_count": 28,
+              "equiv_count": 20,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.9333333333333333,
+              "equiv_rate": 0.6666666666666666,
+              "equiv_given_parse": 0.6666666666666666
+            },
+            "gripper": {
+              "total": 20,
+              "parse_count": 20,
+              "solvable_count": 10,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.5,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 26,
+              "parse_count": 26,
+              "solvable_count": 24,
+              "equiv_count": 6,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.9230769230769231,
+              "equiv_rate": 0.23076923076923078,
+              "equiv_given_parse": 0.23076923076923078
+            },
+            "explicit/explicit": {
+              "total": 24,
+              "parse_count": 24,
+              "solvable_count": 14,
+              "equiv_count": 14,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 0.5833333333333334
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "parse_solvable_index": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 38,
+            "solvable_count": 38,
+            "equiv_count": 18,
+            "parse_rate": 0.76,
+            "solvable_rate": 0.76,
+            "equiv_rate": 0.36,
+            "equiv_given_parse": 0.47368421052631576
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 30,
+              "parse_count": 28,
+              "solvable_count": 28,
+              "equiv_count": 18,
+              "parse_rate": 0.9333333333333333,
+              "solvable_rate": 0.9333333333333333,
+              "equiv_rate": 0.6,
+              "equiv_given_parse": 0.6428571428571429
+            },
+            "gripper": {
+              "total": 20,
+              "parse_count": 10,
+              "solvable_count": 10,
+              "equiv_count": 0,
+              "parse_rate": 0.5,
+              "solvable_rate": 0.5,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 26,
+              "parse_count": 24,
+              "solvable_count": 24,
+              "equiv_count": 4,
+              "parse_rate": 0.9230769230769231,
+              "solvable_rate": 0.9230769230769231,
+              "equiv_rate": 0.15384615384615385,
+              "equiv_given_parse": 0.16666666666666666
+            },
+            "explicit/explicit": {
+              "total": 24,
+              "parse_count": 14,
+              "solvable_count": 14,
+              "equiv_count": 14,
+              "parse_rate": 0.5833333333333334,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 1.0
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 2,
+          "tied_vs_verifier_ranked": 48
+        }
+      },
+      "8": {
+        "verifier_ranked": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 32,
+            "equiv_count": 22,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.64,
+            "equiv_rate": 0.44,
+            "equiv_given_parse": 0.44
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 30,
+              "parse_count": 30,
+              "solvable_count": 28,
+              "equiv_count": 21,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.9333333333333333,
+              "equiv_rate": 0.7,
+              "equiv_given_parse": 0.7
+            },
+            "gripper": {
+              "total": 20,
+              "parse_count": 20,
+              "solvable_count": 4,
+              "equiv_count": 1,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.2,
+              "equiv_rate": 0.05,
+              "equiv_given_parse": 0.05
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 26,
+              "parse_count": 26,
+              "solvable_count": 18,
+              "equiv_count": 8,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.6923076923076923,
+              "equiv_rate": 0.3076923076923077,
+              "equiv_given_parse": 0.3076923076923077
+            },
+            "explicit/explicit": {
+              "total": 24,
+              "parse_count": 24,
+              "solvable_count": 14,
+              "equiv_count": 14,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 0.5833333333333334
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "solvable_then_verifier": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 40,
+            "solvable_count": 40,
+            "equiv_count": 22,
+            "parse_rate": 0.8,
+            "solvable_rate": 0.8,
+            "equiv_rate": 0.44,
+            "equiv_given_parse": 0.55
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 30,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 21,
+              "parse_rate": 0.9666666666666667,
+              "solvable_rate": 0.9666666666666667,
+              "equiv_rate": 0.7,
+              "equiv_given_parse": 0.7241379310344828
+            },
+            "gripper": {
+              "total": 20,
+              "parse_count": 11,
+              "solvable_count": 11,
+              "equiv_count": 1,
+              "parse_rate": 0.55,
+              "solvable_rate": 0.55,
+              "equiv_rate": 0.05,
+              "equiv_given_parse": 0.09090909090909091
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 26,
+              "parse_count": 26,
+              "solvable_count": 26,
+              "equiv_count": 8,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.3076923076923077,
+              "equiv_given_parse": 0.3076923076923077
+            },
+            "explicit/explicit": {
+              "total": 24,
+              "parse_count": 14,
+              "solvable_count": 14,
+              "equiv_count": 14,
+              "parse_rate": 0.5833333333333334,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 1.0
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "verifier_then_solvable_tiebreak": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 40,
+            "equiv_count": 22,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.8,
+            "equiv_rate": 0.44,
+            "equiv_given_parse": 0.44
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 30,
+              "parse_count": 30,
+              "solvable_count": 29,
+              "equiv_count": 21,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.9666666666666667,
+              "equiv_rate": 0.7,
+              "equiv_given_parse": 0.7
+            },
+            "gripper": {
+              "total": 20,
+              "parse_count": 20,
+              "solvable_count": 11,
+              "equiv_count": 1,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.55,
+              "equiv_rate": 0.05,
+              "equiv_given_parse": 0.05
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 26,
+              "parse_count": 26,
+              "solvable_count": 26,
+              "equiv_count": 8,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.3076923076923077,
+              "equiv_given_parse": 0.3076923076923077
+            },
+            "explicit/explicit": {
+              "total": 24,
+              "parse_count": 24,
+              "solvable_count": 14,
+              "equiv_count": 14,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 0.5833333333333334
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "parse_solvable_index": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 40,
+            "solvable_count": 40,
+            "equiv_count": 18,
+            "parse_rate": 0.8,
+            "solvable_rate": 0.8,
+            "equiv_rate": 0.36,
+            "equiv_given_parse": 0.45
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 30,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 18,
+              "parse_rate": 0.9666666666666667,
+              "solvable_rate": 0.9666666666666667,
+              "equiv_rate": 0.6,
+              "equiv_given_parse": 0.6206896551724138
+            },
+            "gripper": {
+              "total": 20,
+              "parse_count": 11,
+              "solvable_count": 11,
+              "equiv_count": 0,
+              "parse_rate": 0.55,
+              "solvable_rate": 0.55,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 26,
+              "parse_count": 26,
+              "solvable_count": 26,
+              "equiv_count": 4,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.15384615384615385,
+              "equiv_given_parse": 0.15384615384615385
+            },
+            "explicit/explicit": {
+              "total": 24,
+              "parse_count": 14,
+              "solvable_count": 14,
+              "equiv_count": 14,
+              "parse_rate": 0.5833333333333334,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 1.0
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 4,
+          "tied_vs_verifier_ranked": 46
+        }
+      }
+    },
+    "fixed_pool_round7_compare/seed_61": {
+      "4": {
+        "verifier_ranked": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 49,
+            "solvable_count": 34,
+            "equiv_count": 16,
+            "parse_rate": 0.98,
+            "solvable_rate": 0.68,
+            "equiv_rate": 0.32,
+            "equiv_given_parse": 0.32653061224489793
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 23,
+              "equiv_count": 16,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.6956521739130435,
+              "equiv_given_parse": 0.6956521739130435
+            },
+            "gripper": {
+              "total": 27,
+              "parse_count": 26,
+              "solvable_count": 11,
+              "equiv_count": 0,
+              "parse_rate": 0.9629629629629629,
+              "solvable_rate": 0.4074074074074074,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 38,
+              "parse_count": 37,
+              "solvable_count": 27,
+              "equiv_count": 9,
+              "parse_rate": 0.9736842105263158,
+              "solvable_rate": 0.7105263157894737,
+              "equiv_rate": 0.23684210526315788,
+              "equiv_given_parse": 0.24324324324324326
+            },
+            "explicit/explicit": {
+              "total": 12,
+              "parse_count": 12,
+              "solvable_count": 7,
+              "equiv_count": 7,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 0.5833333333333334
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "solvable_then_verifier": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 36,
+            "solvable_count": 36,
+            "equiv_count": 16,
+            "parse_rate": 0.72,
+            "solvable_rate": 0.72,
+            "equiv_rate": 0.32,
+            "equiv_given_parse": 0.4444444444444444
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 23,
+              "equiv_count": 16,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.6956521739130435,
+              "equiv_given_parse": 0.6956521739130435
+            },
+            "gripper": {
+              "total": 27,
+              "parse_count": 13,
+              "solvable_count": 13,
+              "equiv_count": 0,
+              "parse_rate": 0.48148148148148145,
+              "solvable_rate": 0.48148148148148145,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 38,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 9,
+              "parse_rate": 0.7631578947368421,
+              "solvable_rate": 0.7631578947368421,
+              "equiv_rate": 0.23684210526315788,
+              "equiv_given_parse": 0.3103448275862069
+            },
+            "explicit/explicit": {
+              "total": 12,
+              "parse_count": 7,
+              "solvable_count": 7,
+              "equiv_count": 7,
+              "parse_rate": 0.5833333333333334,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 1.0
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "verifier_then_solvable_tiebreak": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 49,
+            "solvable_count": 36,
+            "equiv_count": 16,
+            "parse_rate": 0.98,
+            "solvable_rate": 0.72,
+            "equiv_rate": 0.32,
+            "equiv_given_parse": 0.32653061224489793
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 23,
+              "equiv_count": 16,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.6956521739130435,
+              "equiv_given_parse": 0.6956521739130435
+            },
+            "gripper": {
+              "total": 27,
+              "parse_count": 26,
+              "solvable_count": 13,
+              "equiv_count": 0,
+              "parse_rate": 0.9629629629629629,
+              "solvable_rate": 0.48148148148148145,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 38,
+              "parse_count": 37,
+              "solvable_count": 29,
+              "equiv_count": 9,
+              "parse_rate": 0.9736842105263158,
+              "solvable_rate": 0.7631578947368421,
+              "equiv_rate": 0.23684210526315788,
+              "equiv_given_parse": 0.24324324324324326
+            },
+            "explicit/explicit": {
+              "total": 12,
+              "parse_count": 12,
+              "solvable_count": 7,
+              "equiv_count": 7,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 0.5833333333333334
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "parse_solvable_index": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 36,
+            "solvable_count": 36,
+            "equiv_count": 14,
+            "parse_rate": 0.72,
+            "solvable_rate": 0.72,
+            "equiv_rate": 0.28,
+            "equiv_given_parse": 0.3888888888888889
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 23,
+              "equiv_count": 14,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.6086956521739131,
+              "equiv_given_parse": 0.6086956521739131
+            },
+            "gripper": {
+              "total": 27,
+              "parse_count": 13,
+              "solvable_count": 13,
+              "equiv_count": 0,
+              "parse_rate": 0.48148148148148145,
+              "solvable_rate": 0.48148148148148145,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 38,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 7,
+              "parse_rate": 0.7631578947368421,
+              "solvable_rate": 0.7631578947368421,
+              "equiv_rate": 0.18421052631578946,
+              "equiv_given_parse": 0.2413793103448276
+            },
+            "explicit/explicit": {
+              "total": 12,
+              "parse_count": 7,
+              "solvable_count": 7,
+              "equiv_count": 7,
+              "parse_rate": 0.5833333333333334,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 1.0
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 2,
+          "tied_vs_verifier_ranked": 48
+        }
+      },
+      "8": {
+        "verifier_ranked": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 38,
+            "equiv_count": 19,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.76,
+            "equiv_rate": 0.38,
+            "equiv_given_parse": 0.38
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 23,
+              "equiv_count": 19,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.8260869565217391,
+              "equiv_given_parse": 0.8260869565217391
+            },
+            "gripper": {
+              "total": 27,
+              "parse_count": 27,
+              "solvable_count": 15,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.5555555555555556,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 38,
+              "parse_count": 38,
+              "solvable_count": 31,
+              "equiv_count": 12,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.8157894736842105,
+              "equiv_rate": 0.3157894736842105,
+              "equiv_given_parse": 0.3157894736842105
+            },
+            "explicit/explicit": {
+              "total": 12,
+              "parse_count": 12,
+              "solvable_count": 7,
+              "equiv_count": 7,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 0.5833333333333334
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "solvable_then_verifier": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 42,
+            "solvable_count": 42,
+            "equiv_count": 19,
+            "parse_rate": 0.84,
+            "solvable_rate": 0.84,
+            "equiv_rate": 0.38,
+            "equiv_given_parse": 0.4523809523809524
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 23,
+              "equiv_count": 19,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.8260869565217391,
+              "equiv_given_parse": 0.8260869565217391
+            },
+            "gripper": {
+              "total": 27,
+              "parse_count": 19,
+              "solvable_count": 19,
+              "equiv_count": 0,
+              "parse_rate": 0.7037037037037037,
+              "solvable_rate": 0.7037037037037037,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 38,
+              "parse_count": 35,
+              "solvable_count": 35,
+              "equiv_count": 12,
+              "parse_rate": 0.9210526315789473,
+              "solvable_rate": 0.9210526315789473,
+              "equiv_rate": 0.3157894736842105,
+              "equiv_given_parse": 0.34285714285714286
+            },
+            "explicit/explicit": {
+              "total": 12,
+              "parse_count": 7,
+              "solvable_count": 7,
+              "equiv_count": 7,
+              "parse_rate": 0.5833333333333334,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 1.0
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "verifier_then_solvable_tiebreak": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 42,
+            "equiv_count": 19,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.84,
+            "equiv_rate": 0.38,
+            "equiv_given_parse": 0.38
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 23,
+              "equiv_count": 19,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.8260869565217391,
+              "equiv_given_parse": 0.8260869565217391
+            },
+            "gripper": {
+              "total": 27,
+              "parse_count": 27,
+              "solvable_count": 19,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.7037037037037037,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 38,
+              "parse_count": 38,
+              "solvable_count": 35,
+              "equiv_count": 12,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.9210526315789473,
+              "equiv_rate": 0.3157894736842105,
+              "equiv_given_parse": 0.3157894736842105
+            },
+            "explicit/explicit": {
+              "total": 12,
+              "parse_count": 12,
+              "solvable_count": 7,
+              "equiv_count": 7,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 0.5833333333333334
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "parse_solvable_index": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 42,
+            "solvable_count": 42,
+            "equiv_count": 14,
+            "parse_rate": 0.84,
+            "solvable_rate": 0.84,
+            "equiv_rate": 0.28,
+            "equiv_given_parse": 0.3333333333333333
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 23,
+              "parse_count": 23,
+              "solvable_count": 23,
+              "equiv_count": 14,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.6086956521739131,
+              "equiv_given_parse": 0.6086956521739131
+            },
+            "gripper": {
+              "total": 27,
+              "parse_count": 19,
+              "solvable_count": 19,
+              "equiv_count": 0,
+              "parse_rate": 0.7037037037037037,
+              "solvable_rate": 0.7037037037037037,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 38,
+              "parse_count": 35,
+              "solvable_count": 35,
+              "equiv_count": 7,
+              "parse_rate": 0.9210526315789473,
+              "solvable_rate": 0.9210526315789473,
+              "equiv_rate": 0.18421052631578946,
+              "equiv_given_parse": 0.2
+            },
+            "explicit/explicit": {
+              "total": 12,
+              "parse_count": 7,
+              "solvable_count": 7,
+              "equiv_count": 7,
+              "parse_rate": 0.5833333333333334,
+              "solvable_rate": 0.5833333333333334,
+              "equiv_rate": 0.5833333333333334,
+              "equiv_given_parse": 1.0
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 5,
+          "tied_vs_verifier_ranked": 45
+        }
+      }
+    },
+    "bestofk_round3_holdout_eval": {
+      "4": {
+        "verifier_ranked": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 36,
+            "equiv_count": 25,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.72,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.5
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 25,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.8620689655172413,
+              "equiv_given_parse": 0.8620689655172413
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 21,
+              "solvable_count": 7,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.3333333333333333,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 28,
+              "solvable_count": 22,
+              "equiv_count": 11,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.7857142857142857,
+              "equiv_rate": 0.39285714285714285,
+              "equiv_given_parse": 0.39285714285714285
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 22,
+              "solvable_count": 14,
+              "equiv_count": 14,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.6363636363636364,
+              "equiv_rate": 0.6363636363636364,
+              "equiv_given_parse": 0.6363636363636364
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "solvable_then_verifier": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 40,
+            "solvable_count": 40,
+            "equiv_count": 25,
+            "parse_rate": 0.8,
+            "solvable_rate": 0.8,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.625
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 25,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.8620689655172413,
+              "equiv_given_parse": 0.8620689655172413
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 11,
+              "solvable_count": 11,
+              "equiv_count": 0,
+              "parse_rate": 0.5238095238095238,
+              "solvable_rate": 0.5238095238095238,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 24,
+              "solvable_count": 24,
+              "equiv_count": 11,
+              "parse_rate": 0.8571428571428571,
+              "solvable_rate": 0.8571428571428571,
+              "equiv_rate": 0.39285714285714285,
+              "equiv_given_parse": 0.4583333333333333
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 16,
+              "solvable_count": 16,
+              "equiv_count": 14,
+              "parse_rate": 0.7272727272727273,
+              "solvable_rate": 0.7272727272727273,
+              "equiv_rate": 0.6363636363636364,
+              "equiv_given_parse": 0.875
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "verifier_then_solvable_tiebreak": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 40,
+            "equiv_count": 25,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.8,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.5
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 25,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.8620689655172413,
+              "equiv_given_parse": 0.8620689655172413
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 21,
+              "solvable_count": 11,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.5238095238095238,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 28,
+              "solvable_count": 24,
+              "equiv_count": 11,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.8571428571428571,
+              "equiv_rate": 0.39285714285714285,
+              "equiv_given_parse": 0.39285714285714285
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 22,
+              "solvable_count": 16,
+              "equiv_count": 14,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.7272727272727273,
+              "equiv_rate": 0.6363636363636364,
+              "equiv_given_parse": 0.6363636363636364
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "parse_solvable_index": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 40,
+            "solvable_count": 40,
+            "equiv_count": 23,
+            "parse_rate": 0.8,
+            "solvable_rate": 0.8,
+            "equiv_rate": 0.46,
+            "equiv_given_parse": 0.575
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 23,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.7931034482758621,
+              "equiv_given_parse": 0.7931034482758621
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 11,
+              "solvable_count": 11,
+              "equiv_count": 0,
+              "parse_rate": 0.5238095238095238,
+              "solvable_rate": 0.5238095238095238,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 24,
+              "solvable_count": 24,
+              "equiv_count": 9,
+              "parse_rate": 0.8571428571428571,
+              "solvable_rate": 0.8571428571428571,
+              "equiv_rate": 0.32142857142857145,
+              "equiv_given_parse": 0.375
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 16,
+              "solvable_count": 16,
+              "equiv_count": 14,
+              "parse_rate": 0.7272727272727273,
+              "solvable_rate": 0.7272727272727273,
+              "equiv_rate": 0.6363636363636364,
+              "equiv_given_parse": 0.875
+            }
+          },
+          "helped_vs_verifier_ranked": 1,
+          "hurt_vs_verifier_ranked": 3,
+          "tied_vs_verifier_ranked": 46
+        }
+      },
+      "8": {
+        "verifier_ranked": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 34,
+            "equiv_count": 23,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.68,
+            "equiv_rate": 0.46,
+            "equiv_given_parse": 0.46
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 28,
+              "equiv_count": 23,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.9655172413793104,
+              "equiv_rate": 0.7931034482758621,
+              "equiv_given_parse": 0.7931034482758621
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 21,
+              "solvable_count": 6,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.2857142857142857,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 28,
+              "solvable_count": 20,
+              "equiv_count": 9,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.7142857142857143,
+              "equiv_rate": 0.32142857142857145,
+              "equiv_given_parse": 0.32142857142857145
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 22,
+              "solvable_count": 14,
+              "equiv_count": 14,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.6363636363636364,
+              "equiv_rate": 0.6363636363636364,
+              "equiv_given_parse": 0.6363636363636364
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "solvable_then_verifier": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 40,
+            "solvable_count": 40,
+            "equiv_count": 24,
+            "parse_rate": 0.8,
+            "solvable_rate": 0.8,
+            "equiv_rate": 0.48,
+            "equiv_given_parse": 0.6
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 24,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.8275862068965517,
+              "equiv_given_parse": 0.8275862068965517
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 11,
+              "solvable_count": 11,
+              "equiv_count": 0,
+              "parse_rate": 0.5238095238095238,
+              "solvable_rate": 0.5238095238095238,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 24,
+              "solvable_count": 24,
+              "equiv_count": 10,
+              "parse_rate": 0.8571428571428571,
+              "solvable_rate": 0.8571428571428571,
+              "equiv_rate": 0.35714285714285715,
+              "equiv_given_parse": 0.4166666666666667
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 16,
+              "solvable_count": 16,
+              "equiv_count": 14,
+              "parse_rate": 0.7272727272727273,
+              "solvable_rate": 0.7272727272727273,
+              "equiv_rate": 0.6363636363636364,
+              "equiv_given_parse": 0.875
+            }
+          },
+          "helped_vs_verifier_ranked": 1,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 49
+        },
+        "verifier_then_solvable_tiebreak": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 50,
+            "solvable_count": 39,
+            "equiv_count": 23,
+            "parse_rate": 1.0,
+            "solvable_rate": 0.78,
+            "equiv_rate": 0.46,
+            "equiv_given_parse": 0.46
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 28,
+              "equiv_count": 23,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.9655172413793104,
+              "equiv_rate": 0.7931034482758621,
+              "equiv_given_parse": 0.7931034482758621
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 21,
+              "solvable_count": 11,
+              "equiv_count": 0,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.5238095238095238,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 28,
+              "solvable_count": 23,
+              "equiv_count": 9,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.8214285714285714,
+              "equiv_rate": 0.32142857142857145,
+              "equiv_given_parse": 0.32142857142857145
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 22,
+              "solvable_count": 16,
+              "equiv_count": 14,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.7272727272727273,
+              "equiv_rate": 0.6363636363636364,
+              "equiv_given_parse": 0.6363636363636364
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 50
+        },
+        "parse_solvable_index": {
+          "metrics": {
+            "total": 50,
+            "parse_count": 40,
+            "solvable_count": 40,
+            "equiv_count": 23,
+            "parse_rate": 0.8,
+            "solvable_rate": 0.8,
+            "equiv_rate": 0.46,
+            "equiv_given_parse": 0.575
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 29,
+              "parse_count": 29,
+              "solvable_count": 29,
+              "equiv_count": 23,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.7931034482758621,
+              "equiv_given_parse": 0.7931034482758621
+            },
+            "gripper": {
+              "total": 21,
+              "parse_count": 11,
+              "solvable_count": 11,
+              "equiv_count": 0,
+              "parse_rate": 0.5238095238095238,
+              "solvable_rate": 0.5238095238095238,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 28,
+              "parse_count": 24,
+              "solvable_count": 24,
+              "equiv_count": 9,
+              "parse_rate": 0.8571428571428571,
+              "solvable_rate": 0.8571428571428571,
+              "equiv_rate": 0.32142857142857145,
+              "equiv_given_parse": 0.375
+            },
+            "explicit/explicit": {
+              "total": 22,
+              "parse_count": 16,
+              "solvable_count": 16,
+              "equiv_count": 14,
+              "parse_rate": 0.7272727272727273,
+              "solvable_rate": 0.7272727272727273,
+              "equiv_rate": 0.6363636363636364,
+              "equiv_given_parse": 0.875
+            }
+          },
+          "helped_vs_verifier_ranked": 3,
+          "hurt_vs_verifier_ranked": 3,
+          "tied_vs_verifier_ranked": 44
+        }
+      }
+    },
+    "bestofk_pilot": {
+      "4": {
+        "verifier_ranked": {
+          "metrics": {
+            "total": 30,
+            "parse_count": 29,
+            "solvable_count": 21,
+            "equiv_count": 15,
+            "parse_rate": 0.9666666666666667,
+            "solvable_rate": 0.7,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.5172413793103449
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 19,
+              "parse_count": 19,
+              "solvable_count": 18,
+              "equiv_count": 15,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.9473684210526315,
+              "equiv_rate": 0.7894736842105263,
+              "equiv_given_parse": 0.7894736842105263
+            },
+            "gripper": {
+              "total": 11,
+              "parse_count": 10,
+              "solvable_count": 3,
+              "equiv_count": 0,
+              "parse_rate": 0.9090909090909091,
+              "solvable_rate": 0.2727272727272727,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 19,
+              "parse_count": 18,
+              "solvable_count": 13,
+              "equiv_count": 8,
+              "parse_rate": 0.9473684210526315,
+              "solvable_rate": 0.6842105263157895,
+              "equiv_rate": 0.42105263157894735,
+              "equiv_given_parse": 0.4444444444444444
+            },
+            "explicit/explicit": {
+              "total": 11,
+              "parse_count": 11,
+              "solvable_count": 8,
+              "equiv_count": 7,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.7272727272727273,
+              "equiv_rate": 0.6363636363636364,
+              "equiv_given_parse": 0.6363636363636364
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 30
+        },
+        "solvable_then_verifier": {
+          "metrics": {
+            "total": 30,
+            "parse_count": 24,
+            "solvable_count": 24,
+            "equiv_count": 15,
+            "parse_rate": 0.8,
+            "solvable_rate": 0.8,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.625
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 19,
+              "parse_count": 18,
+              "solvable_count": 18,
+              "equiv_count": 15,
+              "parse_rate": 0.9473684210526315,
+              "solvable_rate": 0.9473684210526315,
+              "equiv_rate": 0.7894736842105263,
+              "equiv_given_parse": 0.8333333333333334
+            },
+            "gripper": {
+              "total": 11,
+              "parse_count": 6,
+              "solvable_count": 6,
+              "equiv_count": 0,
+              "parse_rate": 0.5454545454545454,
+              "solvable_rate": 0.5454545454545454,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 19,
+              "parse_count": 16,
+              "solvable_count": 16,
+              "equiv_count": 8,
+              "parse_rate": 0.8421052631578947,
+              "solvable_rate": 0.8421052631578947,
+              "equiv_rate": 0.42105263157894735,
+              "equiv_given_parse": 0.5
+            },
+            "explicit/explicit": {
+              "total": 11,
+              "parse_count": 8,
+              "solvable_count": 8,
+              "equiv_count": 7,
+              "parse_rate": 0.7272727272727273,
+              "solvable_rate": 0.7272727272727273,
+              "equiv_rate": 0.6363636363636364,
+              "equiv_given_parse": 0.875
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 30
+        },
+        "verifier_then_solvable_tiebreak": {
+          "metrics": {
+            "total": 30,
+            "parse_count": 29,
+            "solvable_count": 24,
+            "equiv_count": 15,
+            "parse_rate": 0.9666666666666667,
+            "solvable_rate": 0.8,
+            "equiv_rate": 0.5,
+            "equiv_given_parse": 0.5172413793103449
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 19,
+              "parse_count": 19,
+              "solvable_count": 18,
+              "equiv_count": 15,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.9473684210526315,
+              "equiv_rate": 0.7894736842105263,
+              "equiv_given_parse": 0.7894736842105263
+            },
+            "gripper": {
+              "total": 11,
+              "parse_count": 10,
+              "solvable_count": 6,
+              "equiv_count": 0,
+              "parse_rate": 0.9090909090909091,
+              "solvable_rate": 0.5454545454545454,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 19,
+              "parse_count": 18,
+              "solvable_count": 16,
+              "equiv_count": 8,
+              "parse_rate": 0.9473684210526315,
+              "solvable_rate": 0.8421052631578947,
+              "equiv_rate": 0.42105263157894735,
+              "equiv_given_parse": 0.4444444444444444
+            },
+            "explicit/explicit": {
+              "total": 11,
+              "parse_count": 11,
+              "solvable_count": 8,
+              "equiv_count": 7,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.7272727272727273,
+              "equiv_rate": 0.6363636363636364,
+              "equiv_given_parse": 0.6363636363636364
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 30
+        },
+        "parse_solvable_index": {
+          "metrics": {
+            "total": 30,
+            "parse_count": 24,
+            "solvable_count": 24,
+            "equiv_count": 14,
+            "parse_rate": 0.8,
+            "solvable_rate": 0.8,
+            "equiv_rate": 0.4666666666666667,
+            "equiv_given_parse": 0.5833333333333334
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 19,
+              "parse_count": 18,
+              "solvable_count": 18,
+              "equiv_count": 14,
+              "parse_rate": 0.9473684210526315,
+              "solvable_rate": 0.9473684210526315,
+              "equiv_rate": 0.7368421052631579,
+              "equiv_given_parse": 0.7777777777777778
+            },
+            "gripper": {
+              "total": 11,
+              "parse_count": 6,
+              "solvable_count": 6,
+              "equiv_count": 0,
+              "parse_rate": 0.5454545454545454,
+              "solvable_rate": 0.5454545454545454,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 19,
+              "parse_count": 16,
+              "solvable_count": 16,
+              "equiv_count": 8,
+              "parse_rate": 0.8421052631578947,
+              "solvable_rate": 0.8421052631578947,
+              "equiv_rate": 0.42105263157894735,
+              "equiv_given_parse": 0.5
+            },
+            "explicit/explicit": {
+              "total": 11,
+              "parse_count": 8,
+              "solvable_count": 8,
+              "equiv_count": 6,
+              "parse_rate": 0.7272727272727273,
+              "solvable_rate": 0.7272727272727273,
+              "equiv_rate": 0.5454545454545454,
+              "equiv_given_parse": 0.75
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 1,
+          "tied_vs_verifier_ranked": 29
+        }
+      },
+      "8": {
+        "verifier_ranked": {
+          "metrics": {
+            "total": 30,
+            "parse_count": 29,
+            "solvable_count": 21,
+            "equiv_count": 17,
+            "parse_rate": 0.9666666666666667,
+            "solvable_rate": 0.7,
+            "equiv_rate": 0.5666666666666667,
+            "equiv_given_parse": 0.5862068965517241
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 19,
+              "parse_count": 19,
+              "solvable_count": 18,
+              "equiv_count": 17,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.9473684210526315,
+              "equiv_rate": 0.8947368421052632,
+              "equiv_given_parse": 0.8947368421052632
+            },
+            "gripper": {
+              "total": 11,
+              "parse_count": 10,
+              "solvable_count": 3,
+              "equiv_count": 0,
+              "parse_rate": 0.9090909090909091,
+              "solvable_rate": 0.2727272727272727,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 19,
+              "parse_count": 18,
+              "solvable_count": 13,
+              "equiv_count": 10,
+              "parse_rate": 0.9473684210526315,
+              "solvable_rate": 0.6842105263157895,
+              "equiv_rate": 0.5263157894736842,
+              "equiv_given_parse": 0.5555555555555556
+            },
+            "explicit/explicit": {
+              "total": 11,
+              "parse_count": 11,
+              "solvable_count": 8,
+              "equiv_count": 7,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.7272727272727273,
+              "equiv_rate": 0.6363636363636364,
+              "equiv_given_parse": 0.6363636363636364
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 30
+        },
+        "solvable_then_verifier": {
+          "metrics": {
+            "total": 30,
+            "parse_count": 26,
+            "solvable_count": 26,
+            "equiv_count": 17,
+            "parse_rate": 0.8666666666666667,
+            "solvable_rate": 0.8666666666666667,
+            "equiv_rate": 0.5666666666666667,
+            "equiv_given_parse": 0.6538461538461539
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 19,
+              "parse_count": 19,
+              "solvable_count": 19,
+              "equiv_count": 17,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.8947368421052632,
+              "equiv_given_parse": 0.8947368421052632
+            },
+            "gripper": {
+              "total": 11,
+              "parse_count": 7,
+              "solvable_count": 7,
+              "equiv_count": 0,
+              "parse_rate": 0.6363636363636364,
+              "solvable_rate": 0.6363636363636364,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 19,
+              "parse_count": 18,
+              "solvable_count": 18,
+              "equiv_count": 10,
+              "parse_rate": 0.9473684210526315,
+              "solvable_rate": 0.9473684210526315,
+              "equiv_rate": 0.5263157894736842,
+              "equiv_given_parse": 0.5555555555555556
+            },
+            "explicit/explicit": {
+              "total": 11,
+              "parse_count": 8,
+              "solvable_count": 8,
+              "equiv_count": 7,
+              "parse_rate": 0.7272727272727273,
+              "solvable_rate": 0.7272727272727273,
+              "equiv_rate": 0.6363636363636364,
+              "equiv_given_parse": 0.875
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 30
+        },
+        "verifier_then_solvable_tiebreak": {
+          "metrics": {
+            "total": 30,
+            "parse_count": 29,
+            "solvable_count": 25,
+            "equiv_count": 17,
+            "parse_rate": 0.9666666666666667,
+            "solvable_rate": 0.8333333333333334,
+            "equiv_rate": 0.5666666666666667,
+            "equiv_given_parse": 0.5862068965517241
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 19,
+              "parse_count": 19,
+              "solvable_count": 18,
+              "equiv_count": 17,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.9473684210526315,
+              "equiv_rate": 0.8947368421052632,
+              "equiv_given_parse": 0.8947368421052632
+            },
+            "gripper": {
+              "total": 11,
+              "parse_count": 10,
+              "solvable_count": 7,
+              "equiv_count": 0,
+              "parse_rate": 0.9090909090909091,
+              "solvable_rate": 0.6363636363636364,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 19,
+              "parse_count": 18,
+              "solvable_count": 17,
+              "equiv_count": 10,
+              "parse_rate": 0.9473684210526315,
+              "solvable_rate": 0.8947368421052632,
+              "equiv_rate": 0.5263157894736842,
+              "equiv_given_parse": 0.5555555555555556
+            },
+            "explicit/explicit": {
+              "total": 11,
+              "parse_count": 11,
+              "solvable_count": 8,
+              "equiv_count": 7,
+              "parse_rate": 1.0,
+              "solvable_rate": 0.7272727272727273,
+              "equiv_rate": 0.6363636363636364,
+              "equiv_given_parse": 0.6363636363636364
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 0,
+          "tied_vs_verifier_ranked": 30
+        },
+        "parse_solvable_index": {
+          "metrics": {
+            "total": 30,
+            "parse_count": 26,
+            "solvable_count": 26,
+            "equiv_count": 14,
+            "parse_rate": 0.8666666666666667,
+            "solvable_rate": 0.8666666666666667,
+            "equiv_rate": 0.4666666666666667,
+            "equiv_given_parse": 0.5384615384615384
+          },
+          "domain_breakdown": {
+            "blocksworld": {
+              "total": 19,
+              "parse_count": 19,
+              "solvable_count": 19,
+              "equiv_count": 14,
+              "parse_rate": 1.0,
+              "solvable_rate": 1.0,
+              "equiv_rate": 0.7368421052631579,
+              "equiv_given_parse": 0.7368421052631579
+            },
+            "gripper": {
+              "total": 11,
+              "parse_count": 7,
+              "solvable_count": 7,
+              "equiv_count": 0,
+              "parse_rate": 0.6363636363636364,
+              "solvable_rate": 0.6363636363636364,
+              "equiv_rate": 0.0,
+              "equiv_given_parse": 0.0
+            }
+          },
+          "style_breakdown": {
+            "abstract/abstract": {
+              "total": 19,
+              "parse_count": 18,
+              "solvable_count": 18,
+              "equiv_count": 8,
+              "parse_rate": 0.9473684210526315,
+              "solvable_rate": 0.9473684210526315,
+              "equiv_rate": 0.42105263157894735,
+              "equiv_given_parse": 0.4444444444444444
+            },
+            "explicit/explicit": {
+              "total": 11,
+              "parse_count": 8,
+              "solvable_count": 8,
+              "equiv_count": 6,
+              "parse_rate": 0.7272727272727273,
+              "solvable_rate": 0.7272727272727273,
+              "equiv_rate": 0.5454545454545454,
+              "equiv_given_parse": 0.75
+            }
+          },
+          "helped_vs_verifier_ranked": 0,
+          "hurt_vs_verifier_ranked": 3,
+          "tied_vs_verifier_ranked": 27
+        }
+      }
+    }
+  },
+  "candidate_pool_diagnostics": {
+    "4": {
+      "oracle_bestofk_equiv_rate": 0.48928571428571427,
+      "solvable_bestofk_rate": 0.7678571428571429,
+      "avg_parseable_candidates": 3.7964285714285713,
+      "avg_solvable_candidates": 2.642857142857143,
+      "avg_equivalent_candidates": 1.5964285714285715
+    },
+    "8": {
+      "oracle_bestofk_equiv_rate": 0.5214285714285715,
+      "solvable_bestofk_rate": 0.8107142857142857,
+      "avg_parseable_candidates": 7.564285714285714,
+      "avg_solvable_candidates": 5.25,
+      "avg_equivalent_candidates": 3.164285714285714
+    }
+  },
+  "acceptance": {
+    "accepted_policies": [],
+    "reasons": {
+      "solvable_then_verifier": [
+        "improvement did not appear in more than one pool"
+      ],
+      "verifier_then_solvable_tiebreak": [
+        "K=8 mean did not improve",
+        "K=8 helped rows did not exceed hurt rows",
+        "improvement did not appear in more than one pool"
+      ],
+      "parse_solvable_index": [
+        "K=8 mean did not improve",
+        "K=4 regressed beyond tolerance",
+        "K=8 helped rows did not exceed hurt rows",
+        "improvement did not appear in more than one pool"
+      ]
+    },
+    "recommendation": "No search policy passed cached replay. Do not spend on fresh generation for these policies; move to a small repair-loop pilot."
+  }
+}
