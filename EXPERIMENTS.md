@@ -2042,6 +2042,52 @@ Interpretation:
   The net result remains strongly positive, but a later production system should
   consider confidence-gated repair or domain-specific repair policies.
 
+### Guarded Repair Follow-Up
+
+- Goal: test a domain-agnostic verifier-score guard for repair acceptance, so
+  repair is accepted only when the repaired PDDL remains close to the original
+  selected candidate under the frozen round-4 verifier.
+- Development analysis:
+  [results/vcsr/guarded_repair_analysis](/e:/Engineering/vcsr/results/vcsr/guarded_repair_analysis)
+- Fresh gate config:
+  [configs/vcsr_final_guarded_repair_gate.yaml](/e:/Engineering/vcsr/configs/vcsr_final_guarded_repair_gate.yaml)
+- Fresh gate output:
+  [results/vcsr/final_guarded_repair_gate_round4](/e:/Engineering/vcsr/results/vcsr/final_guarded_repair_gate_round4)
+- Status: completed, **guard not accepted as an improvement over unconditional repair**
+
+Development margin selection:
+
+- margins tested: `0.00`, `0.01`, `0.02`, `0.05`
+- selected margin: `0.05`
+- dev mean `K=8`: `0.5000 -> 0.9600`
+- dev helped / hurt: `69 / 0`
+
+Fresh guarded gate on seeds `67-71`:
+
+- plain round-4 `verifier_ranked` mean `K=8`: `0.4360`
+- guarded repair mean `K=8`: `0.7960`
+- mean delta over plain verifier-ranked: `+0.3600`
+- helped / hurt: `104 / 14`
+- repair parse rate: `1.0000`
+
+Guard-specific read:
+
+- unconditional repair on the same seeds also scored `0.7960`
+- guarded repair hurt rows: `14`
+- unconditional repair hurt rows: `14`
+- guarded repair blocksworld hurt rows: `14`
+- unconditional repair blocksworld hurt rows: `14`
+
+Interpretation:
+
+- The verifier-score guard did not solve the blocksworld hurt issue.
+- The reason is instructive: at the dev-selected margin, the guard accepts the
+  same repairs as unconditional repair on the fresh gate.
+- The result nevertheless independently replicates the core repair-augmented
+  VCSR effect on new seeds: `K=8` improves from `0.4360` to `0.7960`.
+- For the paper, keep the simpler unconditional repair result as the main
+  system and report guarded repair as a negative follow-up / future-work signal.
+
 ## Recommended Next Entries
 
 - Keep round 4 as the promoted default.
@@ -2049,5 +2095,8 @@ Interpretation:
   gate shows only a tiny `K=8` gain with a `K=4` regression.
 - Use repair-augmented VCSR as the paper-facing system result. The final fresh
   gate passed strongly on untouched seeds `51-55`.
+- Do not promote the current verifier-score guard as a fix for blocksworld
+  hurts. It replicated the repair gain but did not reduce hurts versus
+  unconditional repair.
 - Selective prediction / abstention experiments only after selection or repair
   has a stronger baseline.

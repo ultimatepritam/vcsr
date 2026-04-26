@@ -121,24 +121,88 @@ def _policy_metric(summary: dict[str, Any], k: int, policy: str, metric: str) ->
     return float(summary["comparisons"][str(k)]["policies"][policy]["metrics"][metric])
 
 
+def _repair_outcome_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    total = len(rows)
+    parse_count = sum(1 for row in rows if row.get("final_parseable", row.get("repair_parseable")))
+    equiv_count = sum(1 for row in rows if row.get("final_equivalent", row.get("repair_equivalent")))
+    helped = sum(1 for row in rows if row.get("outcome") == "repair_helped")
+    hurt = sum(1 for row in rows if row.get("outcome") == "repair_hurt")
+    return {
+        "total": total,
+        "repair_parse_count": parse_count,
+        "repair_equiv_count": equiv_count,
+        "repair_parse_rate": parse_count / total if total else 0.0,
+        "repair_equiv_rate": equiv_count / total if total else 0.0,
+        "repair_equiv_given_parse": equiv_count / parse_count if parse_count else 0.0,
+        "helped": helped,
+        "hurt": hurt,
+        "tied": total - helped - hurt,
+    }
+
+
+def _group_repair_metrics(rows: list[dict[str, Any]], key: str) -> dict[str, Any]:
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        grouped.setdefault(str(row.get(key, "unknown")), []).append(row)
+    return {name: _repair_outcome_metrics(group_rows) for name, group_rows in sorted(grouped.items())}
+
+
+def _repair_rows_for_policy(summary: dict[str, Any], policy: str) -> list[dict[str, Any]]:
+    path = summary.get("repair", {}).get("repair_outputs")
+    if not path:
+        return []
+    rows = []
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            if row.get("policy") == policy:
+                rows.append(row)
+    return rows
+
+
 def _aggregate(run_records: list[dict[str, Any]], cfg: dict[str, Any]) -> dict[str, Any]:
     k = int(cfg.get("acceptance", {}).get("k", 8))
+    baseline_policy = cfg.get("acceptance", {}).get("baseline_policy", "verifier_ranked")
+    repair_policy = cfg.get("acceptance", {}).get("repair_policy", "verifier_ranked_repair")
+    comparison_policy = cfg.get("acceptance", {}).get("comparison_policy")
     baseline_values = []
     repair_values = []
+    comparison_values = []
     seed_reports = []
     total_helped = 0
     total_hurt = 0
+    total_comparison_hurt = 0
+    total_blocksworld_hurt = 0
+    total_comparison_blocksworld_hurt = 0
     repair_parse_rates = []
 
     for record in run_records:
         summary = record["summary"]
-        baseline = _policy_metric(summary, k, "verifier_ranked", "equiv_rate")
-        repaired = _policy_metric(summary, k, "verifier_ranked_repair", "equiv_rate")
-        repair_metrics = summary.get("repair", {}).get("metrics", {})
+        baseline = _policy_metric(summary, k, baseline_policy, "equiv_rate")
+        repaired = _policy_metric(summary, k, repair_policy, "equiv_rate")
+        compared = _policy_metric(summary, k, comparison_policy, "equiv_rate") if comparison_policy else None
+        repair_summary = summary.get("repair", {})
+        repair_rows = _repair_rows_for_policy(summary, repair_policy)
+        comparison_rows = _repair_rows_for_policy(summary, comparison_policy) if comparison_policy else []
+        repair_metrics = _repair_outcome_metrics(repair_rows) if repair_rows else repair_summary.get(
+            "policy_breakdown", {}
+        ).get(repair_policy, repair_summary.get("metrics", {}))
+        repair_domain_breakdown = _group_repair_metrics(repair_rows, "domain") if repair_rows else {}
+        comparison_metrics = _repair_outcome_metrics(comparison_rows) if comparison_rows else {}
+        comparison_domain_breakdown = _group_repair_metrics(comparison_rows, "domain") if comparison_rows else {}
         baseline_values.append(baseline)
         repair_values.append(repaired)
+        if compared is not None:
+            comparison_values.append(compared)
         total_helped += int(repair_metrics.get("helped", 0))
         total_hurt += int(repair_metrics.get("hurt", 0))
+        total_comparison_hurt += int(comparison_metrics.get("hurt", 0))
+        total_blocksworld_hurt += int(repair_domain_breakdown.get("blocksworld", {}).get("hurt", 0))
+        total_comparison_blocksworld_hurt += int(
+            comparison_domain_breakdown.get("blocksworld", {}).get("hurt", 0)
+        )
         repair_parse_rates.append(float(repair_metrics.get("repair_parse_rate", 0.0)))
         seed_reports.append(
             {
@@ -147,8 +211,12 @@ def _aggregate(run_records: list[dict[str, Any]], cfg: dict[str, Any]) -> dict[s
                 "baseline_k8_equiv_rate": baseline,
                 "repair_augmented_k8_equiv_rate": repaired,
                 "delta_k8": repaired - baseline,
+                "comparison_k8_equiv_rate": compared,
                 "repair_metrics": repair_metrics,
-                "repair_summary": summary.get("repair", {}),
+                "repair_domain_breakdown": repair_domain_breakdown,
+                "comparison_metrics": comparison_metrics,
+                "comparison_domain_breakdown": comparison_domain_breakdown,
+                "repair_summary": repair_summary,
             }
         )
 
@@ -158,26 +226,41 @@ def _aggregate(run_records: list[dict[str, Any]], cfg: dict[str, Any]) -> dict[s
     min_nonnegative = int(acceptance_cfg.get("min_nonnegative_seeds", 4))
     max_large_regression = float(acceptance_cfg.get("max_large_regression", -0.05))
     min_parse_rate = float(acceptance_cfg.get("min_repair_parse_rate", 0.90))
+    require_blocksworld_hurt_reduction = bool(acceptance_cfg.get("require_blocksworld_hurt_reduction", False))
     mean_delta = mean(deltas) if deltas else 0.0
     nonnegative_seeds = sum(1 for delta in deltas if delta >= 0)
     worst_delta = min(deltas) if deltas else 0.0
     mean_parse = mean(repair_parse_rates) if repair_parse_rates else 0.0
+    comparison_mean = mean(comparison_values) if comparison_values else None
+    comparison_ok = True
+    if comparison_mean is not None:
+        comparison_ok = mean(repair_values) >= comparison_mean - float(
+            acceptance_cfg.get("max_mean_loss_vs_comparison", 0.0)
+        )
+    blocksworld_hurt_ok = True
+    if require_blocksworld_hurt_reduction:
+        blocksworld_hurt_ok = total_blocksworld_hurt < total_comparison_blocksworld_hurt
     accepted = (
         mean_delta >= min_mean_delta
         and nonnegative_seeds >= min_nonnegative
         and worst_delta >= max_large_regression
         and total_helped > total_hurt
         and mean_parse >= min_parse_rate
+        and comparison_ok
+        and blocksworld_hurt_ok
     )
     return {
         "base_config": cfg["base_config"],
         "seeds": cfg["seeds"],
         "rows_per_seed": cfg.get("max_rows"),
         "k": k,
+        "baseline_policy": baseline_policy,
+        "repair_policy": repair_policy,
         "seed_reports": seed_reports,
         "mean_metrics": {
             "baseline_k8_equiv_rate": mean(baseline_values) if baseline_values else 0.0,
             "repair_augmented_k8_equiv_rate": mean(repair_values) if repair_values else 0.0,
+            "comparison_k8_equiv_rate": comparison_mean,
             "mean_delta_k8": mean_delta,
             "baseline_k8_values": baseline_values,
             "repair_augmented_k8_values": repair_values,
@@ -187,6 +270,11 @@ def _aggregate(run_records: list[dict[str, Any]], cfg: dict[str, Any]) -> dict[s
             "repair_parse_rate_mean": mean_parse,
             "total_helped": total_helped,
             "total_hurt": total_hurt,
+            "total_comparison_hurt": total_comparison_hurt,
+            "total_blocksworld_hurt": total_blocksworld_hurt,
+            "total_comparison_blocksworld_hurt": total_comparison_blocksworld_hurt,
+            "comparison_ok": comparison_ok,
+            "blocksworld_hurt_ok": blocksworld_hurt_ok,
         },
         "accepted": accepted,
         "recommendation": (
@@ -204,6 +292,8 @@ def _markdown(report: dict[str, Any]) -> str:
         f"Base config: `{report['base_config']}`",
         f"Rows per seed: `{report['rows_per_seed']}`",
         f"Seeds: `{report['seeds']}`",
+        f"Baseline policy: `{report.get('baseline_policy', 'verifier_ranked')}`",
+        f"Repair policy: `{report.get('repair_policy', 'verifier_ranked_repair')}`",
         "",
         "## Mean K=8 Equivalence",
         "",
@@ -219,12 +309,22 @@ def _markdown(report: dict[str, Any]) -> str:
             f"{report['mean_metrics']['repair_augmented_k8_equiv_rate']:.4f} | "
             f"{', '.join(f'{v:.4f}' for v in report['mean_metrics']['repair_augmented_k8_values'])} |"
         ),
-        "",
-        "## Per-Seed Results",
-        "",
-        "| Seed | Baseline K=8 | Repair K=8 | Delta | Helped | Hurt | Repair Parse |",
-        "|---:|---:|---:|---:|---:|---:|---:|",
     ]
+    if report["mean_metrics"].get("comparison_k8_equiv_rate") is not None:
+        lines.append(
+            "| Comparison repair policy | "
+            f"{report['mean_metrics']['comparison_k8_equiv_rate']:.4f} | "
+            "see per-seed aggregate metrics |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Per-Seed Results",
+            "",
+            "| Seed | Baseline K=8 | Repair K=8 | Delta | Helped | Hurt | Repair Parse |",
+            "|---:|---:|---:|---:|---:|---:|---:|",
+        ]
+    )
     for row in report["seed_reports"]:
         metrics = row["repair_metrics"]
         lines.append(
@@ -235,6 +335,16 @@ def _markdown(report: dict[str, Any]) -> str:
         )
     lines.extend(
         [
+            "",
+            "## Guard Diagnostics",
+            "",
+            f"Total hurt rows: `{report['mean_metrics'].get('total_hurt', 0)}`",
+            f"Comparison hurt rows: `{report['mean_metrics'].get('total_comparison_hurt', 0)}`",
+            f"Blocksworld hurt rows: `{report['mean_metrics'].get('total_blocksworld_hurt', 0)}`",
+            (
+                "Comparison blocksworld hurt rows: "
+                f"`{report['mean_metrics'].get('total_comparison_blocksworld_hurt', 0)}`"
+            ),
             "",
             "## Acceptance",
             "",

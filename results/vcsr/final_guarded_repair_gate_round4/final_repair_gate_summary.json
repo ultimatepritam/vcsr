@@ -1,0 +1,970 @@
+{
+  "base_config": "configs/vcsr_bestofk_guarded_repair.yaml",
+  "seeds": [
+    67,
+    68,
+    69,
+    70,
+    71
+  ],
+  "rows_per_seed": 50,
+  "k": 8,
+  "baseline_policy": "verifier_ranked",
+  "repair_policy": "verifier_ranked_repair_guarded",
+  "seed_reports": [
+    {
+      "seed": 67,
+      "output_dir": "results\\vcsr\\final_guarded_repair_gate_round4\\seed_67",
+      "baseline_k8_equiv_rate": 0.46,
+      "repair_augmented_k8_equiv_rate": 0.8,
+      "delta_k8": 0.34,
+      "comparison_k8_equiv_rate": 0.8,
+      "repair_metrics": {
+        "total": 50,
+        "repair_parse_count": 50,
+        "repair_equiv_count": 40,
+        "repair_parse_rate": 1.0,
+        "repair_equiv_rate": 0.8,
+        "repair_equiv_given_parse": 0.8,
+        "helped": 20,
+        "hurt": 3,
+        "tied": 27
+      },
+      "repair_domain_breakdown": {
+        "blocksworld": {
+          "total": 27,
+          "repair_parse_count": 27,
+          "repair_equiv_count": 21,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.7777777777777778,
+          "repair_equiv_given_parse": 0.7777777777777778,
+          "helped": 1,
+          "hurt": 3,
+          "tied": 23
+        },
+        "gripper": {
+          "total": 23,
+          "repair_parse_count": 23,
+          "repair_equiv_count": 19,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.8260869565217391,
+          "repair_equiv_given_parse": 0.8260869565217391,
+          "helped": 19,
+          "hurt": 0,
+          "tied": 4
+        }
+      },
+      "comparison_metrics": {
+        "total": 50,
+        "repair_parse_count": 50,
+        "repair_equiv_count": 40,
+        "repair_parse_rate": 1.0,
+        "repair_equiv_rate": 0.8,
+        "repair_equiv_given_parse": 0.8,
+        "helped": 20,
+        "hurt": 3,
+        "tied": 27
+      },
+      "comparison_domain_breakdown": {
+        "blocksworld": {
+          "total": 27,
+          "repair_parse_count": 27,
+          "repair_equiv_count": 21,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.7777777777777778,
+          "repair_equiv_given_parse": 0.7777777777777778,
+          "helped": 1,
+          "hurt": 3,
+          "tied": 23
+        },
+        "gripper": {
+          "total": 23,
+          "repair_parse_count": 23,
+          "repair_equiv_count": 19,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.8260869565217391,
+          "repair_equiv_given_parse": 0.8260869565217391,
+          "helped": 19,
+          "hurt": 0,
+          "tied": 4
+        }
+      },
+      "repair_summary": {
+        "enabled": true,
+        "metrics": {
+          "total": 100,
+          "repair_parse_count": 100,
+          "repair_equiv_count": 80,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.8,
+          "repair_equiv_given_parse": 0.8,
+          "helped": 40,
+          "hurt": 6,
+          "tied": 54
+        },
+        "outcome_counts": [
+          [
+            "both_success",
+            40
+          ],
+          [
+            "repair_helped",
+            40
+          ],
+          [
+            "both_fail",
+            14
+          ],
+          [
+            "repair_hurt",
+            6
+          ]
+        ],
+        "domain_breakdown": {
+          "blocksworld": {
+            "total": 54,
+            "repair_parse_count": 54,
+            "repair_equiv_count": 42,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.7777777777777778,
+            "repair_equiv_given_parse": 0.7777777777777778,
+            "helped": 2,
+            "hurt": 6,
+            "tied": 46
+          },
+          "gripper": {
+            "total": 46,
+            "repair_parse_count": 46,
+            "repair_equiv_count": 38,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.8260869565217391,
+            "repair_equiv_given_parse": 0.8260869565217391,
+            "helped": 38,
+            "hurt": 0,
+            "tied": 8
+          }
+        },
+        "style_breakdown": {
+          "abstract/abstract": {
+            "total": 50,
+            "repair_parse_count": 50,
+            "repair_equiv_count": 36,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.72,
+            "repair_equiv_given_parse": 0.72,
+            "helped": 22,
+            "hurt": 2,
+            "tied": 26
+          },
+          "explicit/explicit": {
+            "total": 50,
+            "repair_parse_count": 50,
+            "repair_equiv_count": 44,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.88,
+            "repair_equiv_given_parse": 0.88,
+            "helped": 18,
+            "hurt": 4,
+            "tied": 28
+          }
+        },
+        "policy_breakdown": {
+          "verifier_ranked_repair": {
+            "total": 50,
+            "repair_parse_count": 50,
+            "repair_equiv_count": 40,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.8,
+            "repair_equiv_given_parse": 0.8,
+            "helped": 20,
+            "hurt": 3,
+            "tied": 27
+          },
+          "verifier_ranked_repair_guarded": {
+            "total": 50,
+            "repair_parse_count": 50,
+            "repair_equiv_count": 40,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.8,
+            "repair_equiv_given_parse": 0.8,
+            "helped": 20,
+            "hurt": 3,
+            "tied": 27
+          }
+        },
+        "repair_outputs": "results\\vcsr\\final_guarded_repair_gate_round4\\seed_67\\repair_outputs.jsonl"
+      }
+    },
+    {
+      "seed": 68,
+      "output_dir": "results\\vcsr\\final_guarded_repair_gate_round4\\seed_68",
+      "baseline_k8_equiv_rate": 0.34,
+      "repair_augmented_k8_equiv_rate": 0.74,
+      "delta_k8": 0.39999999999999997,
+      "comparison_k8_equiv_rate": 0.74,
+      "repair_metrics": {
+        "total": 50,
+        "repair_parse_count": 50,
+        "repair_equiv_count": 37,
+        "repair_parse_rate": 1.0,
+        "repair_equiv_rate": 0.74,
+        "repair_equiv_given_parse": 0.74,
+        "helped": 22,
+        "hurt": 2,
+        "tied": 26
+      },
+      "repair_domain_breakdown": {
+        "blocksworld": {
+          "total": 22,
+          "repair_parse_count": 22,
+          "repair_equiv_count": 17,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.7727272727272727,
+          "repair_equiv_given_parse": 0.7727272727272727,
+          "helped": 2,
+          "hurt": 2,
+          "tied": 18
+        },
+        "gripper": {
+          "total": 28,
+          "repair_parse_count": 28,
+          "repair_equiv_count": 20,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.7142857142857143,
+          "repair_equiv_given_parse": 0.7142857142857143,
+          "helped": 20,
+          "hurt": 0,
+          "tied": 8
+        }
+      },
+      "comparison_metrics": {
+        "total": 50,
+        "repair_parse_count": 50,
+        "repair_equiv_count": 37,
+        "repair_parse_rate": 1.0,
+        "repair_equiv_rate": 0.74,
+        "repair_equiv_given_parse": 0.74,
+        "helped": 22,
+        "hurt": 2,
+        "tied": 26
+      },
+      "comparison_domain_breakdown": {
+        "blocksworld": {
+          "total": 22,
+          "repair_parse_count": 22,
+          "repair_equiv_count": 17,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.7727272727272727,
+          "repair_equiv_given_parse": 0.7727272727272727,
+          "helped": 2,
+          "hurt": 2,
+          "tied": 18
+        },
+        "gripper": {
+          "total": 28,
+          "repair_parse_count": 28,
+          "repair_equiv_count": 20,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.7142857142857143,
+          "repair_equiv_given_parse": 0.7142857142857143,
+          "helped": 20,
+          "hurt": 0,
+          "tied": 8
+        }
+      },
+      "repair_summary": {
+        "enabled": true,
+        "metrics": {
+          "total": 100,
+          "repair_parse_count": 100,
+          "repair_equiv_count": 74,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.74,
+          "repair_equiv_given_parse": 0.74,
+          "helped": 44,
+          "hurt": 4,
+          "tied": 52
+        },
+        "outcome_counts": [
+          [
+            "repair_helped",
+            44
+          ],
+          [
+            "both_success",
+            30
+          ],
+          [
+            "both_fail",
+            22
+          ],
+          [
+            "repair_hurt",
+            4
+          ]
+        ],
+        "domain_breakdown": {
+          "blocksworld": {
+            "total": 44,
+            "repair_parse_count": 44,
+            "repair_equiv_count": 34,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.7727272727272727,
+            "repair_equiv_given_parse": 0.7727272727272727,
+            "helped": 4,
+            "hurt": 4,
+            "tied": 36
+          },
+          "gripper": {
+            "total": 56,
+            "repair_parse_count": 56,
+            "repair_equiv_count": 40,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.7142857142857143,
+            "repair_equiv_given_parse": 0.7142857142857143,
+            "helped": 40,
+            "hurt": 0,
+            "tied": 16
+          }
+        },
+        "style_breakdown": {
+          "abstract/abstract": {
+            "total": 42,
+            "repair_parse_count": 42,
+            "repair_equiv_count": 26,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.6190476190476191,
+            "repair_equiv_given_parse": 0.6190476190476191,
+            "helped": 16,
+            "hurt": 0,
+            "tied": 26
+          },
+          "explicit/explicit": {
+            "total": 58,
+            "repair_parse_count": 58,
+            "repair_equiv_count": 48,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.8275862068965517,
+            "repair_equiv_given_parse": 0.8275862068965517,
+            "helped": 28,
+            "hurt": 4,
+            "tied": 26
+          }
+        },
+        "policy_breakdown": {
+          "verifier_ranked_repair": {
+            "total": 50,
+            "repair_parse_count": 50,
+            "repair_equiv_count": 37,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.74,
+            "repair_equiv_given_parse": 0.74,
+            "helped": 22,
+            "hurt": 2,
+            "tied": 26
+          },
+          "verifier_ranked_repair_guarded": {
+            "total": 50,
+            "repair_parse_count": 50,
+            "repair_equiv_count": 37,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.74,
+            "repair_equiv_given_parse": 0.74,
+            "helped": 22,
+            "hurt": 2,
+            "tied": 26
+          }
+        },
+        "repair_outputs": "results\\vcsr\\final_guarded_repair_gate_round4\\seed_68\\repair_outputs.jsonl"
+      }
+    },
+    {
+      "seed": 69,
+      "output_dir": "results\\vcsr\\final_guarded_repair_gate_round4\\seed_69",
+      "baseline_k8_equiv_rate": 0.48,
+      "repair_augmented_k8_equiv_rate": 0.84,
+      "delta_k8": 0.36,
+      "comparison_k8_equiv_rate": 0.84,
+      "repair_metrics": {
+        "total": 50,
+        "repair_parse_count": 50,
+        "repair_equiv_count": 42,
+        "repair_parse_rate": 1.0,
+        "repair_equiv_rate": 0.84,
+        "repair_equiv_given_parse": 0.84,
+        "helped": 20,
+        "hurt": 2,
+        "tied": 28
+      },
+      "repair_domain_breakdown": {
+        "blocksworld": {
+          "total": 28,
+          "repair_parse_count": 28,
+          "repair_equiv_count": 23,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.8214285714285714,
+          "repair_equiv_given_parse": 0.8214285714285714,
+          "helped": 3,
+          "hurt": 2,
+          "tied": 23
+        },
+        "gripper": {
+          "total": 22,
+          "repair_parse_count": 22,
+          "repair_equiv_count": 19,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.8636363636363636,
+          "repair_equiv_given_parse": 0.8636363636363636,
+          "helped": 17,
+          "hurt": 0,
+          "tied": 5
+        }
+      },
+      "comparison_metrics": {
+        "total": 50,
+        "repair_parse_count": 50,
+        "repair_equiv_count": 42,
+        "repair_parse_rate": 1.0,
+        "repair_equiv_rate": 0.84,
+        "repair_equiv_given_parse": 0.84,
+        "helped": 20,
+        "hurt": 2,
+        "tied": 28
+      },
+      "comparison_domain_breakdown": {
+        "blocksworld": {
+          "total": 28,
+          "repair_parse_count": 28,
+          "repair_equiv_count": 23,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.8214285714285714,
+          "repair_equiv_given_parse": 0.8214285714285714,
+          "helped": 3,
+          "hurt": 2,
+          "tied": 23
+        },
+        "gripper": {
+          "total": 22,
+          "repair_parse_count": 22,
+          "repair_equiv_count": 19,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.8636363636363636,
+          "repair_equiv_given_parse": 0.8636363636363636,
+          "helped": 17,
+          "hurt": 0,
+          "tied": 5
+        }
+      },
+      "repair_summary": {
+        "enabled": true,
+        "metrics": {
+          "total": 100,
+          "repair_parse_count": 100,
+          "repair_equiv_count": 84,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.84,
+          "repair_equiv_given_parse": 0.84,
+          "helped": 40,
+          "hurt": 4,
+          "tied": 56
+        },
+        "outcome_counts": [
+          [
+            "both_success",
+            44
+          ],
+          [
+            "repair_helped",
+            40
+          ],
+          [
+            "both_fail",
+            12
+          ],
+          [
+            "repair_hurt",
+            4
+          ]
+        ],
+        "domain_breakdown": {
+          "blocksworld": {
+            "total": 56,
+            "repair_parse_count": 56,
+            "repair_equiv_count": 46,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.8214285714285714,
+            "repair_equiv_given_parse": 0.8214285714285714,
+            "helped": 6,
+            "hurt": 4,
+            "tied": 46
+          },
+          "gripper": {
+            "total": 44,
+            "repair_parse_count": 44,
+            "repair_equiv_count": 38,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.8636363636363636,
+            "repair_equiv_given_parse": 0.8636363636363636,
+            "helped": 34,
+            "hurt": 0,
+            "tied": 10
+          }
+        },
+        "style_breakdown": {
+          "abstract/abstract": {
+            "total": 50,
+            "repair_parse_count": 50,
+            "repair_equiv_count": 40,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.8,
+            "repair_equiv_given_parse": 0.8,
+            "helped": 18,
+            "hurt": 2,
+            "tied": 30
+          },
+          "explicit/explicit": {
+            "total": 50,
+            "repair_parse_count": 50,
+            "repair_equiv_count": 44,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.88,
+            "repair_equiv_given_parse": 0.88,
+            "helped": 22,
+            "hurt": 2,
+            "tied": 26
+          }
+        },
+        "policy_breakdown": {
+          "verifier_ranked_repair": {
+            "total": 50,
+            "repair_parse_count": 50,
+            "repair_equiv_count": 42,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.84,
+            "repair_equiv_given_parse": 0.84,
+            "helped": 20,
+            "hurt": 2,
+            "tied": 28
+          },
+          "verifier_ranked_repair_guarded": {
+            "total": 50,
+            "repair_parse_count": 50,
+            "repair_equiv_count": 42,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.84,
+            "repair_equiv_given_parse": 0.84,
+            "helped": 20,
+            "hurt": 2,
+            "tied": 28
+          }
+        },
+        "repair_outputs": "results\\vcsr\\final_guarded_repair_gate_round4\\seed_69\\repair_outputs.jsonl"
+      }
+    },
+    {
+      "seed": 70,
+      "output_dir": "results\\vcsr\\final_guarded_repair_gate_round4\\seed_70",
+      "baseline_k8_equiv_rate": 0.42,
+      "repair_augmented_k8_equiv_rate": 0.8,
+      "delta_k8": 0.38000000000000006,
+      "comparison_k8_equiv_rate": 0.8,
+      "repair_metrics": {
+        "total": 50,
+        "repair_parse_count": 50,
+        "repair_equiv_count": 40,
+        "repair_parse_rate": 1.0,
+        "repair_equiv_rate": 0.8,
+        "repair_equiv_given_parse": 0.8,
+        "helped": 21,
+        "hurt": 2,
+        "tied": 27
+      },
+      "repair_domain_breakdown": {
+        "blocksworld": {
+          "total": 28,
+          "repair_parse_count": 28,
+          "repair_equiv_count": 22,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.7857142857142857,
+          "repair_equiv_given_parse": 0.7857142857142857,
+          "helped": 4,
+          "hurt": 2,
+          "tied": 22
+        },
+        "gripper": {
+          "total": 22,
+          "repair_parse_count": 22,
+          "repair_equiv_count": 18,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.8181818181818182,
+          "repair_equiv_given_parse": 0.8181818181818182,
+          "helped": 17,
+          "hurt": 0,
+          "tied": 5
+        }
+      },
+      "comparison_metrics": {
+        "total": 50,
+        "repair_parse_count": 50,
+        "repair_equiv_count": 40,
+        "repair_parse_rate": 1.0,
+        "repair_equiv_rate": 0.8,
+        "repair_equiv_given_parse": 0.8,
+        "helped": 21,
+        "hurt": 2,
+        "tied": 27
+      },
+      "comparison_domain_breakdown": {
+        "blocksworld": {
+          "total": 28,
+          "repair_parse_count": 28,
+          "repair_equiv_count": 22,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.7857142857142857,
+          "repair_equiv_given_parse": 0.7857142857142857,
+          "helped": 4,
+          "hurt": 2,
+          "tied": 22
+        },
+        "gripper": {
+          "total": 22,
+          "repair_parse_count": 22,
+          "repair_equiv_count": 18,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.8181818181818182,
+          "repair_equiv_given_parse": 0.8181818181818182,
+          "helped": 17,
+          "hurt": 0,
+          "tied": 5
+        }
+      },
+      "repair_summary": {
+        "enabled": true,
+        "metrics": {
+          "total": 100,
+          "repair_parse_count": 100,
+          "repair_equiv_count": 80,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.8,
+          "repair_equiv_given_parse": 0.8,
+          "helped": 42,
+          "hurt": 4,
+          "tied": 54
+        },
+        "outcome_counts": [
+          [
+            "repair_helped",
+            42
+          ],
+          [
+            "both_success",
+            38
+          ],
+          [
+            "both_fail",
+            16
+          ],
+          [
+            "repair_hurt",
+            4
+          ]
+        ],
+        "domain_breakdown": {
+          "blocksworld": {
+            "total": 56,
+            "repair_parse_count": 56,
+            "repair_equiv_count": 44,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.7857142857142857,
+            "repair_equiv_given_parse": 0.7857142857142857,
+            "helped": 8,
+            "hurt": 4,
+            "tied": 44
+          },
+          "gripper": {
+            "total": 44,
+            "repair_parse_count": 44,
+            "repair_equiv_count": 36,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.8181818181818182,
+            "repair_equiv_given_parse": 0.8181818181818182,
+            "helped": 34,
+            "hurt": 0,
+            "tied": 10
+          }
+        },
+        "style_breakdown": {
+          "abstract/abstract": {
+            "total": 60,
+            "repair_parse_count": 60,
+            "repair_equiv_count": 44,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.7333333333333333,
+            "repair_equiv_given_parse": 0.7333333333333333,
+            "helped": 30,
+            "hurt": 0,
+            "tied": 30
+          },
+          "explicit/explicit": {
+            "total": 40,
+            "repair_parse_count": 40,
+            "repair_equiv_count": 36,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.9,
+            "repair_equiv_given_parse": 0.9,
+            "helped": 12,
+            "hurt": 4,
+            "tied": 24
+          }
+        },
+        "policy_breakdown": {
+          "verifier_ranked_repair": {
+            "total": 50,
+            "repair_parse_count": 50,
+            "repair_equiv_count": 40,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.8,
+            "repair_equiv_given_parse": 0.8,
+            "helped": 21,
+            "hurt": 2,
+            "tied": 27
+          },
+          "verifier_ranked_repair_guarded": {
+            "total": 50,
+            "repair_parse_count": 50,
+            "repair_equiv_count": 40,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.8,
+            "repair_equiv_given_parse": 0.8,
+            "helped": 21,
+            "hurt": 2,
+            "tied": 27
+          }
+        },
+        "repair_outputs": "results\\vcsr\\final_guarded_repair_gate_round4\\seed_70\\repair_outputs.jsonl"
+      }
+    },
+    {
+      "seed": 71,
+      "output_dir": "results\\vcsr\\final_guarded_repair_gate_round4\\seed_71",
+      "baseline_k8_equiv_rate": 0.48,
+      "repair_augmented_k8_equiv_rate": 0.8,
+      "delta_k8": 0.32000000000000006,
+      "comparison_k8_equiv_rate": 0.8,
+      "repair_metrics": {
+        "total": 50,
+        "repair_parse_count": 50,
+        "repair_equiv_count": 40,
+        "repair_parse_rate": 1.0,
+        "repair_equiv_rate": 0.8,
+        "repair_equiv_given_parse": 0.8,
+        "helped": 21,
+        "hurt": 5,
+        "tied": 24
+      },
+      "repair_domain_breakdown": {
+        "blocksworld": {
+          "total": 30,
+          "repair_parse_count": 30,
+          "repair_equiv_count": 25,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.8333333333333334,
+          "repair_equiv_given_parse": 0.8333333333333334,
+          "helped": 6,
+          "hurt": 5,
+          "tied": 19
+        },
+        "gripper": {
+          "total": 20,
+          "repair_parse_count": 20,
+          "repair_equiv_count": 15,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.75,
+          "repair_equiv_given_parse": 0.75,
+          "helped": 15,
+          "hurt": 0,
+          "tied": 5
+        }
+      },
+      "comparison_metrics": {
+        "total": 50,
+        "repair_parse_count": 50,
+        "repair_equiv_count": 40,
+        "repair_parse_rate": 1.0,
+        "repair_equiv_rate": 0.8,
+        "repair_equiv_given_parse": 0.8,
+        "helped": 21,
+        "hurt": 5,
+        "tied": 24
+      },
+      "comparison_domain_breakdown": {
+        "blocksworld": {
+          "total": 30,
+          "repair_parse_count": 30,
+          "repair_equiv_count": 25,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.8333333333333334,
+          "repair_equiv_given_parse": 0.8333333333333334,
+          "helped": 6,
+          "hurt": 5,
+          "tied": 19
+        },
+        "gripper": {
+          "total": 20,
+          "repair_parse_count": 20,
+          "repair_equiv_count": 15,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.75,
+          "repair_equiv_given_parse": 0.75,
+          "helped": 15,
+          "hurt": 0,
+          "tied": 5
+        }
+      },
+      "repair_summary": {
+        "enabled": true,
+        "metrics": {
+          "total": 100,
+          "repair_parse_count": 100,
+          "repair_equiv_count": 80,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 0.8,
+          "repair_equiv_given_parse": 0.8,
+          "helped": 42,
+          "hurt": 10,
+          "tied": 48
+        },
+        "outcome_counts": [
+          [
+            "repair_helped",
+            42
+          ],
+          [
+            "both_success",
+            38
+          ],
+          [
+            "repair_hurt",
+            10
+          ],
+          [
+            "both_fail",
+            10
+          ]
+        ],
+        "domain_breakdown": {
+          "blocksworld": {
+            "total": 60,
+            "repair_parse_count": 60,
+            "repair_equiv_count": 50,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.8333333333333334,
+            "repair_equiv_given_parse": 0.8333333333333334,
+            "helped": 12,
+            "hurt": 10,
+            "tied": 38
+          },
+          "gripper": {
+            "total": 40,
+            "repair_parse_count": 40,
+            "repair_equiv_count": 30,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.75,
+            "repair_equiv_given_parse": 0.75,
+            "helped": 30,
+            "hurt": 0,
+            "tied": 10
+          }
+        },
+        "style_breakdown": {
+          "abstract/abstract": {
+            "total": 54,
+            "repair_parse_count": 54,
+            "repair_equiv_count": 42,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.7777777777777778,
+            "repair_equiv_given_parse": 0.7777777777777778,
+            "helped": 28,
+            "hurt": 4,
+            "tied": 22
+          },
+          "explicit/explicit": {
+            "total": 46,
+            "repair_parse_count": 46,
+            "repair_equiv_count": 38,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.8260869565217391,
+            "repair_equiv_given_parse": 0.8260869565217391,
+            "helped": 14,
+            "hurt": 6,
+            "tied": 26
+          }
+        },
+        "policy_breakdown": {
+          "verifier_ranked_repair": {
+            "total": 50,
+            "repair_parse_count": 50,
+            "repair_equiv_count": 40,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.8,
+            "repair_equiv_given_parse": 0.8,
+            "helped": 21,
+            "hurt": 5,
+            "tied": 24
+          },
+          "verifier_ranked_repair_guarded": {
+            "total": 50,
+            "repair_parse_count": 50,
+            "repair_equiv_count": 40,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 0.8,
+            "repair_equiv_given_parse": 0.8,
+            "helped": 21,
+            "hurt": 5,
+            "tied": 24
+          }
+        },
+        "repair_outputs": "results\\vcsr\\final_guarded_repair_gate_round4\\seed_71\\repair_outputs.jsonl"
+      }
+    }
+  ],
+  "mean_metrics": {
+    "baseline_k8_equiv_rate": 0.436,
+    "repair_augmented_k8_equiv_rate": 0.796,
+    "comparison_k8_equiv_rate": 0.796,
+    "mean_delta_k8": 0.36000000000000004,
+    "baseline_k8_values": [
+      0.46,
+      0.34,
+      0.48,
+      0.42,
+      0.48
+    ],
+    "repair_augmented_k8_values": [
+      0.8,
+      0.74,
+      0.84,
+      0.8,
+      0.8
+    ],
+    "deltas": [
+      0.34,
+      0.39999999999999997,
+      0.36,
+      0.38000000000000006,
+      0.32000000000000006
+    ],
+    "nonnegative_seeds": 5,
+    "worst_delta": 0.32000000000000006,
+    "repair_parse_rate_mean": 1.0,
+    "total_helped": 104,
+    "total_hurt": 14,
+    "total_comparison_hurt": 14,
+    "total_blocksworld_hurt": 14,
+    "total_comparison_blocksworld_hurt": 14,
+    "comparison_ok": true,
+    "blocksworld_hurt_ok": false
+  },
+  "accepted": false,
+  "recommendation": "Repair-augmented VCSR does not pass the final fresh gate; keep the claim cautious."
+}

@@ -139,8 +139,8 @@ def _policy_markdown(summary: dict) -> str:
 
 def _metrics_for_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
     total = len(rows)
-    repair_parse = sum(1 for row in rows if row.get("repair_parseable"))
-    repair_equiv = sum(1 for row in rows if row.get("repair_equivalent"))
+    repair_parse = sum(1 for row in rows if row.get("final_parseable", row.get("repair_parseable")))
+    repair_equiv = sum(1 for row in rows if row.get("final_equivalent", row.get("repair_equivalent")))
     helped = sum(1 for row in rows if row.get("outcome") == "repair_helped")
     hurt = sum(1 for row in rows if row.get("outcome") == "repair_hurt")
     return {
@@ -164,6 +164,20 @@ def _repair_outcome(original_equiv: bool, repair_equiv: bool) -> str:
     if repair_equiv and original_equiv:
         return "both_success"
     return "both_fail"
+
+
+def should_accept_guarded_repair(
+    *,
+    repair_parseable: bool,
+    original_score: float | None,
+    repair_score: float | None,
+    margin: float,
+) -> bool:
+    if not repair_parseable:
+        return False
+    if original_score is None or repair_score is None:
+        return False
+    return float(repair_score) >= float(original_score) - float(margin)
 
 
 def _build_repair_feedback(*, parseable: bool, solvable: bool, verifier_score: float | None) -> str:
@@ -508,12 +522,15 @@ def main() -> None:
                 }
                 if "verifier_ranked_repair" in eval_cfg.get("policies", []):
                     selections["verifier_ranked_repair"] = selections["verifier_ranked"]
+                if "verifier_ranked_repair_guarded" in eval_cfg.get("policies", []):
+                    selections["verifier_ranked_repair_guarded"] = selections["verifier_ranked"]
 
+                repair_cache: dict[int, dict[str, Any]] = {}
                 for policy_name, selection in selections.items():
                     selected_eval = None
                     repair_row = None
                     if (
-                        policy_name == "verifier_ranked_repair"
+                        policy_name in {"verifier_ranked_repair", "verifier_ranked_repair_guarded"}
                         and should_attempt_repair(
                             k=k,
                             selected_index=selection.selected_index,
@@ -528,40 +545,75 @@ def main() -> None:
                         selected_sample = samples[selected_idx]
                         selected_eval_original = subset_results[selected_idx]
                         selected_score = subset_scores[selected_idx]
-                        selected_plan = check_solvability_oracle(selected_sample.extracted_pddl)
-                        feedback = _build_repair_feedback(
-                            parseable=selected_eval_original.parseable,
-                            solvable=bool(selected_plan.solvable),
-                            verifier_score=selected_score,
-                        )
-                        repair_prompt = make_repair_prompt(
-                            natural_language=nl,
-                            candidate_pddl=selected_sample.extracted_pddl,
-                            domain=row["domain"],
-                            feedback=feedback,
-                        )
-                        repair_sample = _sample_repair(repair_sampler, repair_prompt)
-                        repair_parseable = _try_parse_pddl(repair_sample["pddl"])
-                        if repair_parseable:
-                            repair_eval = check_equivalence_lightweight(
-                                gold_pddl,
-                                repair_sample["pddl"],
-                                is_placeholder=is_placeholder,
+                        if selected_idx not in repair_cache:
+                            selected_plan = check_solvability_oracle(selected_sample.extracted_pddl)
+                            feedback = _build_repair_feedback(
+                                parseable=selected_eval_original.parseable,
+                                solvable=bool(selected_plan.solvable),
+                                verifier_score=selected_score,
                             )
-                            selected_eval = repair_eval
-                            repair_plan = check_solvability_oracle(repair_sample["pddl"])
-                            repair_score = scorer.score_pair(nl, repair_sample["pddl"])
-                            final_source = "repair"
+                            repair_prompt = make_repair_prompt(
+                                natural_language=nl,
+                                candidate_pddl=selected_sample.extracted_pddl,
+                                domain=row["domain"],
+                                feedback=feedback,
+                            )
+                            repair_sample = _sample_repair(repair_sampler, repair_prompt)
+                            repair_parseable = _try_parse_pddl(repair_sample["pddl"])
+                            if repair_parseable:
+                                repair_eval = check_equivalence_lightweight(
+                                    gold_pddl,
+                                    repair_sample["pddl"],
+                                    is_placeholder=is_placeholder,
+                                )
+                                repair_plan = check_solvability_oracle(repair_sample["pddl"])
+                                repair_score = scorer.score_pair(nl, repair_sample["pddl"])
+                            else:
+                                repair_eval = EvalResult(
+                                    parseable=False,
+                                    equivalent=False,
+                                    error=repair_sample["error"] or "parse_failed",
+                                )
+                                repair_plan = None
+                                repair_score = None
+                            repair_cache[selected_idx] = {
+                                "selected_plan": selected_plan,
+                                "feedback": feedback,
+                                "repair_sample": repair_sample,
+                                "repair_eval": repair_eval,
+                                "repair_plan": repair_plan,
+                                "repair_score": repair_score,
+                            }
+                        cached_repair = repair_cache[selected_idx]
+                        selected_plan = cached_repair["selected_plan"]
+                        feedback = cached_repair["feedback"]
+                        repair_sample = cached_repair["repair_sample"]
+                        repair_eval = cached_repair["repair_eval"]
+                        repair_plan = cached_repair["repair_plan"]
+                        repair_score = cached_repair["repair_score"]
+                        guard_margin = float(repair_cfg.get("guard_margin", 0.0))
+                        guard_accept = None
+                        if policy_name == "verifier_ranked_repair":
+                            guard_accept = None
+                            if repair_eval.parseable:
+                                selected_eval = repair_eval
+                                final_source = "repair"
+                            else:
+                                selected_eval = selected_eval_original
+                                final_source = "original_fallback_repair_unparseable"
                         else:
-                            repair_eval = EvalResult(
-                                parseable=False,
-                                equivalent=False,
-                                error=repair_sample["error"] or "parse_failed",
+                            guard_accept = should_accept_guarded_repair(
+                                repair_parseable=repair_eval.parseable,
+                                original_score=selected_score,
+                                repair_score=repair_score,
+                                margin=guard_margin,
                             )
-                            selected_eval = selected_eval_original
-                            repair_plan = None
-                            repair_score = None
-                            final_source = "original_fallback_repair_unparseable"
+                            if guard_accept:
+                                selected_eval = repair_eval
+                                final_source = "repair_guard_accepted"
+                            else:
+                                selected_eval = selected_eval_original
+                                final_source = "original_guard_rejected"
 
                         repair_row = {
                             "row_index": row_idx,
@@ -586,8 +638,12 @@ def main() -> None:
                             "repair_equivalent": repair_eval.equivalent,
                             "repair_error": repair_eval.error or repair_sample["error"],
                             "repair_verifier_score": repair_score,
+                            "guard_margin": guard_margin if policy_name == "verifier_ranked_repair_guarded" else None,
+                            "guard_accepted": guard_accept,
                             "outcome": _repair_outcome(selected_eval_original.equivalent, selected_eval.equivalent),
                             "final_source": final_source,
+                            "final_parseable": selected_eval.parseable,
+                            "final_equivalent": selected_eval.equivalent,
                             "latency_sec": repair_sample["latency_sec"],
                             "backend": repair_sample["backend"],
                             "model": repair_sample["model"],
@@ -624,6 +680,9 @@ def main() -> None:
                                 "repair_parseable": repair_row["repair_parseable"],
                                 "repair_outcome": repair_row["outcome"],
                                 "repair_final_source": repair_row["final_source"],
+                                "repair_guard_margin": repair_row["guard_margin"],
+                                "repair_guard_accepted": repair_row["guard_accepted"],
+                                "final_equivalent": repair_row["final_equivalent"],
                             }
                         )
                     candidate_dump.append(record)
@@ -693,6 +752,7 @@ def main() -> None:
             "outcome_counts": Counter(row["outcome"] for row in repair_rows).most_common(),
             "domain_breakdown": _breakdown_repair(repair_rows, "domain"),
             "style_breakdown": _breakdown_repair(repair_rows, "style"),
+            "policy_breakdown": _breakdown_repair(repair_rows, "policy"),
             "repair_outputs": str(repair_outputs_path),
         }
 

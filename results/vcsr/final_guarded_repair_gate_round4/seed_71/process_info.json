@@ -1,0 +1,6 @@
+{
+  "pid": 12556,
+  "started_at": 1777188397.007504,
+  "config": "configs/vcsr_bestofk_guarded_repair.yaml",
+  "output_dir": "results\\vcsr\\final_guarded_repair_gate_round4\\seed_71"
+}

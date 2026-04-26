@@ -171,6 +171,7 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] Domain-aware repair iteration
 - [x] Integrate repair-augmented best-of-K selection
 - [x] Run final fresh repair-augmented VCSR gate on untouched seeds `51-55`
+- [x] Run guarded repair follow-up on fresh seeds `67-71`
 
 ### Phase 4: Paper and Release (Weeks 7-8)
 
@@ -197,6 +198,9 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 5. **Do not tune on final seeds**
    Seeds `51-55` are now final evidence. Do not use them for prompt edits,
    checkpoint selection, selector-policy design, or repair gating.
+6. **Do not oversell guarded repair**
+   The verifier-score guard replicated the repair gain on seeds `67-71`, but it
+   did not reduce blocksworld hurts versus unconditional repair.
 
 ## Current Status Notes
 
@@ -285,12 +289,19 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
   improved mean `K=8` from plain round-4 `verifier_ranked` at `0.4200` to
   `verifier_ranked_repair` at `0.7720`. Repair parse rate was `0.9840`, and
   helped / hurt / tied was `104 / 16 / 130`.
+- Guarded repair follow-up is complete under
+  `results/vcsr/final_guarded_repair_gate_round4/`. It used a verifier-score
+  guard with margin `0.05` selected on development repair artifacts. On fresh
+  seeds `67-71`, plain round-4 `verifier_ranked` scored `0.4360` at `K=8` and
+  guarded repair scored `0.7960`, but unconditional repair also scored
+  `0.7960`. Both policies had `14` hurt rows, all in blocksworld, so this
+  guard is not promoted as a fix.
 - `results/verifier/best_current/selection.yaml` should remain pointed at round
   4.
 - Current next-step bias: do not blindly retrain or add more simple selector
   heuristics. The next work should be paper-ready analysis: tables, figures,
-  domain/style breakdowns, and a clear caveat that unconditional repair helps
-  gripper dramatically but can hurt some already-correct blocksworld rows.
+  domain/style breakdowns, and a clear caveat that repair helps gripper
+  dramatically but can hurt some already-correct blocksworld rows.
 
 ## Long-Run Visibility Rule
 

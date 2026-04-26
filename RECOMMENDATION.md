@@ -193,13 +193,30 @@ That means the next research direction should be paper assembly and careful
 analysis, not another blind modeling run.
 
 If there is time after the paper-facing result is frozen, the most useful
-follow-up is a confidence/domain-gated repair policy, because the final gate
-also showed an important caveat:
+follow-up is a better repair acceptance policy, because the final gate also
+showed an important caveat:
 
 - gripper: `96` helped, `0` hurt
 - blocksworld: `8` helped, `16` hurt
 - unconditional repair is a huge net win, but can damage already-correct
   blocksworld selections
+
+We tested the first domain-agnostic version of that idea as a verifier-score
+guard:
+
+- development-selected margin: `0.05`
+- fresh seeds: `67-71`
+- plain round-4 `verifier_ranked` mean `K=8`: `0.4360`
+- guarded repair mean `K=8`: `0.7960`
+- unconditional repair on the same seeds: `0.7960`
+- guarded hurt rows: `14`
+- unconditional hurt rows: `14`
+- guarded blocksworld hurts: `14`
+- unconditional blocksworld hurts: `14`
+
+This means the score guard replicated the repair benefit, but did **not** fix
+the blocksworld harm. Do not promote the current guarded policy as a stronger
+paper-facing system.
 
 The right paper framing is therefore:
 
@@ -209,7 +226,8 @@ The right paper framing is therefore:
   especially gripper
 - caveat: unconditional repair may hurt some already-correct blocksworld
   selections
-- future work: confidence-gated/domain-gated repair and abstention
+- future work: stronger repair acceptance checks, structural diff checks,
+  confidence-gated repair, and abstention
 
 ## What We Should Not Over-Prioritize Right Now
 

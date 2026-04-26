@@ -1,7 +1,7 @@
 import unittest
 
 from generation.prompts import make_repair_prompt
-from scripts.run_verifier_bestofk import should_attempt_repair
+from scripts.run_verifier_bestofk import should_accept_guarded_repair, should_attempt_repair
 from scripts.run_repair_pilot import RepairCase, build_feedback, select_repair_candidate_from_scored
 
 
@@ -115,6 +115,36 @@ class RepairPilotTests(unittest.TestCase):
                 selected_index=0,
                 selected_parseable=True,
                 repair_cfg={"enabled": True, "K": 8},
+            )
+        )
+
+    def test_guarded_repair_rejects_unparseable_repair(self) -> None:
+        self.assertFalse(
+            should_accept_guarded_repair(
+                repair_parseable=False,
+                original_score=0.8,
+                repair_score=0.9,
+                margin=0.05,
+            )
+        )
+
+    def test_guarded_repair_rejects_score_below_margin(self) -> None:
+        self.assertFalse(
+            should_accept_guarded_repair(
+                repair_parseable=True,
+                original_score=0.8,
+                repair_score=0.7,
+                margin=0.05,
+            )
+        )
+
+    def test_guarded_repair_accepts_score_within_margin(self) -> None:
+        self.assertTrue(
+            should_accept_guarded_repair(
+                repair_parseable=True,
+                original_score=0.8,
+                repair_score=0.76,
+                margin=0.05,
             )
         )
         self.assertTrue(

@@ -73,6 +73,10 @@ tools/             External tool installs (Fast Downward, VAL)
   `51-55`: mean `K=8` equivalence improved from plain round-4
   `verifier_ranked` at `0.4200` to repair-augmented
   `verifier_ranked_repair` at `0.7720`, with repair parse rate `0.9840`.
+- Guarded repair follow-up is complete on seeds `67-71`: the verifier-score
+  guard replicated the large repair gain (`0.4360 -> 0.7960` at `K=8`) but did
+  not reduce blocksworld hurts relative to unconditional repair, so it is not a
+  promoted improvement.
 
 ## Quick Start
 
@@ -204,6 +208,10 @@ python scripts/run_fresh_repair_gate.py --config configs/vcsr_fresh_repair_gate_
 
 # 38. Final fresh repair-augmented VCSR gate on untouched seeds 51-55
 python scripts/run_final_repair_gate.py --config configs/vcsr_final_repair_gate.yaml
+
+# 39. Guarded repair analysis and fresh follow-up gate
+python scripts/analyze_guarded_repair_policy.py --config configs/vcsr_guarded_repair_analysis.yaml
+python scripts/run_final_repair_gate.py --config configs/vcsr_final_guarded_repair_gate.yaml
 ```
 
 ## Windows E: Drive Setup
@@ -407,6 +415,7 @@ Key downstream artifacts:
 | `results/vcsr/fixed_pool_round7_compare/` | Fresh identical-pool comparison showing round 7 slightly improves `K=8` but regresses `K=4`, so it is still not promoted |
 | `results/vcsr/search_ablation_round4/` | Phase 3 cached planner/search ablation showing solvability-based policies do not pass the cached gate |
 | `results/vcsr/final_repair_gate_round4/` | Final fresh repair-augmented VCSR gate on untouched seeds `51-55`; passes with mean `K=8` `0.4200 -> 0.7720` |
+| `results/vcsr/final_guarded_repair_gate_round4/` | Guarded repair follow-up on seeds `67-71`; replicates repair gain but does not reduce blocksworld hurts |
 
 Current project conclusion from these pilots:
 
@@ -452,6 +461,9 @@ Current project conclusion from these pilots:
 - The main caveat is domain asymmetry:
   repair strongly rescues gripper failures, while unconditional repair can hurt
   already-correct blocksworld selections.
+- A first verifier-score guarded repair attempt did not fix that caveat:
+  on seeds `67-71`, guarded and unconditional repair both reached `0.7960` at
+  `K=8` and both had `14` hurt rows, all in blocksworld.
 
 ## Recommended Next Step
 
