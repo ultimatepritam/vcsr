@@ -12,6 +12,22 @@ abstention to avoid verifier-induced failures at scale.
 
 Full design rationale is in `deep-research-report.md`.
 
+## Current Paper Framing
+
+- Paper-facing title: **Verifier-Calibrated Search and Repair for Faithful
+  Text-to-PDDL Generation**.
+- The final system is frozen round-4 verifier-ranked `K=8` search plus
+  one-step domain-aware repair.
+- Main final evidence is `results/vcsr/final_repair_gate_round4` on untouched
+  seeds `51-55`: `verifier_ranked` `0.4200` -> `verifier_ranked_repair`
+  `0.7720`.
+- `verifier_ranked` is the immediate pre-repair ablation, not the only baseline.
+  The paper should also compare against greedy, random parseable best-of-K, and
+  planner/solvability search.
+- Use `PAPER_PLAN.md` and generated artifacts in `results/paper/final_vcsr/`.
+- Do not tune prompts, checkpoints, guards, or selection rules using seeds
+  `51-55`.
+
 ## Hardware
 
 - Local: RTX 3080 (10 GB VRAM), Ryzen 5800x, Windows 10

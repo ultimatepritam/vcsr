@@ -10,6 +10,21 @@ and how to interpret the results in the context of the VCSR project.
 - Prefer interpretation in terms of project goals:
   semantic ranking quality, calibration readiness, and downstream usefulness for VCSR.
 
+## Paper-Facing Evidence Freeze
+
+- Paper plan: [PAPER_PLAN.md](/e:/Engineering/vcsr/PAPER_PLAN.md)
+- Export script: [scripts/export_paper_artifacts.py](/e:/Engineering/vcsr/scripts/export_paper_artifacts.py)
+- Derived paper artifacts:
+  [results/paper/final_vcsr](/e:/Engineering/vcsr/results/paper/final_vcsr)
+
+The final paper-facing evidence is frozen around
+[results/vcsr/final_repair_gate_round4](/e:/Engineering/vcsr/results/vcsr/final_repair_gate_round4).
+Do not tune prompts, checkpoints, repair guards, or selector policies on seeds
+`51-55`. The main claim should compare repair-augmented VCSR against greedy,
+random parseable best-of-K, planner/solvability search, and verifier-only
+search, while treating verifier-only search as the immediate pre-repair
+ablation.
+
 ## 2026-04-16 / 2026-04-17
 
 ### Negative Generator Pilot

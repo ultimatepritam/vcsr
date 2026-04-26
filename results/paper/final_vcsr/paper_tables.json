@@ -1,0 +1,392 @@
+{
+  "seeds": [
+    51,
+    52,
+    53,
+    54,
+    55
+  ],
+  "table_1_main_metrics": [
+    {
+      "k": 1,
+      "policy": "greedy_first",
+      "label": "Greedy first",
+      "mean_parse": 0.924,
+      "mean_equiv": 0.368,
+      "mean_equiv_given_parse": 0.3993630179344465
+    },
+    {
+      "k": 1,
+      "policy": "random_parseable",
+      "label": "Random parseable",
+      "mean_parse": 0.924,
+      "mean_equiv": 0.368,
+      "mean_equiv_given_parse": 0.3993630179344465
+    },
+    {
+      "k": 1,
+      "policy": "verifier_ranked",
+      "label": "Verifier-ranked",
+      "mean_parse": 0.924,
+      "mean_equiv": 0.368,
+      "mean_equiv_given_parse": 0.3993630179344465
+    },
+    {
+      "k": 1,
+      "policy": "verifier_ranked_repair",
+      "label": "VCSR repair-augmented",
+      "mean_parse": 0.924,
+      "mean_equiv": 0.368,
+      "mean_equiv_given_parse": 0.3993630179344465
+    },
+    {
+      "k": 4,
+      "policy": "greedy_first",
+      "label": "Greedy first",
+      "mean_parse": 0.924,
+      "mean_equiv": 0.368,
+      "mean_equiv_given_parse": 0.3993630179344465
+    },
+    {
+      "k": 4,
+      "policy": "random_parseable",
+      "label": "Random parseable",
+      "mean_parse": 0.9960000000000001,
+      "mean_equiv": 0.376,
+      "mean_equiv_given_parse": 0.37755102040816324
+    },
+    {
+      "k": 4,
+      "policy": "verifier_ranked",
+      "label": "Verifier-ranked",
+      "mean_parse": 0.9960000000000001,
+      "mean_equiv": 0.392,
+      "mean_equiv_given_parse": 0.39371428571428574
+    },
+    {
+      "k": 4,
+      "policy": "verifier_ranked_repair",
+      "label": "VCSR repair-augmented",
+      "mean_parse": 0.9960000000000001,
+      "mean_equiv": 0.392,
+      "mean_equiv_given_parse": 0.39371428571428574
+    },
+    {
+      "k": 8,
+      "policy": "greedy_first",
+      "label": "Greedy first",
+      "mean_parse": 0.924,
+      "mean_equiv": 0.368,
+      "mean_equiv_given_parse": 0.3993630179344465
+    },
+    {
+      "k": 8,
+      "policy": "random_parseable",
+      "label": "Random parseable",
+      "mean_parse": 1.0,
+      "mean_equiv": 0.376,
+      "mean_equiv_given_parse": 0.376
+    },
+    {
+      "k": 8,
+      "policy": "verifier_ranked",
+      "label": "Verifier-ranked",
+      "mean_parse": 1.0,
+      "mean_equiv": 0.42000000000000004,
+      "mean_equiv_given_parse": 0.42000000000000004
+    },
+    {
+      "k": 8,
+      "policy": "verifier_ranked_repair",
+      "label": "VCSR repair-augmented",
+      "mean_parse": 1.0,
+      "mean_equiv": 0.772,
+      "mean_equiv_given_parse": 0.772
+    }
+  ],
+  "table_2_k8_slices": [
+    {
+      "policy": "greedy_first",
+      "label": "Greedy first",
+      "slice": "domain=blocksworld",
+      "equiv_count": 92,
+      "total": 126,
+      "parse_rate": 0.9285714285714286,
+      "equiv_rate": 0.7301587301587301
+    },
+    {
+      "policy": "greedy_first",
+      "label": "Greedy first",
+      "slice": "domain=gripper",
+      "equiv_count": 0,
+      "total": 124,
+      "parse_rate": 0.9193548387096774,
+      "equiv_rate": 0.0
+    },
+    {
+      "policy": "greedy_first",
+      "label": "Greedy first",
+      "slice": "style=abstract/abstract",
+      "equiv_count": 28,
+      "total": 126,
+      "parse_rate": 0.8492063492063492,
+      "equiv_rate": 0.2222222222222222
+    },
+    {
+      "policy": "greedy_first",
+      "label": "Greedy first",
+      "slice": "style=explicit/explicit",
+      "equiv_count": 64,
+      "total": 124,
+      "parse_rate": 1.0,
+      "equiv_rate": 0.5161290322580645
+    },
+    {
+      "policy": "random_parseable",
+      "label": "Random parseable",
+      "slice": "domain=blocksworld",
+      "equiv_count": 94,
+      "total": 126,
+      "parse_rate": 1.0,
+      "equiv_rate": 0.746031746031746
+    },
+    {
+      "policy": "random_parseable",
+      "label": "Random parseable",
+      "slice": "domain=gripper",
+      "equiv_count": 0,
+      "total": 124,
+      "parse_rate": 1.0,
+      "equiv_rate": 0.0
+    },
+    {
+      "policy": "random_parseable",
+      "label": "Random parseable",
+      "slice": "style=abstract/abstract",
+      "equiv_count": 30,
+      "total": 126,
+      "parse_rate": 1.0,
+      "equiv_rate": 0.23809523809523808
+    },
+    {
+      "policy": "random_parseable",
+      "label": "Random parseable",
+      "slice": "style=explicit/explicit",
+      "equiv_count": 64,
+      "total": 124,
+      "parse_rate": 1.0,
+      "equiv_rate": 0.5161290322580645
+    },
+    {
+      "policy": "verifier_ranked",
+      "label": "Verifier-ranked",
+      "slice": "domain=blocksworld",
+      "equiv_count": 103,
+      "total": 126,
+      "parse_rate": 1.0,
+      "equiv_rate": 0.8174603174603174
+    },
+    {
+      "policy": "verifier_ranked",
+      "label": "Verifier-ranked",
+      "slice": "domain=gripper",
+      "equiv_count": 2,
+      "total": 124,
+      "parse_rate": 1.0,
+      "equiv_rate": 0.016129032258064516
+    },
+    {
+      "policy": "verifier_ranked",
+      "label": "Verifier-ranked",
+      "slice": "style=abstract/abstract",
+      "equiv_count": 40,
+      "total": 126,
+      "parse_rate": 1.0,
+      "equiv_rate": 0.31746031746031744
+    },
+    {
+      "policy": "verifier_ranked",
+      "label": "Verifier-ranked",
+      "slice": "style=explicit/explicit",
+      "equiv_count": 65,
+      "total": 124,
+      "parse_rate": 1.0,
+      "equiv_rate": 0.5241935483870968
+    },
+    {
+      "policy": "verifier_ranked_repair",
+      "label": "VCSR repair-augmented",
+      "slice": "domain=blocksworld",
+      "equiv_count": 95,
+      "total": 126,
+      "parse_rate": 1.0,
+      "equiv_rate": 0.753968253968254
+    },
+    {
+      "policy": "verifier_ranked_repair",
+      "label": "VCSR repair-augmented",
+      "slice": "domain=gripper",
+      "equiv_count": 98,
+      "total": 124,
+      "parse_rate": 1.0,
+      "equiv_rate": 0.7903225806451613
+    },
+    {
+      "policy": "verifier_ranked_repair",
+      "label": "VCSR repair-augmented",
+      "slice": "style=abstract/abstract",
+      "equiv_count": 84,
+      "total": 126,
+      "parse_rate": 1.0,
+      "equiv_rate": 0.6666666666666666
+    },
+    {
+      "policy": "verifier_ranked_repair",
+      "label": "VCSR repair-augmented",
+      "slice": "style=explicit/explicit",
+      "equiv_count": 109,
+      "total": 124,
+      "parse_rate": 1.0,
+      "equiv_rate": 0.8790322580645161
+    }
+  ],
+  "per_seed_final_gate": [
+    {
+      "seed": 51,
+      "baseline_k8": 0.36,
+      "repair_k8": 0.78,
+      "delta": 0.42000000000000004,
+      "helped": 24,
+      "hurt": 3,
+      "tied": 23,
+      "repair_parse_rate": 1.0
+    },
+    {
+      "seed": 52,
+      "baseline_k8": 0.42,
+      "repair_k8": 0.78,
+      "delta": 0.36000000000000004,
+      "helped": 21,
+      "hurt": 3,
+      "tied": 26,
+      "repair_parse_rate": 0.98
+    },
+    {
+      "seed": 53,
+      "baseline_k8": 0.52,
+      "repair_k8": 0.8,
+      "delta": 0.28,
+      "helped": 18,
+      "hurt": 4,
+      "tied": 28,
+      "repair_parse_rate": 0.96
+    },
+    {
+      "seed": 54,
+      "baseline_k8": 0.34,
+      "repair_k8": 0.76,
+      "delta": 0.42,
+      "helped": 22,
+      "hurt": 1,
+      "tied": 27,
+      "repair_parse_rate": 0.98
+    },
+    {
+      "seed": 55,
+      "baseline_k8": 0.46,
+      "repair_k8": 0.74,
+      "delta": 0.27999999999999997,
+      "helped": 19,
+      "hurt": 5,
+      "tied": 26,
+      "repair_parse_rate": 1.0
+    }
+  ],
+  "repair_outcomes": {
+    "repair_helped": 104,
+    "both_success": 89,
+    "repair_hurt": 16,
+    "both_fail": 41
+  },
+  "repair_by_domain": {
+    "blocksworld": {
+      "repair_helped": 8,
+      "both_success": 87,
+      "repair_hurt": 16,
+      "both_fail": 15
+    },
+    "gripper": {
+      "both_fail": 26,
+      "repair_helped": 96,
+      "both_success": 2
+    }
+  },
+  "repair_by_style": {
+    "abstract/abstract": {
+      "repair_helped": 48,
+      "both_success": 36,
+      "both_fail": 38,
+      "repair_hurt": 4
+    },
+    "explicit/explicit": {
+      "both_success": 53,
+      "repair_hurt": 12,
+      "both_fail": 3,
+      "repair_helped": 56
+    }
+  },
+  "final_gate_mean_metrics": {
+    "baseline_k8_equiv_rate": 0.42,
+    "repair_augmented_k8_equiv_rate": 0.772,
+    "mean_delta_k8": 0.35200000000000004,
+    "baseline_k8_values": [
+      0.36,
+      0.42,
+      0.52,
+      0.34,
+      0.46
+    ],
+    "repair_augmented_k8_values": [
+      0.78,
+      0.78,
+      0.8,
+      0.76,
+      0.74
+    ],
+    "deltas": [
+      0.42000000000000004,
+      0.36000000000000004,
+      0.28,
+      0.42,
+      0.27999999999999997
+    ],
+    "nonnegative_seeds": 5,
+    "worst_delta": 0.27999999999999997,
+    "repair_parse_rate_mean": 0.984,
+    "total_helped": 104,
+    "total_hurt": 16
+  },
+  "accepted": true,
+  "supporting_summaries": {
+    "search_ablation": {
+      "path": "results\\vcsr\\search_ablation_round4\\search_ablation_summary.md",
+      "text": "# Round 4 Search Ablation\n\nVerifier: `results/verifier/best_current/selection.yaml`\nPools: `6`\nK values: `[4, 8]`\n\n## Mean Metrics\n\n| Policy | K | Equiv | Parse | Solvable | Eq / Parse | Helped | Hurt | Tied |\n|---|---:|---:|---:|---:|---:|---:|---:|---:|\n| verifier_ranked | 4 | 0.4500 | 0.9929 | 0.6964 | 0.4532 | 0 | 0 | 280 |\n| solvable_then_verifier | 4 | 0.4500 | 0.7679 | 0.7679 | 0.5860 | 0 | 0 | 280 |\n| verifier_then_solvable_tiebreak | 4 | 0.4500 | 0.9929 | 0.7679 | 0.4532 | 0 | 0 | 280 |\n| parse_solvable_index | 4 | 0.4179 | 0.7679 | 0.7679 | 0.5442 | 1 | 10 | 269 |\n| verifier_ranked | 8 | 0.4714 | 0.9964 | 0.6964 | 0.4731 | 0 | 0 | 280 |\n| solvable_then_verifier | 8 | 0.4750 | 0.8107 | 0.8107 | 0.5859 | 1 | 0 | 279 |\n| verifier_then_solvable_tiebreak | 8 | 0.4714 | 0.9964 | 0.8036 | 0.4731 | 0 | 0 | 280 |\n| parse_solvable_index | 8 | 0.4179 | 0.8107 | 0.8107 | 0.5154 | 3 | 18 | 259 |\n\n## Per-Pool Verifier-Ranked vs Search\n\n| Pool | K | verifier_ranked | solvable_then_verifier | verifier_then_solvable_tiebreak | parse_solvable_index |\n|---|---:|---:|---:|---:|---:|\n| bestofk_round4_holdout_eval_clean | 4 | 0.5000 | 0.5000 | 0.5000 | 0.4800 |\n| bestofk_round4_holdout_eval_clean | 8 | 0.5200 | 0.5200 | 0.5200 | 0.4800 |\n| fixed_pool_round7_compare/seed_59 | 4 | 0.5000 | 0.5000 | 0.5000 | 0.4800 |\n| fixed_pool_round7_compare/seed_59 | 8 | 0.5000 | 0.5000 | 0.5000 | 0.4800 |\n| fixed_pool_round7_compare/seed_60 | 4 | 0.4000 | 0.4000 | 0.4000 | 0.3600 |\n| fixed_pool_round7_compare/seed_60 | 8 | 0.4400 | 0.4400 | 0.4400 | 0.3600 |\n| fixed_pool_round7_compare/seed_61 | 4 | 0.3200 | 0.3200 | 0.3200 | 0.2800 |\n| fixed_pool_round7_compare/seed_61 | 8 | 0.3800 | 0.3800 | 0.3800 | 0.2800 |\n| bestofk_round3_holdout_eval | 4 | 0.5000 | 0.5000 | 0.5000 | 0.4600 |\n| bestofk_round3_holdout_eval | 8 | 0.4600 | 0.4800 | 0.4600 | 0.4600 |\n| bestofk_pilot | 4 | 0.5000 | 0.5000 | 0.5000 | 0.4667 |\n| bestofk_pilot | 8 | 0.5667 | 0.5667 | 0.5667 | 0.4667 |\n\n## Candidate-Pool Diagnostics\n\n| K | Oracle Best-of-K | Solvable Best-of-K | Avg Parseable | Avg Solvable |\n|---:|---:|---:|---:|---:|\n| 4 | 0.4893 | 0.7679 | 3.80 | 2.64 |\n| 8 | 0.5214 | 0.8107 | 7.56 | 5.25 |\n\n## Acceptance\n\nNo search policy passed cached replay. Do not spend on fresh generation for these policies; move to a small repair-loop pilot.\n"
+    },
+    "fixed_pool_round7": {
+      "path": "results\\vcsr\\fixed_pool_round7_compare\\comparison_summary.md",
+      "text": "# Fresh Fixed-Pool Verifier Comparison\n\nBase config: `configs/vcsr_bestofk_round3_holdout_eval.yaml`\nRows per seed: `50`\nSeeds: `[59, 60, 61]`\n\nGeneration happened once per seed. Each verifier was replayed on the same candidate dump.\n\n## Mean Verifier-Ranked Equivalence\n\n| Verifier | K | Mean Equiv | Per-Seed Values |\n|---|---:|---:|---|\n| round4_best_current | 4 | 0.4067 | 0.5000, 0.4000, 0.3200 |\n| round4_best_current | 8 | 0.4400 | 0.5000, 0.4400, 0.3800 |\n| round7_focused_pointwise | 4 | 0.3933 | 0.5000, 0.4000, 0.2800 |\n| round7_focused_pointwise | 8 | 0.4467 | 0.5000, 0.4600, 0.3800 |\n\n## Head-to-Head\n\n| K | Candidate - Baseline | Wins | Losses | Ties |\n|---:|---:|---:|---:|---:|\n| 4 | -0.0133 | 0 | 1 | 2 |\n| 8 | +0.0067 | 1 | 0 | 2 |\n\n## Replay Artifacts\n\n| Seed | Pool | Replay |\n|---:|---|---|\n| 59 | `results\\vcsr\\fixed_pool_round7_compare\\pools\\seed_59\\candidate_dump.jsonl` | `results\\vcsr\\fixed_pool_round7_compare\\replays\\seed_59` |\n| 60 | `results\\vcsr\\fixed_pool_round7_compare\\pools\\seed_60\\candidate_dump.jsonl` | `results\\vcsr\\fixed_pool_round7_compare\\replays\\seed_60` |\n| 61 | `results\\vcsr\\fixed_pool_round7_compare\\pools\\seed_61\\candidate_dump.jsonl` | `results\\vcsr\\fixed_pool_round7_compare\\replays\\seed_61` |\n\n## Recommendation\n\nRound 4 remains best_current; round 7 does not pass the identical-pool verifier gate.\n"
+    },
+    "repair_pilot": {
+      "path": "results\\vcsr\\repair_pilot_round4\\repair_summary.md",
+      "text": "# Round 4 Repair Pilot\n\nRows repaired: `30`\n\n## Top Line\n\n| Original Eq | Repair Parse | Repair Eq | Repair Eq / Parse | Helped | Hurt | Tied | Accepted |\n|---:|---:|---:|---:|---:|---:|---:|---|\n| 0.0000 | 0.9667 | 0.7667 | 0.7931 | 23 | 0 | 7 | True |\n\n## Domain Breakdown\n\n| Domain | Rows | Repair Eq | Helped | Hurt |\n|---|---:|---:|---:|---:|\n| blocksworld | 26 | 0.8462 | 22 | 0 |\n| gripper | 4 | 0.2500 | 1 | 0 |\n\n## Style Breakdown\n\n| Style | Rows | Repair Eq | Helped | Hurt |\n|---|---:|---:|---:|---:|\n| abstract/abstract | 28 | 0.7857 | 22 | 0 |\n| explicit/explicit | 2 | 0.5000 | 1 | 0 |\n\n## Failure-Type Breakdown\n\n| Failure Type | Rows | Repair Eq | Helped | Hurt |\n|---|---:|---:|---:|---:|\n| high_verifier_score_wrong_candidate | 2 | 1.0000 | 2 | 0 |\n| low_verifier_score_wrong_candidate | 24 | 0.7917 | 19 | 0 |\n| unsolvable_selected_candidate | 4 | 0.5000 | 2 | 0 |\n\n## Recommendation\n\nRepair is promising; run a fresh fixed-pool repair gate next.\n"
+    },
+    "domainaware_repair": {
+      "path": "results\\vcsr\\fresh_repair_gate_round4_domainaware\\fresh_repair_gate_summary.md",
+      "text": "# Fresh Fixed-Pool Repair Gate\n\nBase config: `configs/vcsr_bestofk_round3_holdout_eval.yaml`\nRows per seed: `50`\nSeeds: `[62, 63, 64]`\n\nGeneration happened once per seed. Round-4 selected failures were repaired once on the same candidate pools.\n\n## Mean K=8 Equivalence\n\n| Policy | Mean Equiv | Per-Seed Values |\n|---|---:|---|\n| Round-4 verifier-ranked | 0.5000 | 0.5000, 0.5000, 0.5000 |\n| Repair-augmented | 0.9600 | 1.0000, 0.9000, 0.9800 |\n\n## Repair Outcomes\n\n| Seed | Baseline K=8 | Repair-Aug K=8 | Delta | Failures Repaired | Helped | Hurt | Tied | Parse Rate | Repair Eq |\n|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n| 62 | 0.5000 | 1.0000 | +0.5000 | 26 | 25 | 0 | 1 | 1.0000 | 0.9615 |\n| 63 | 0.5000 | 0.9000 | +0.4000 | 23 | 20 | 0 | 3 | 1.0000 | 0.8696 |\n| 64 | 0.5000 | 0.9800 | +0.4800 | 24 | 24 | 0 | 0 | 1.0000 | 1.0000 |\n\n## Breakdown Over Repaired Failures\n\n| Slice | Rows | Repair Eq | Helped | Hurt |\n|---|---:|---:|---:|---:|\n| domain=blocksworld | 10 | 0.8000 | 8 | 0 |\n| domain=gripper | 63 | 0.9683 | 61 | 0 |\n| style=abstract/abstract | 43 | 0.9302 | 40 | 0 |\n| style=explicit/explicit | 30 | 0.9667 | 29 | 0 |\n\n## Recommendation\n\nRepair passes the fresh fixed-pool gate; implement repair-augmented selection in the main best-of-K entrypoint next.\n"
+    },
+    "guarded_repair": {
+      "path": "results\\vcsr\\final_guarded_repair_gate_round4\\final_repair_gate_summary.md",
+      "text": "# Final Repair-Augmented VCSR Gate\n\nBase config: `configs/vcsr_bestofk_guarded_repair.yaml`\nRows per seed: `50`\nSeeds: `[67, 68, 69, 70, 71]`\nBaseline policy: `verifier_ranked`\nRepair policy: `verifier_ranked_repair_guarded`\n\n## Mean K=8 Equivalence\n\n| Policy | Mean Equiv | Per-Seed Values |\n|---|---:|---|\n| Round-4 verifier-ranked | 0.4360 | 0.4600, 0.3400, 0.4800, 0.4200, 0.4800 |\n| Repair-augmented | 0.7960 | 0.8000, 0.7400, 0.8400, 0.8000, 0.8000 |\n| Comparison repair policy | 0.7960 | see per-seed aggregate metrics |\n\n## Per-Seed Results\n\n| Seed | Baseline K=8 | Repair K=8 | Delta | Helped | Hurt | Repair Parse |\n|---:|---:|---:|---:|---:|---:|---:|\n| 67 | 0.4600 | 0.8000 | +0.3400 | 20 | 3 | 1.0000 |\n| 68 | 0.3400 | 0.7400 | +0.4000 | 22 | 2 | 1.0000 |\n| 69 | 0.4800 | 0.8400 | +0.3600 | 20 | 2 | 1.0000 |\n| 70 | 0.4200 | 0.8000 | +0.3800 | 21 | 2 | 1.0000 |\n| 71 | 0.4800 | 0.8000 | +0.3200 | 21 | 5 | 1.0000 |\n\n## Guard Diagnostics\n\nTotal hurt rows: `14`\nComparison hurt rows: `14`\nBlocksworld hurt rows: `14`\nComparison blocksworld hurt rows: `14`\n\n## Acceptance\n\nAccepted: `False`\n\nRepair-augmented VCSR does not pass the final fresh gate; keep the claim cautious.\n"
+    }
+  }
+}

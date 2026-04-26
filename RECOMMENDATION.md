@@ -152,7 +152,8 @@ work is paper framing, artifact hygiene, and careful caveat analysis.
 
 ### Highest-Priority Next Step
 
-Use the final repair-augmented result as the main paper-facing system result:
+Write the paper around the final repair-augmented result as the main
+paper-facing system result:
 
 - round 4 remains the default verifier
 - `verifier_ranked` remains the plain best-of-K baseline
@@ -160,6 +161,8 @@ Use the final repair-augmented result as the main paper-facing system result:
   operating point
 - seeds `51-55` are final evidence and must not be reused for prompt tuning,
   checkpoint selection, or policy design
+- use `PAPER_PLAN.md` plus `results/paper/final_vcsr/` for the claim sheet,
+  table values, and figure specs
 
 ### Final Gate Result
 
@@ -221,13 +224,22 @@ paper-facing system.
 The right paper framing is therefore:
 
 - main result: repair-augmented VCSR substantially improves semantic
-  equivalence at `K=8`
+  equivalence at `K=8` over greedy, random parseable best-of-K,
+  planner/solvability search, and verifier-only search
 - mechanism: domain-aware repair recovers many verifier-selected failures,
   especially gripper
 - caveat: unconditional repair may hurt some already-correct blocksworld
   selections
 - future work: stronger repair acceptance checks, structural diff checks,
   confidence-gated repair, and abstention
+
+### Paper Artifact Package
+
+- Plan: [PAPER_PLAN.md](/E:/Engineering/vcsr/PAPER_PLAN.md)
+- Exporter: [scripts/export_paper_artifacts.py](/E:/Engineering/vcsr/scripts/export_paper_artifacts.py)
+- Generated tables: [results/paper/final_vcsr/paper_tables.md](/E:/Engineering/vcsr/results/paper/final_vcsr/paper_tables.md)
+- Claim sheet: [results/paper/final_vcsr/paper_claims.md](/E:/Engineering/vcsr/results/paper/final_vcsr/paper_claims.md)
+- Figure specs: [results/paper/final_vcsr/figure_specs.md](/E:/Engineering/vcsr/results/paper/final_vcsr/figure_specs.md)
 
 ## What We Should Not Over-Prioritize Right Now
 
