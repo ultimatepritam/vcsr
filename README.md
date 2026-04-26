@@ -218,6 +218,9 @@ python scripts/run_final_repair_gate.py --config configs/vcsr_final_guarded_repa
 
 # 40. Export paper-facing tables and figure specs from frozen artifacts
 python scripts/export_paper_artifacts.py
+
+# 41. Optional post-paper model benchmark across OpenRouter generators
+python scripts/run_model_benchmark.py --config configs/vcsr_model_benchmark.yaml
 ```
 
 ## Windows E: Drive Setup
@@ -479,6 +482,10 @@ The highest-value next task is now:
   repair-augmented VCSR result
 - use `PAPER_PLAN.md` and `results/paper/final_vcsr/` as the source of truth
   for the paper claim, tables, and figure specs
+- optionally run the post-paper multi-model benchmark in
+  `configs/vcsr_model_benchmark.yaml` to test whether VCSR acts as a useful
+  wrapper across generators; keep it separate from the frozen seed `51-55`
+  paper evidence
 
 Why this matters:
 

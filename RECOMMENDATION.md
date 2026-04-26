@@ -241,6 +241,15 @@ The right paper framing is therefore:
 - Claim sheet: [results/paper/final_vcsr/paper_claims.md](/E:/Engineering/vcsr/results/paper/final_vcsr/paper_claims.md)
 - Figure specs: [results/paper/final_vcsr/figure_specs.md](/E:/Engineering/vcsr/results/paper/final_vcsr/figure_specs.md)
 
+### Optional Robustness Benchmark
+
+The post-paper multi-model benchmark is implemented as
+[configs/vcsr_model_benchmark.yaml](/E:/Engineering/vcsr/configs/vcsr_model_benchmark.yaml)
+and [scripts/run_model_benchmark.py](/E:/Engineering/vcsr/scripts/run_model_benchmark.py).
+It should be interpreted as appendix/future robustness evidence only: it tests
+whether VCSR is a useful wrapper across OpenRouter generators, without changing
+the frozen final claim based on seeds `51-55`.
+
 ## What We Should Not Over-Prioritize Right Now
 
 - more verifier training before writing up the final repair result

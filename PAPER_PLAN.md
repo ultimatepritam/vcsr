@@ -99,3 +99,11 @@ Supporting evidence:
 
 Use `python scripts/export_paper_artifacts.py` to regenerate paper tables and
 figure specs from frozen artifacts only.
+
+## Optional Post-Paper Robustness Benchmark
+
+The multi-model benchmark in `configs/vcsr_model_benchmark.yaml` and
+`scripts/run_model_benchmark.py` compares prompt-only generation, random
+parseable best-of-K, verifier-ranked best-of-K, and repair-augmented VCSR across
+OpenRouter models. Treat this as appendix or future robustness evidence, not as
+a replacement for the frozen final seed `51-55` result.
