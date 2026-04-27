@@ -147,6 +147,7 @@ class BaseSampler(ABC):
         "api key",
         "authentication",
         "invalid_api_key",
+        "empty response content",
     ]
 
     def _is_retryable(self, error_msg: str) -> bool:
@@ -167,6 +168,8 @@ class BaseSampler(ABC):
                 )
                 t0 = time.time()
                 raw = self._call_llm(prompt, system=SYSTEM_PROMPT)
+                if raw is None:
+                    raise ValueError("empty response content from provider")
                 latency = time.time() - t0
                 pddl = extract_pddl_from_response(raw)
                 logger.info(
@@ -342,11 +345,18 @@ class OpenRouterSampler(BaseSampler):
             temperature=self.config.temperature,
             top_p=self.config.top_p,
         )
-        return response.choices[0].message.content
+        content = response.choices[0].message.content
+        if content is None:
+            raise ValueError("empty response content from OpenRouter")
+        return content
 
 
 class OpenAISampler(BaseSampler):
-    """Direct OpenAI API backend."""
+    """OpenAI-compatible API backend.
+
+    This supports both the hosted OpenAI API and local OpenAI-compatible
+    servers such as LM Studio when `base_url` is provided in the backend config.
+    """
 
     backend_name = "openai"
 
@@ -354,16 +364,28 @@ class OpenAISampler(BaseSampler):
         self,
         model: str = "gpt-4o-mini",
         config: Optional[SamplerConfig] = None,
+        base_url: Optional[str] = None,
+        api_key: Optional[str] = None,
+        api_key_env: str = "OPENAI_API_KEY",
     ):
         super().__init__(model, config)
-        api_key = os.environ.get("OPENAI_API_KEY", "")
-        if not api_key:
-            raise ValueError("No OPENAI_API_KEY found in .env")
+        resolved_api_key = api_key or os.environ.get(api_key_env, "")
+        if base_url and not resolved_api_key:
+            resolved_api_key = "lm-studio"
+        if not resolved_api_key:
+            raise ValueError(f"No {api_key_env} found in .env")
 
         from openai import OpenAI
 
-        self._client = OpenAI(api_key=api_key)
-        logger.info(f"OpenAISampler initialized: model={self.model}")
+        client_kwargs = {"api_key": resolved_api_key}
+        if base_url:
+            client_kwargs["base_url"] = base_url.rstrip("/")
+        self._client = OpenAI(**client_kwargs)
+        logger.info(
+            "OpenAISampler initialized: model=%s, base_url=%s",
+            self.model,
+            base_url or "openai-default",
+        )
 
     def _call_llm(self, prompt: str, system: str) -> str:
         response = self._client.chat.completions.create(
@@ -376,7 +398,10 @@ class OpenAISampler(BaseSampler):
             temperature=self.config.temperature,
             top_p=self.config.top_p,
         )
-        return response.choices[0].message.content
+        content = response.choices[0].message.content
+        if content is None:
+            raise ValueError("empty response content from OpenAI")
+        return content
 
 
 class HuggingFaceSampler(BaseSampler):

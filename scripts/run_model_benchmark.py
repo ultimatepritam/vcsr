@@ -150,6 +150,8 @@ def _build_child_config(
     verifier_cfg = benchmark_cfg.get("verifier", {})
     backend_type = generation_cfg.get("backend_type", "openrouter")
     model_id = model["model_id"]
+    generation_backend_kwargs = dict(generation_cfg.get("backend_kwargs", {}))
+    repair_backend_kwargs = dict(repair_cfg.get("backend_kwargs", generation_backend_kwargs))
 
     child.setdefault("experiment", {})["name"] = f"vcsr_model_benchmark_{model['name']}"
     child["experiment"]["seed"] = int(seed)
@@ -168,6 +170,7 @@ def _build_child_config(
                     "type": backend_type,
                     "model": model_id,
                     "K": int(generation_cfg.get("K", 8)),
+                    **generation_backend_kwargs,
                 }
             ],
             "temperature": float(generation_cfg.get("temperature", 0.8)),
@@ -196,6 +199,7 @@ def _build_child_config(
                         "type": backend_type,
                         "model": model_id,
                         "K": 1,
+                        **repair_backend_kwargs,
                     }
                 ],
                 "temperature": float(repair_cfg.get("temperature", 0.2)),

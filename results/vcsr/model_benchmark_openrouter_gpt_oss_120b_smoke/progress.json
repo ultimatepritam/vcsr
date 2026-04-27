@@ -1,0 +1,12 @@
+{
+  "stage": "complete",
+  "total_runs": 1,
+  "completed_runs": 1,
+  "remaining_runs": 0,
+  "failed_runs": 0,
+  "elapsed_sec": 159.7173717021942,
+  "avg_sec_per_run": 159.7173717021942,
+  "eta_sec": 0.0,
+  "current_model": null,
+  "current_seed": null
+}

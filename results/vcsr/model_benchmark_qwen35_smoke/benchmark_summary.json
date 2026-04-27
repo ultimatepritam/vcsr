@@ -1,0 +1,23 @@
+{
+  "config": "configs\\vcsr_model_benchmark_qwen35_smoke.yaml",
+  "base_config": "configs/vcsr_bestofk_final_repair.yaml",
+  "output_dir": "results\\vcsr\\model_benchmark_qwen35_smoke",
+  "seeds": [
+    72
+  ],
+  "rows_per_seed": 3,
+  "main_k": 8,
+  "successful_runs": 0,
+  "failed_runs": [
+    {
+      "model_name": "qwen_3p5_9b",
+      "model_id": "qwen/qwen3.5-9b",
+      "seed": 72,
+      "output_dir": "results\\vcsr\\model_benchmark_qwen35_smoke\\qwen_3p5_9b\\seed_72",
+      "return_code": 4294967295,
+      "error": "child run failed with exit code 4294967295"
+    }
+  ],
+  "models": {},
+  "note": "Post-paper robustness benchmark. Do not treat as replacement evidence for frozen final seeds 51-55."
+}

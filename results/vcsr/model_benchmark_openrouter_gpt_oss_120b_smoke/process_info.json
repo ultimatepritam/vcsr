@@ -1,0 +1,6 @@
+{
+  "pid": 3852,
+  "started_at": 1777318721.6174371,
+  "config": "configs\\vcsr_model_benchmark_openrouter_gpt_oss_120b_smoke.yaml",
+  "output_dir": "results\\vcsr\\model_benchmark_openrouter_gpt_oss_120b_smoke"
+}

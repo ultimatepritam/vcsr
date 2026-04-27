@@ -1,22 +1,21 @@
-# Post-paper robustness benchmark: prompt-only vs VCSR across OpenRouter models.
+# Smoke version of the multi-model benchmark.
 #
-# This is intentionally separate from the frozen paper evidence under
-# results/vcsr/final_repair_gate_round4. Do not use seeds 51-55 here.
+# Uses the same model list as configs/vcsr_model_benchmark.yaml but only a tiny
+# sample budget, so we can check provider/model availability and rough behavior
+# before committing to the full benchmark.
 
 base_config: configs/vcsr_bestofk_final_repair.yaml
-output_dir: results/vcsr/model_benchmark
+output_dir: results/vcsr/model_benchmark_smoke
 
 dataset:
   split: test
   domains:
     - blocksworld
     - gripper
-  max_samples: 30
+  max_samples: 3
 
 seeds:
   - 72
-  - 73
-  - 74
 
 k_values:
   - 1
@@ -63,7 +62,7 @@ models:
   - name: gpt_5p4_mini
     model_id: openai/gpt-5.4-mini
   - name: deepseek_v4_flash
-    model_id: deepseek/deepseek-v4-flash  
+    model_id: deepseek/deepseek-v4-flash
 
 execution:
   force: false
