@@ -6,13 +6,14 @@
 \usepackage{hyperref}
 \usepackage{natbib}
 \usepackage{xcolor}
+\usepackage{xspace}
 
 \title{Verifier-Calibrated Search and Repair for Faithful Text-to-PDDL Generation}
 \author{Pritam Mondal}
 \date{}
 
-\newcommand{\vcsr}{\textsc{VCSR}}
-\newcommand{\pddl}{\textsc{PDDL}}
+\newcommand{\vcsr}{\textsc{VCSR}\xspace}
+\newcommand{\pddl}{\textsc{PDDL}\xspace}
 
 \begin{document}
 \maketitle
@@ -21,10 +22,12 @@
 Natural-language interfaces to automated planning promise to let users specify
 planning problems without manually writing Planning Domain Definition Language
 (\pddl) artifacts. However, generated \pddl can be syntactically valid, and even
-solvable, while still formalizing the wrong task. We study this
-valid-but-wrong failure mode through semantic equivalence on Planetarium. We
-introduce \vcsr, a verifier-calibrated search-and-repair framework for faithful
-text-to-\pddl generation. \vcsr generates a small candidate pool, ranks
+solvable, while still formalizing the wrong task. This is one instance of a
+broader problem: natural-language systems can produce structured outputs that
+are valid in form but unfaithful in meaning. We study this valid-but-wrong
+failure mode through semantic equivalence on Planetarium. We introduce \vcsr,
+a verifier-calibrated search-and-repair framework for faithful text-to-\pddl
+generation. \vcsr generates a small candidate pool, ranks
 parseable candidates with a learned semantic verifier, and applies one
 domain-aware repair call to the verifier-selected candidate. On an in-domain
 Planetarium evaluation over \texttt{blocksworld} and \texttt{gripper}, using
@@ -56,6 +59,15 @@ semantic equivalence rather than merely by parsing or plan existence
 parse and admit a plan while changing objects, initial facts, or goals. A
 planner may then solve the formal problem perfectly while solving the wrong
 user task.
+
+\paragraph{A simple example.}
+Imagine asking an assistant to turn ``deliver the package to Purbita after Utpal
+signs for it'' into a checklist. A checklist that says ``Utpal signs after Purbita
+receives the package'' may be perfectly well formatted, but it encodes the wrong
+task. Text-to-\pddl has the same problem in a stricter symbolic setting: a file
+can parse and even be solvable while reversing, dropping, or subtly changing
+the user's intended constraints. \vcsr targets this broader problem of
+faithful formalization, with Planetarium providing a rigorous testbed.
 
 Prior work has explored LLM-driven planning formalization, including NL2Plan
 \citep{gestrin2024nl2plan}, planning-domain generation
@@ -179,7 +191,7 @@ derived from Planetarium equivalence: parseable equivalent candidates are
 positive examples, while parseable non-equivalent candidates and targeted
 perturbations are negative examples. The final paper-facing verifier is the
 round-4 checkpoint recorded in
-\texttt{results/verifier/best\_current/selection.yaml}. Later verifier training
+\path{results/verifier/best_current/selection.yaml}. Later verifier training
 experiments are treated as diagnostics and are not promoted.
 
 \subsection{Selection Policies}
@@ -212,7 +224,7 @@ The final evaluation uses Planetarium \texttt{test} rows from
 seeds 51--55, 50 rows per seed, for 250 total rows. These seeds were not used
 for prompt tuning, verifier checkpoint selection, repair-prompt tuning, or
 guard selection. We evaluate $K \in \{1,4,8\}$ and use the frozen round-4
-verifier from \texttt{results/verifier/best\_current/selection.yaml}.
+verifier from \path{results/verifier/best_current/selection.yaml}.
 
 \paragraph{Metrics.}
 The primary metric is semantic equivalence rate. We also report parse rate,
@@ -236,8 +248,8 @@ verifiers and policies on identical candidates. This avoided confounding policy
 changes with generator randomness and was used to reject additional verifier
 training rounds and planner/solvability-only search policies. The final
 evidence is stored under
-\texttt{results/vcsr/final\_repair\_gate\_round4}; derived paper tables are
-stored under \texttt{results/paper/final\_vcsr}.
+\path{results/vcsr/final_repair_gate_round4}; derived paper tables are stored
+under \path{results/paper/final_vcsr}.
 
 \section{Results}
 
@@ -476,7 +488,10 @@ raises semantic equivalence from 36.8\% for prompt-only generation to 77.2\%
 at the main $K=8$ operating point, while maintaining high parseability. The
 lesson is practical: if the goal is faithful planning formalization,
 solvability and one-shot prompting are not enough; semantic search and targeted
-repair are complementary ingredients.
+repair are complementary ingredients. While our experiments are scoped to
+Planetarium text-to-\pddl tasks, the underlying pattern is broader: systems that
+translate natural language into structured executable artifacts need mechanisms
+for checking and repairing meaning, not only syntax.
 
 \appendix
 
