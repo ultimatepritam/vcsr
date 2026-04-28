@@ -1,22 +1,17 @@
-# Post-paper robustness benchmark: prompt-only vs VCSR across OpenRouter models.
-#
-# This is intentionally separate from the frozen paper evidence under
-# results/vcsr/final_repair_gate_round4. Do not use seeds 51-55 here.
+# Isolated smoke test for Claude Opus 4.6 through OpenRouter.
 
 base_config: configs/vcsr_bestofk_final_repair.yaml
-output_dir: results/vcsr/model_benchmark
+output_dir: results/vcsr/model_benchmark_openrouter_claude_opus_4p6_smoke
 
 dataset:
   split: test
   domains:
     - blocksworld
     - gripper
-  max_samples: 10
+  max_samples: 3
 
 seeds:
   - 72
-  - 73
-  - 74
 
 k_values:
   - 1
@@ -39,8 +34,8 @@ generation:
   temperature: 0.8
   top_p: 0.95
   max_new_tokens: 1024
-  retry_attempts: 3
-  retry_delay_sec: 2
+  retry_attempts: 2
+  retry_delay_sec: 1
   clear_proxy_env: true
 
 repair:
@@ -50,20 +45,12 @@ repair:
   temperature: 0.2
   top_p: 0.9
   max_new_tokens: 1024
-  retry_attempts: 3
-  retry_delay_sec: 2
+  retry_attempts: 2
+  retry_delay_sec: 1
 
 models:
-  - name: claude_haiku_4p5
-    model_id: anthropic/claude-haiku-4.5
-  - name: claude_sonnet_4p5
-    model_id: anthropic/claude-sonnet-4.5
-  - name: qwen_3p6_27b
-    model_id: qwen/qwen3.6-27b
-  - name: gpt_5p4_mini
-    model_id: openai/gpt-5.4-mini
-  - name: deepseek_v4_flash
-    model_id: deepseek/deepseek-v4-flash  
+  - name: openrouter_claude_opus_4p6
+    model_id: anthropic/claude-opus-4.6
 
 execution:
   force: false
