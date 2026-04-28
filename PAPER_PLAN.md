@@ -27,6 +27,9 @@ Main claim:
 - **Caveat:** Repair is a large net win but not uniformly harmless:
   it strongly fixes gripper while it can hurt already-correct blocksworld
   candidates.
+- **Robustness claim:** A post-paper Claude-family benchmark suggests VCSR is a
+  useful wrapper across stronger and weaker Claude generators, not only the
+  Haiku generator used for the primary frozen result.
 
 ## Paper Structure
 
@@ -57,7 +60,9 @@ Main claim:
      - `verifier_ranked_repair`: `0.7720`
    - Repair parse rate: `0.9840`.
    - Helped / hurt / tied: `104 / 16 / 130`.
-   - Absolute lift over verifier-only search: `+0.3520`.
+   - Absolute lift over prompt-only / greedy generation: `+0.4040`.
+   - Verifier-only search remains the immediate pre-repair ablation:
+     `0.4200 -> 0.7720`.
 
 4. **Ablations and Analysis**
    - Verifier-only progression: round 4 is the frozen verifier; rounds 5-7 are
@@ -68,6 +73,8 @@ Main claim:
      domain-aware repair gate, and final seed gate.
    - Guarded repair: replicated large gains on seeds `67-71`, but did not
      reduce blocksworld hurts, so it is not promoted.
+   - Model robustness appendix: Claude Haiku 4.5, Sonnet 4.5, and Opus 4.6 all
+     improve substantially under repair-augmented VCSR at `K=8`.
 
 5. **Limitations**
    - Final claim is in-domain only: `blocksworld` and `gripper`.
@@ -96,14 +103,31 @@ Supporting evidence:
 - `results/vcsr/repair_pilot_round4/repair_summary.md`
 - `results/vcsr/fresh_repair_gate_round4_domainaware/fresh_repair_gate_summary.md`
 - `results/vcsr/final_guarded_repair_gate_round4/final_repair_gate_summary.md`
+- `results/vcsr/model_benchmark/benchmark_summary.md`
 
 Use `python scripts/export_paper_artifacts.py` to regenerate paper tables and
 figure specs from frozen artifacts only.
 
-## Optional Post-Paper Robustness Benchmark
+## Post-Paper Robustness Benchmark
 
 The multi-model benchmark in `configs/vcsr_model_benchmark.yaml` and
 `scripts/run_model_benchmark.py` compares prompt-only generation, random
 parseable best-of-K, verifier-ranked best-of-K, and repair-augmented VCSR across
-OpenRouter models. Treat this as appendix or future robustness evidence, not as
-a replacement for the frozen final seed `51-55` result.
+OpenRouter models. It has been run for Claude Haiku 4.5, Claude Sonnet 4.5,
+and Claude Opus 4.6 on seeds `72-74`, `10` rows per seed.
+
+Main `K=8` result, using the paper's prompt-only vs VCSR framing:
+
+| Model | Prompt K=1 | VCSR Repair K=8 | Delta vs Prompt | Verifier K=8 Ablation |
+|---|---:|---:|---:|---:|
+| Claude Haiku 4.5 | `0.4000` | `0.9000` | `+0.5000` | `0.4667` |
+| Claude Sonnet 4.5 | `0.5000` | `0.9333` | `+0.4333` | `0.5333` |
+| Claude Opus 4.6 | `0.3667` | `0.9000` | `+0.5333` | `0.4333` |
+
+In the write-up, use a concrete plain-English reading, e.g. with prompt-only
+Opus, about `36.7%` of rows were semantically correct; with full VCSR around
+Opus, `90.0%` were semantically correct, a `+53.3` percentage-point gain on
+this small benchmark.
+
+Treat this as appendix/robustness evidence, not as a replacement for the frozen
+final seed `51-55` result.

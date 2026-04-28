@@ -32,3 +32,15 @@ pie title Final repair outcomes on seeds 51-55
   "Both success" : 89
   "Both fail" : 41
 ```
+
+## Appendix Figure: Claude-Family Robustness
+
+```mermaid
+xychart-beta
+  title "K=8 Semantic Equivalence by Claude Generator"
+  x-axis ["Haiku 4.5", "Sonnet 4.5", "Opus 4.6"]
+  y-axis "Equivalence" 0 --> 1
+  bar "Prompt K=1" [0.4000, 0.5000, 0.3667]
+  bar "Verifier K=8" [0.4667, 0.5333, 0.4333]
+  bar "VCSR Repair K=8" [0.9000, 0.9333, 0.9000]
+```

@@ -21,6 +21,9 @@ Full design rationale is in `deep-research-report.md`.
 - Main final evidence is `results/vcsr/final_repair_gate_round4` on untouched
   seeds `51-55`: `verifier_ranked` `0.4200` -> `verifier_ranked_repair`
   `0.7720`.
+- Secondary robustness evidence is now available under
+  `results/vcsr/model_benchmark/`: with seeds `72-74`, `10` rows per seed,
+  VCSR repair improves Claude Haiku 4.5, Sonnet 4.5, and Opus 4.6 at `K=8`.
 - `verifier_ranked` is the immediate pre-repair ablation, not the only baseline.
   The paper should also compare against greedy, random parseable best-of-K, and
   planner/solvability search.
@@ -188,6 +191,7 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] Integrate repair-augmented best-of-K selection
 - [x] Run final fresh repair-augmented VCSR gate on untouched seeds `51-55`
 - [x] Run guarded repair follow-up on fresh seeds `67-71`
+- [x] Run Claude-family post-paper model benchmark on seeds `72-74`
 
 ### Phase 4: Paper and Release (Weeks 7-8)
 
@@ -312,6 +316,12 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
   guarded repair scored `0.7960`, but unconditional repair also scored
   `0.7960`. Both policies had `14` hurt rows, all in blocksworld, so this
   guard is not promoted as a fix.
+- Claude-family model benchmark is complete under
+  `results/vcsr/model_benchmark/`. At `K=8`, repair-augmented VCSR improves
+  over prompt-only generation for Haiku (`0.4000 -> 0.9000`), Sonnet
+  (`0.5000 -> 0.9333`), and Opus (`0.3667 -> 0.9000`). Verifier-only is an
+  ablation column, not the headline comparison. Treat this as
+  appendix/robustness evidence, not as a replacement for final seeds `51-55`.
 - `results/verifier/best_current/selection.yaml` should remain pointed at round
   4.
 - Current next-step bias: do not blindly retrain or add more simple selector

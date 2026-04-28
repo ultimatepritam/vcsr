@@ -1,0 +1,6 @@
+{
+  "pid": 6160,
+  "started_at": 1777378452.3542695,
+  "config": "results\\vcsr\\model_benchmark\\claude_haiku_4p5\\seed_73\\benchmark_run_config.yaml",
+  "output_dir": "results\\vcsr\\model_benchmark\\claude_haiku_4p5\\seed_73"
+}

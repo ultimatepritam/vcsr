@@ -366,6 +366,55 @@
     "total_helped": 104,
     "total_hurt": 16
   },
+  "appendix_model_benchmark": {
+    "status": "supporting_robustness_evidence",
+    "config": "configs/vcsr_model_benchmark.yaml",
+    "output_dir": "results/vcsr/model_benchmark",
+    "seeds": [
+      72,
+      73,
+      74
+    ],
+    "rows_per_seed": 10,
+    "main_k": 8,
+    "note": "Post-paper Claude-family benchmark. The headline comparison is prompt-only K=1 versus VCSR repair K=8; verifier K=8 is an ablation. This does not replace the frozen seed 51-55 main evidence.",
+    "plain_english_summary": "With prompt-only Opus, about 36.7% of rows were semantically correct. With full VCSR around Opus, 90.0% were semantically correct. So VCSR added +53.3 percentage points on this small benchmark.",
+    "table": [
+      {
+        "model": "claude_haiku_4p5",
+        "model_id": "anthropic/claude-haiku-4.5",
+        "prompt_k1_equiv": 0.4,
+        "random_k8_equiv": 0.3,
+        "verifier_k8_equiv": 0.4667,
+        "vcsr_repair_k8_equiv": 0.9,
+        "repair_minus_prompt": 0.5,
+        "repair_minus_verifier": 0.4333,
+        "runs": 3
+      },
+      {
+        "model": "claude_sonnet_4p5",
+        "model_id": "anthropic/claude-sonnet-4.5",
+        "prompt_k1_equiv": 0.5,
+        "random_k8_equiv": 0.4667,
+        "verifier_k8_equiv": 0.5333,
+        "vcsr_repair_k8_equiv": 0.9333,
+        "repair_minus_prompt": 0.4333,
+        "repair_minus_verifier": 0.4,
+        "runs": 3
+      },
+      {
+        "model": "claude_opus_4p6",
+        "model_id": "anthropic/claude-opus-4.6",
+        "prompt_k1_equiv": 0.3667,
+        "random_k8_equiv": 0.4333,
+        "verifier_k8_equiv": 0.4333,
+        "vcsr_repair_k8_equiv": 0.9,
+        "repair_minus_prompt": 0.5333,
+        "repair_minus_verifier": 0.4667,
+        "runs": 3
+      }
+    ]
+  },
   "accepted": true,
   "supporting_summaries": {
     "search_ablation": {

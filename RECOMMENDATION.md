@@ -4,7 +4,8 @@ This document captures the current project-level recommendation for VCSR after
 the first verifier-ranked best-of-K pilot, fixed-pool replay evaluation, four
 ranking-aligned verifier training rounds, repeated fresh held-out comparisons,
 fixed-round-4 selector analysis, focused pointwise round 7, planner/search
-ablations, and the final repair-augmented VCSR gate.
+ablations, the final repair-augmented VCSR gate, and the Claude-family
+post-paper robustness benchmark.
 
 ## Goal
 
@@ -68,6 +69,9 @@ decisions:
 - The final fresh gate on untouched seeds `51-55` passed strongly:
   repair-augmented VCSR improved mean `K=8` equivalence from `0.4200` to
   `0.7720`.
+- The Claude-family robustness benchmark also supports VCSR as a wrapper:
+  on seeds `72-74` with `10` rows per seed, repair-augmented VCSR improved all
+  three tested OpenRouter Claude generators at `K=8`.
 
 ## Key Evidence
 
@@ -243,12 +247,31 @@ The right paper framing is therefore:
 
 ### Optional Robustness Benchmark
 
-The post-paper multi-model benchmark is implemented as
+The post-paper Claude-family model benchmark is implemented as
 [configs/vcsr_model_benchmark.yaml](/E:/Engineering/vcsr/configs/vcsr_model_benchmark.yaml)
 and [scripts/run_model_benchmark.py](/E:/Engineering/vcsr/scripts/run_model_benchmark.py).
-It should be interpreted as appendix/future robustness evidence only: it tests
-whether VCSR is a useful wrapper across OpenRouter generators, without changing
-the frozen final claim based on seeds `51-55`.
+It is now complete under
+[results/vcsr/model_benchmark](/E:/Engineering/vcsr/results/vcsr/model_benchmark).
+It should be interpreted as appendix/robustness evidence only: it tests whether
+VCSR is a useful wrapper across OpenRouter Claude generators, without changing
+the frozen primary claim based on seeds `51-55`.
+
+Main `K=8` results, framed against prompt-only generation:
+
+| Model | Prompt K=1 | VCSR Repair K=8 | Delta vs Prompt | Verifier K=8 Ablation |
+|---|---:|---:|---:|---:|
+| Claude Haiku 4.5 | `0.4000` | `0.9000` | `+0.5000` | `0.4667` |
+| Claude Sonnet 4.5 | `0.5000` | `0.9333` | `+0.4333` | `0.5333` |
+| Claude Opus 4.6 | `0.3667` | `0.9000` | `+0.5333` | `0.4333` |
+
+Plain-English reading: with prompt-only Opus, about `36.7%` of rows were
+semantically correct. With full VCSR around Opus, `90.0%` were semantically
+correct. So VCSR added `+53.3` percentage points on this small benchmark.
+
+This strengthens the paper's robustness story: the repair-augmented VCSR
+mechanism is not just a Haiku-specific artifact. It should still be framed as
+secondary evidence because it was run after the primary paper result was
+frozen.
 
 ## What We Should Not Over-Prioritize Right Now
 

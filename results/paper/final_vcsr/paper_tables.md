@@ -70,3 +70,21 @@ Source: `results/vcsr/final_repair_gate_round4`
   "both_fail": 41
 }
 ```
+
+## Appendix Table: Claude-Family Robustness Benchmark
+
+Source: `results/vcsr/model_benchmark`
+
+This post-paper benchmark uses seeds `[72, 73, 74]`, `10` rows per seed/model,
+and the frozen round-4 verifier. It is supporting robustness evidence, not a
+replacement for the final seed `[51, 52, 53, 54, 55]` result above.
+
+| Model | Prompt K=1 | VCSR Repair K=8 | Delta vs Prompt | Random K=8 | Verifier K=8 Ablation |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Claude Haiku 4.5 | 0.4000 | 0.9000 | +0.5000 | 0.3000 | 0.4667 |
+| Claude Sonnet 4.5 | 0.5000 | 0.9333 | +0.4333 | 0.4667 | 0.5333 |
+| Claude Opus 4.6 | 0.3667 | 0.9000 | +0.5333 | 0.4333 | 0.4333 |
+
+Plain-English reading: with prompt-only Opus, about `36.7%` of rows were
+semantically correct. With full VCSR around Opus, `90.0%` were semantically
+correct. So VCSR added `+53.3` percentage points on this small benchmark.

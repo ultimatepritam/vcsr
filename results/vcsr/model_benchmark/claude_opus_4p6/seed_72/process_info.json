@@ -1,0 +1,6 @@
+{
+  "pid": 26352,
+  "started_at": 1777381196.0552733,
+  "config": "results\\vcsr\\model_benchmark\\claude_opus_4p6\\seed_72\\benchmark_run_config.yaml",
+  "output_dir": "results\\vcsr\\model_benchmark\\claude_opus_4p6\\seed_72"
+}

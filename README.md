@@ -77,6 +77,10 @@ tools/             External tool installs (Fast Downward, VAL)
   guard replicated the large repair gain (`0.4360 -> 0.7960` at `K=8`) but did
   not reduce blocksworld hurts relative to unconditional repair, so it is not a
   promoted improvement.
+- A post-paper Claude-family model benchmark is complete under
+  `results/vcsr/model_benchmark/`: across Haiku 4.5, Sonnet 4.5, and Opus 4.6,
+  repair-augmented VCSR improves mean `K=8` semantic equivalence over
+  prompt-only generation. Verifier-only is reported as an ablation.
 - The paper-facing plan is frozen in `PAPER_PLAN.md`. Derived paper tables,
   claim notes, and Mermaid figure specs are generated from frozen artifacts by
   `scripts/export_paper_artifacts.py` under `results/paper/final_vcsr/`.
@@ -219,7 +223,7 @@ python scripts/run_final_repair_gate.py --config configs/vcsr_final_guarded_repa
 # 40. Export paper-facing tables and figure specs from frozen artifacts
 python scripts/export_paper_artifacts.py
 
-# 41. Optional post-paper model benchmark across OpenRouter generators
+# 41. Post-paper Claude-family model benchmark across OpenRouter generators
 python scripts/run_model_benchmark.py --config configs/vcsr_model_benchmark.yaml
 ```
 
@@ -425,6 +429,7 @@ Key downstream artifacts:
 | `results/vcsr/search_ablation_round4/` | Phase 3 cached planner/search ablation showing solvability-based policies do not pass the cached gate |
 | `results/vcsr/final_repair_gate_round4/` | Final fresh repair-augmented VCSR gate on untouched seeds `51-55`; passes with mean `K=8` `0.4200 -> 0.7720` |
 | `results/vcsr/final_guarded_repair_gate_round4/` | Guarded repair follow-up on seeds `67-71`; replicates repair gain but does not reduce blocksworld hurts |
+| `results/vcsr/model_benchmark/` | Post-paper Claude-family robustness benchmark showing VCSR repair improves all tested Claude generators at `K=8` |
 
 Current project conclusion from these pilots:
 
@@ -473,6 +478,12 @@ Current project conclusion from these pilots:
 - A first verifier-score guarded repair attempt did not fix that caveat:
   on seeds `67-71`, guarded and unconditional repair both reached `0.7960` at
   `K=8` and both had `14` hurt rows, all in blocksworld.
+- The post-paper Claude-family benchmark strengthens the wrapper story:
+  across seeds `72-74` with `10` rows per seed, VCSR repair improved `K=8`
+  semantic equivalence over prompt-only generation for Haiku
+  (`0.4000 -> 0.9000`), Sonnet (`0.5000 -> 0.9333`), and Opus
+  (`0.3667 -> 0.9000`). Verifier-only remains an internal ablation, not the
+  headline comparison.
 
 ## Recommended Next Step
 
@@ -482,9 +493,8 @@ The highest-value next task is now:
   repair-augmented VCSR result
 - use `PAPER_PLAN.md` and `results/paper/final_vcsr/` as the source of truth
   for the paper claim, tables, and figure specs
-- optionally run the post-paper multi-model benchmark in
-  `configs/vcsr_model_benchmark.yaml` to test whether VCSR acts as a useful
-  wrapper across generators; keep it separate from the frozen seed `51-55`
+- include the completed post-paper Claude-family model benchmark as appendix or
+  robustness evidence; keep it separate from the frozen seed `51-55` primary
   paper evidence
 
 Why this matters:

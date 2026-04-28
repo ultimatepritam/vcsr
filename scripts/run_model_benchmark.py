@@ -413,10 +413,10 @@ def _markdown(report: dict[str, Any]) -> str:
         f"Rows per seed: `{report['rows_per_seed']}`",
         f"Main K: `{main_k}`",
         "",
-        "## Main Equivalence Summary",
+        "## Main Prompt-Only vs VCSR Summary",
         "",
-        "| Model | Prompt K=1 | Random K=8 | Verifier K=8 | VCSR Repair K=8 | Repair - Prompt | Repair - Verifier | Runs |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|",
+        "| Model | Prompt K=1 | VCSR Repair K=8 | Delta vs Prompt | Random K=8 | Verifier K=8 Ablation | Runs |",
+        "|---|---:|---:|---:|---:|---:|---:|",
     ]
     for model_name, block in report["models"].items():
         metrics = block["metrics"]
@@ -426,26 +426,27 @@ def _markdown(report: dict[str, Any]) -> str:
         repair = metrics.get(f"k{main_k}:verifier_ranked_repair", {}).get("equiv_rate", 0.0)
         deltas = block["main_deltas"]
         lines.append(
-            f"| {model_name} | {prompt:.4f} | {random_val:.4f} | {verifier:.4f} | "
-            f"{repair:.4f} | {deltas['mean_repair_minus_prompt']:+.4f} | "
-            f"{deltas['mean_repair_minus_verifier']:+.4f} | {block['num_successful_runs']} |"
+            f"| {model_name} | {prompt:.4f} | {repair:.4f} | "
+            f"{deltas['mean_repair_minus_prompt']:+.4f} | {random_val:.4f} | "
+            f"{verifier:.4f} | {block['num_successful_runs']} |"
         )
 
     lines.extend(
         [
             "",
-            "## Per-Seed Main Deltas",
+            "## Per-Seed Prompt-Only vs VCSR Deltas",
             "",
-            "| Model | Seed | Prompt K=1 | Verifier K=8 | VCSR Repair K=8 | Repair - Prompt | Repair - Verifier |",
-            "|---|---:|---:|---:|---:|---:|---:|",
+            "| Model | Seed | Prompt K=1 | VCSR Repair K=8 | Delta vs Prompt | Verifier K=8 Ablation |",
+            "|---|---:|---:|---:|---:|---:|",
         ]
     )
     for model_name, block in report["models"].items():
         for row in block["per_seed"]:
             lines.append(
                 f"| {model_name} | {row['seed']} | {row['prompt_only_equiv']:.4f} | "
-                f"{row['bestof8_verifier_ranked_equiv']:.4f} | {row['bestof8_vcsr_repair_equiv']:.4f} | "
-                f"{row['repair_minus_prompt']:+.4f} | {row['repair_minus_verifier']:+.4f} |"
+                f"{row['bestof8_vcsr_repair_equiv']:.4f} | "
+                f"{row['repair_minus_prompt']:+.4f} | "
+                f"{row['bestof8_verifier_ranked_equiv']:.4f} |"
             )
 
     lines.extend(

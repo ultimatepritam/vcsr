@@ -1,0 +1,6 @@
+{
+  "pid": 14208,
+  "started_at": 1777378072.192918,
+  "config": "configs\\vcsr_model_benchmark.yaml",
+  "output_dir": "results\\vcsr\\model_benchmark"
+}

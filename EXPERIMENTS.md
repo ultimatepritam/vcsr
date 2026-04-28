@@ -2103,6 +2103,52 @@ Interpretation:
 - For the paper, keep the simpler unconditional repair result as the main
   system and report guarded repair as a negative follow-up / future-work signal.
 
+### Claude-Family Model Benchmark
+
+- Goal: test whether VCSR repair acts as a useful wrapper across Claude-family
+  OpenRouter generators, rather than only the Haiku generator used in the
+  primary frozen result.
+- Config:
+  [configs/vcsr_model_benchmark.yaml](/e:/Engineering/vcsr/configs/vcsr_model_benchmark.yaml)
+- Script:
+  [scripts/run_model_benchmark.py](/e:/Engineering/vcsr/scripts/run_model_benchmark.py)
+- Output:
+  [results/vcsr/model_benchmark](/e:/Engineering/vcsr/results/vcsr/model_benchmark)
+- Seeds: `72`, `73`, `74`
+- Rows per seed/model: `10`
+- Models:
+  - `anthropic/claude-haiku-4.5`
+  - `anthropic/claude-sonnet-4.5`
+  - `anthropic/claude-opus-4.6`
+- Status: completed, **supporting robustness evidence**
+
+Mean `K=8` semantic equivalence:
+
+| Model | Prompt K=1 | Random K=8 | Verifier K=8 | VCSR Repair K=8 |
+|---|---:|---:|---:|---:|
+| Claude Haiku 4.5 | `0.4000` | `0.3000` | `0.4667` | `0.9000` |
+| Claude Sonnet 4.5 | `0.5000` | `0.4667` | `0.5333` | `0.9333` |
+| Claude Opus 4.6 | `0.3667` | `0.4333` | `0.4333` | `0.9000` |
+
+Per-model VCSR gains over prompt-only generation:
+
+- Haiku: `+0.5000`
+- Sonnet: `+0.4333`
+- Opus: `+0.5333`
+
+Interpretation:
+
+- This is strong evidence that repair-augmented VCSR is not just a
+  Haiku-specific artifact.
+- The headline benchmark comparison is prompt-only `K=1` versus full
+  repair-augmented VCSR at `K=8`; verifier-only is kept as an ablation that
+  explains the pipeline, not as the primary claim.
+- The result should be included as appendix or robustness analysis because it
+  was run after the primary final seed `51-55` evidence was frozen.
+- The primary paper result should still be the final repair gate on untouched
+  seeds `51-55`; this benchmark broadens the story to stronger and weaker
+  Claude-family generators.
+
 ## Recommended Next Entries
 
 - Keep round 4 as the promoted default.
@@ -2113,5 +2159,8 @@ Interpretation:
 - Do not promote the current verifier-score guard as a fix for blocksworld
   hurts. It replicated the repair gain but did not reduce hurts versus
   unconditional repair.
+- Use the completed Claude-family benchmark as secondary paper evidence that
+  VCSR repair is a useful generator wrapper, while keeping the frozen
+  `51-55` final gate as the primary claim.
 - Selective prediction / abstention experiments only after selection or repair
   has a stronger baseline.
