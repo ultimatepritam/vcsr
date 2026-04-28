@@ -2,6 +2,9 @@
 
 Working title: **Verifier-Calibrated Search and Repair for Faithful Text-to-PDDL Generation**
 
+Citation support: use [references.bib](/e:/Engineering/vcsr/references.bib)
+and [CITATION_PLAN.md](/e:/Engineering/vcsr/CITATION_PLAN.md) while drafting.
+
 ## Core Claim
 
 VCSR targets semantic faithfulness, not just parseability or planner solvability.

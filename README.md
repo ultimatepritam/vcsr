@@ -530,3 +530,4 @@ best built under Linux/WSL. See `tools/README.md` for build instructions.
 - [VAL](https://github.com/KCL-Planning/VAL)
 
 Design background: `deep-research-report.md`. Contributor-oriented notes: `CLAUDE.md`. Experiment log: `EXPERIMENTS.md`.
+Paper citation support: `references.bib` and `CITATION_PLAN.md`.
