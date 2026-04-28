@@ -1,0 +1,524 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{xcolor}
+
+\title{Verifier-Calibrated Search and Repair for Faithful Text-to-PDDL Generation}
+\author{Pritam Mondal}
+\date{}
+
+\newcommand{\vcsr}{\textsc{VCSR}}
+\newcommand{\pddl}{\textsc{PDDL}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Natural-language interfaces to automated planning promise to let users specify
+planning problems without manually writing Planning Domain Definition Language
+(\pddl) artifacts. However, generated \pddl can be syntactically valid, and even
+solvable, while still formalizing the wrong task. We study this
+valid-but-wrong failure mode through semantic equivalence on Planetarium. We
+introduce \vcsr, a verifier-calibrated search-and-repair framework for faithful
+text-to-\pddl generation. \vcsr generates a small candidate pool, ranks
+parseable candidates with a learned semantic verifier, and applies one
+domain-aware repair call to the verifier-selected candidate. On an in-domain
+Planetarium evaluation over \texttt{blocksworld} and \texttt{gripper}, using
+untouched final seeds, full \vcsr improves mean semantic equivalence at $K=8$
+from 0.368 for prompt-only generation to 0.772, a gain of 40.4 percentage
+points. Verifier-only search improves to 0.420, making it a useful scaffold but
+not the final solution. The original $K=8$ candidate-pool oracle is only 0.464;
+\vcsr exceeds it because repair creates a new candidate outside the original
+pool. We also report negative evidence: planner/solvability search and further
+verifier training did not reliably solve semantic selection. The final system is
+a large net win, especially on \texttt{gripper}, but repair can hurt
+already-correct \texttt{blocksworld} candidates.
+\end{abstract}
+
+\section{Introduction}
+
+Automated planning systems rely on formal models of states, actions, and goals.
+The Planning Domain Definition Language (\pddl) has long served as a standard
+representation for such models \citep{ghallab1998pddl,fox2003pddl21}. If users
+could describe a task in natural language and reliably obtain faithful \pddl,
+classical planners would become substantially easier to deploy. Large language
+models make this goal tempting because they can produce structured, code-like
+artifacts from short descriptions. The danger is that a valid-looking artifact
+can still be the wrong formalization.
+
+Planetarium makes this gap concrete. It evaluates text-to-\pddl translation by
+semantic equivalence rather than merely by parsing or plan existence
+\citep{zuo2024planetarium}. This distinction matters: a generated problem can
+parse and admit a plan while changing objects, initial facts, or goals. A
+planner may then solve the formal problem perfectly while solving the wrong
+user task.
+
+Prior work has explored LLM-driven planning formalization, including NL2Plan
+\citep{gestrin2024nl2plan}, planning-domain generation
+\citep{oswald2024planningdomains}, and studies of the limits of LLMs as
+planning formalizers \citep{huang2024planningformalizers}. These systems show
+that language models can be useful planning front ends, but they also reinforce
+the need for mechanisms that target semantic faithfulness rather than only
+syntactic validity or solvability.
+
+We propose \vcsr: Verifier-Calibrated Search and Repair. \vcsr is built around
+the view that faithful text-to-\pddl generation requires a system, not only a
+larger prompt or a better verifier. The system should generate alternatives,
+score semantic plausibility, and repair promising but wrong formalizations.
+Figure~\ref{fig:pipeline} summarizes the pipeline.
+
+\begin{figure}[t]
+\centering
+\fbox{
+\begin{minipage}{0.93\linewidth}
+\centering
+Natural-language task
+$\rightarrow$ generate $K$ \pddl candidates
+$\rightarrow$ parse candidates
+$\rightarrow$ score with frozen semantic verifier
+$\rightarrow$ select verifier-ranked candidate
+$\rightarrow$ one-step domain-aware repair
+$\rightarrow$ evaluate semantic equivalence.
+\end{minipage}}
+\caption{\vcsr pipeline. The repair prompt receives the selected candidate and
+non-oracle feedback, but never gold \pddl or an equivalence label.}
+\label{fig:pipeline}
+\end{figure}
+
+This paper makes four contributions. First, we present a search-and-repair
+framework for faithful text-to-\pddl generation. Second, we use fixed-pool
+replay to separate candidate-pool randomness from verifier and policy changes.
+Third, we show on untouched final seeds that repair-augmented \vcsr improves
+semantic equivalence over prompt-only generation, random parseable best-of-$K$,
+planner/solvability search, and verifier-only search. Fourth, we report
+negative results that clarify why the final gain comes from repair: additional
+verifier training and simple solvability-based search were not enough.
+
+\section{Related Work}
+
+\paragraph{Text-to-\pddl and planning formalization.}
+Planetarium is the closest benchmark to our setting. It provides natural
+language descriptions paired with \pddl problems and evaluates generated
+problems using equivalence-based semantics \citep{zuo2024planetarium}. NL2Plan
+studies robust LLM-driven planning from minimal text descriptions
+\citep{gestrin2024nl2plan}. Other recent work investigates LLM-generated
+planning domains \citep{oswald2024planningdomains}, generalized planning in
+\pddl domains with pretrained language models
+\citep{silver2024generalizedplanning}, and the degradation of LLM
+formalization under more natural descriptions
+\citep{huang2024planningformalizers}. Our work differs in emphasizing semantic
+equivalence of generated problem files and in making repair a first-class
+system stage.
+
+\paragraph{Best-of-$K$ generation and test-time search.}
+Sampling multiple outputs and selecting among them is a common way to improve
+language-model reasoning and generation. Self-consistency demonstrated the
+value of sampling diverse reasoning paths and aggregating outcomes
+\citep{wang2023selfconsistency}. More directly related to symbolic artifacts,
+recent work studies test-time scaling for generating symbolic world models
+\citep{yu2025symbolicworldmodels}. \vcsr follows the same broad test-time
+compute principle, but our final system does not only select from the original
+candidate pool; it repairs the verifier-selected candidate.
+
+\paragraph{Repair and refinement.}
+LLM refinement methods such as Self-Refine use feedback to iteratively improve
+model outputs \citep{madaan2023selfrefine}. \vcsr uses a narrower and more
+controlled repair stage: a single repair call is applied after verifier-guided
+selection, and the repair prompt receives no gold \pddl or equivalence label.
+This keeps the repair stage close to a deployable setting where the system can
+inspect its own candidate and lightweight diagnostics but does not know the
+ground truth.
+
+\paragraph{Planning tools and weak correctness signals.}
+Classical planners and validators remain important planning tools. Fast
+Downward is a widely used planning system \citep{helmert2006fastdownward}, and
+VAL supports plan validation for \pddl \citep{howey2004val}. In this paper,
+however, solvability and validation are diagnostic signals rather than final
+correctness metrics. The primary metric is semantic equivalence to the intended
+task.
+
+\paragraph{Calibration and selective prediction.}
+During development we studied verifier calibration and risk-coverage, motivated
+by the miscalibration of neural confidence scores \citep{guo2017calibration}
+and selective prediction work on risk-coverage tradeoffs
+\citep{geifman2017selective}. The final paper-facing mechanism is not
+abstention, however. We use the frozen verifier as a search scaffold and repair
+as the decisive system-level intervention.
+
+\section{Method}
+
+\subsection{Task}
+
+We study text-to-\pddl problem generation in fixed in-domain Planetarium tasks.
+Each example consists of a natural-language description and a gold \pddl
+problem. A generated candidate is correct if it is semantically equivalent to
+the gold task under Planetarium's equivalence evaluator
+\citep{zuo2024planetarium,planetarium_dataset,planetarium_code}. We evaluate on
+the \texttt{test} split and restrict the final claim to \texttt{blocksworld} and
+\texttt{gripper}. We make no final claim for \texttt{floor-tile}.
+
+\subsection{Candidate Generation}
+
+Given an input description $x$, the generator produces $K$ candidate \pddl
+problems $\{y_1,\ldots,y_K\}$ using stochastic decoding. Our main experiments
+use $K \in \{1,4,8\}$, with $K=8$ as the primary operating point. Candidate
+outputs are parsed and normalized by the project evaluation stack. The $K=1$
+condition is the prompt-only baseline: the model is asked once, and the first
+candidate is evaluated directly.
+
+\subsection{Semantic Verifier}
+
+The verifier is a DeBERTaV3-base cross-encoder \citep{he2021debertav3}. It
+scores pairs $(x,y)$, where $x$ is the natural-language task and $y$ is a
+candidate \pddl problem. It was trained from automatically labeled examples
+derived from Planetarium equivalence: parseable equivalent candidates are
+positive examples, while parseable non-equivalent candidates and targeted
+perturbations are negative examples. The final paper-facing verifier is the
+round-4 checkpoint recorded in
+\texttt{results/verifier/best\_current/selection.yaml}. Later verifier training
+experiments are treated as diagnostics and are not promoted.
+
+\subsection{Selection Policies}
+
+We evaluate four policies. \texttt{greedy\_first} selects the first generated
+candidate. This is the prompt-only policy at $K=1$ and a simple baseline at
+larger $K$. \texttt{random\_parseable} selects uniformly from parseable
+candidates. \texttt{verifier\_ranked} selects the parseable candidate with the
+highest frozen-verifier score. \texttt{verifier\_ranked\_repair} first selects
+the verifier-ranked candidate at $K=8$ and then applies one repair call. None
+of these policies uses the gold \pddl or equivalence label at selection time.
+
+\subsection{One-Step Domain-Aware Repair}
+
+The final \vcsr policy applies one repair call to the verifier-selected $K=8$
+candidate. The repair prompt receives the natural-language task, the selected
+candidate \pddl, and lightweight non-oracle feedback. It never receives the
+gold \pddl, the equivalence label, or an oracle-best candidate. For
+\texttt{blocksworld}, we use the generic repair prompt. For \texttt{gripper},
+we use a Planetarium-specific repair prompt that encourages the object and
+predicate conventions needed by the benchmark. This domain-aware repair policy
+is the only promoted repair variant. A later score-guarded repair variant is
+reported as a negative follow-up because it did not reduce blocksworld hurts.
+
+\section{Experimental Setup}
+
+\paragraph{Dataset and final gate.}
+The final evaluation uses Planetarium \texttt{test} rows from
+\texttt{blocksworld} and \texttt{gripper}. The primary final gate uses untouched
+seeds 51--55, 50 rows per seed, for 250 total rows. These seeds were not used
+for prompt tuning, verifier checkpoint selection, repair-prompt tuning, or
+guard selection. We evaluate $K \in \{1,4,8\}$ and use the frozen round-4
+verifier from \texttt{results/verifier/best\_current/selection.yaml}.
+
+\paragraph{Metrics.}
+The primary metric is semantic equivalence rate. We also report parse rate,
+equivalence given parse, domain and style slices, candidate-pool oracle
+diagnostics, and repair helped/hurt/tied counts. ``Helped'' means the original
+verifier-selected candidate was non-equivalent and the repaired candidate was
+equivalent. ``Hurt'' means the original was equivalent and repair made it
+non-equivalent. ``Tied'' includes both-success and both-fail cases.
+
+\paragraph{Oracle best-of-$K$ diagnostic.}
+Oracle best-of-$K$ is an offline candidate-pool diagnostic, not a deployable
+policy. It uses ground-truth equivalence labels after generation to ask whether
+at least one of the original $K$ candidates is semantically equivalent. It is
+therefore an upper bound for policies that must choose among the original
+candidates. It is not an upper bound for repair-augmented \vcsr, because repair
+creates a new candidate outside the original pool.
+
+\paragraph{Replay and reproducibility.}
+During development, we used cached candidate pools to replay alternative
+verifiers and policies on identical candidates. This avoided confounding policy
+changes with generator randomness and was used to reject additional verifier
+training rounds and planner/solvability-only search policies. The final
+evidence is stored under
+\texttt{results/vcsr/final\_repair\_gate\_round4}; derived paper tables are
+stored under \texttt{results/paper/final\_vcsr}.
+
+\section{Results}
+
+\subsection{Main Final Gate}
+
+Table~\ref{tab:main} shows the final aggregate result over untouched seeds
+51--55. The primary operating point is $K=8$. Prompt-only generation reaches
+0.368 semantic equivalence. Full repair-augmented \vcsr reaches 0.772, which
+means 77.2\% of rows are semantically correct. The absolute improvement over
+prompt-only is +0.404, or +40.4 percentage points. Verifier-only search reaches
+0.420, confirming that the verifier has useful signal, but the large jump comes
+from repair.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{llccc}
+\toprule
+$K$ & Policy & Parse & Equiv. & Equiv./Parse \\
+\midrule
+1 & Greedy first & 0.924 & 0.368 & 0.399 \\
+1 & Random parseable & 0.924 & 0.368 & 0.399 \\
+1 & Verifier-ranked & 0.924 & 0.368 & 0.399 \\
+1 & \vcsr repair-augmented & 0.924 & 0.368 & 0.399 \\
+\midrule
+4 & Greedy first & 0.924 & 0.368 & 0.399 \\
+4 & Random parseable & 0.996 & 0.376 & 0.378 \\
+4 & Verifier-ranked & 0.996 & 0.392 & 0.394 \\
+4 & \vcsr repair-augmented & 0.996 & 0.392 & 0.394 \\
+\midrule
+8 & Greedy first & 0.924 & 0.368 & 0.399 \\
+8 & Random parseable & 1.000 & 0.376 & 0.376 \\
+8 & Verifier-ranked & 1.000 & 0.420 & 0.420 \\
+8 & \vcsr repair-augmented & 1.000 & \textbf{0.772} & \textbf{0.772} \\
+\bottomrule
+\end{tabular}
+\caption{Final fresh-seed aggregate metrics on seeds 51--55. Semantic
+equivalence is the primary metric. Repair is applied only at the main $K=8$
+operating point.}
+\label{tab:main}
+\end{table}
+
+\subsection{Candidate-Pool Oracle}
+
+Table~\ref{tab:oracle} reports candidate-pool diagnostics. At $K=8$, the
+original generated pool contains at least one semantically equivalent candidate
+for only 46.4\% of rows. This explains why verifier-only search has limited
+headroom: even a perfect selector over the original pool could not solve rows
+where no candidate is equivalent. Repair-augmented \vcsr reaches 77.2\% because
+it edits the verifier-selected candidate and can create a new equivalent \pddl
+problem. Repair exceeding oracle best-of-$K$ is therefore expected: repair adds
+candidate quality rather than merely selecting better from the same pool.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{cccc}
+\toprule
+$K$ & Avg. parseable candidates & Avg. equivalent candidates & Oracle best-of-$K$ \\
+\midrule
+1 & 0.924 & 0.368 & 0.368 \\
+4 & 3.812 & 1.464 & 0.428 \\
+8 & 7.564 & 2.888 & 0.464 \\
+\bottomrule
+\end{tabular}
+\caption{Candidate-pool diagnostics on final seeds 51--55. Oracle best-of-$K$
+uses gold equivalence labels and is only an offline upper bound for selecting
+among the original generated candidates. Repair can exceed this diagnostic
+because it creates a new candidate.}
+\label{tab:oracle}
+\end{table}
+
+\subsection{Per-Seed Stability}
+
+Table~\ref{tab:perseed} shows that repair improves every final seed. The
+smallest gain is +0.28 and the largest gain is +0.42. Repair parse rate is high
+across seeds, with a mean of 0.984.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{ccccccc}
+\toprule
+Seed & Verifier $K=8$ & Repair $K=8$ & Delta & Helped & Hurt & Repair parse \\
+\midrule
+51 & 0.360 & 0.780 & +0.420 & 24 & 3 & 1.000 \\
+52 & 0.420 & 0.780 & +0.360 & 21 & 3 & 0.980 \\
+53 & 0.520 & 0.800 & +0.280 & 18 & 4 & 0.960 \\
+54 & 0.340 & 0.760 & +0.420 & 22 & 1 & 0.980 \\
+55 & 0.460 & 0.740 & +0.280 & 19 & 5 & 1.000 \\
+\bottomrule
+\end{tabular}
+\caption{Per-seed final gate outcomes. Repair improves semantic equivalence on
+all five untouched final seeds.}
+\label{tab:perseed}
+\end{table}
+
+\subsection{Domain and Style Breakdown}
+
+Table~\ref{tab:slices} highlights the main caveat. Repair is transformative on
+\texttt{gripper}: verifier-ranked search solves only 2 of 124 rows, while repair
+solves 98 of 124. In \texttt{blocksworld}, verifier-ranked search is already
+stronger, and unconditional repair hurts some already-correct candidates:
+blocksworld drops from 103/126 to 95/126. Overall, the gripper gains dominate,
+but the domain asymmetry is important.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{llccc}
+\toprule
+Slice & Policy & Equiv. count & Equiv. rate & Parse rate \\
+\midrule
+domain=blocksworld & Greedy first & 92/126 & 0.730 & 0.929 \\
+domain=blocksworld & Verifier-ranked & 103/126 & 0.817 & 1.000 \\
+domain=blocksworld & \vcsr repair-augmented & 95/126 & 0.754 & 1.000 \\
+\midrule
+domain=gripper & Greedy first & 0/124 & 0.000 & 0.919 \\
+domain=gripper & Verifier-ranked & 2/124 & 0.016 & 1.000 \\
+domain=gripper & \vcsr repair-augmented & 98/124 & 0.790 & 1.000 \\
+\midrule
+style=abstract/abstract & Greedy first & 28/126 & 0.222 & 0.849 \\
+style=abstract/abstract & Verifier-ranked & 40/126 & 0.317 & 1.000 \\
+style=abstract/abstract & \vcsr repair-augmented & 84/126 & 0.667 & 1.000 \\
+\midrule
+style=explicit/explicit & Greedy first & 64/124 & 0.516 & 1.000 \\
+style=explicit/explicit & Verifier-ranked & 65/124 & 0.524 & 1.000 \\
+style=explicit/explicit & \vcsr repair-augmented & 109/124 & 0.879 & 1.000 \\
+\bottomrule
+\end{tabular}
+\caption{$K=8$ domain and style slices. Repair strongly improves gripper and
+both style groups, but can hurt already-correct blocksworld selections.}
+\label{tab:slices}
+\end{table}
+
+\subsection{Repair Outcomes}
+
+Across the final gate, repair helped 104 rows, hurt 16 rows, and tied 130 rows.
+The hurt rows are concentrated in blocksworld, where the verifier-selected
+candidate is often already correct. Figure~\ref{fig:repairoutcomes} summarizes
+the outcome counts.
+
+\begin{figure}[t]
+\centering
+\fbox{
+\begin{minipage}{0.65\linewidth}
+\centering
+\begin{tabular}{lr}
+\toprule
+Repair outcome & Count \\
+\midrule
+Helped & 104 \\
+Hurt & 16 \\
+Both success & 89 \\
+Both fail & 41 \\
+\bottomrule
+\end{tabular}
+\end{minipage}}
+\caption{Final repair outcomes on seeds 51--55. Repair is a large net win but
+not uniformly harmless.}
+\label{fig:repairoutcomes}
+\end{figure}
+
+\section{Ablations and Analysis}
+
+Figure~\ref{fig:funnel} summarizes the development evidence. The project began
+with verifier training, but the final result is a system-level discovery:
+verifier-only search helps, simple planner/search policies do not reliably
+improve semantic selection, and repair provides the decisive jump.
+
+\begin{figure}[t]
+\centering
+\fbox{
+\begin{minipage}{0.86\linewidth}
+\centering
+Verifier training
+$\rightarrow$ frozen round-4 verifier
+$\rightarrow$ verifier-ranked $K=8$: 0.420
+$\rightarrow$ solvability/search ablations: no reliable gain
+$\rightarrow$ domain-aware repair
+$\rightarrow$ repair-augmented $K=8$: 0.772.
+\end{minipage}}
+\caption{Evidence funnel from verifier-only search to repair-augmented \vcsr.}
+\label{fig:funnel}
+\end{figure}
+
+\paragraph{Verifier-only search is useful but insufficient.}
+Verifier-ranked selection improves over prompt-only generation at $K=8$,
+raising semantic equivalence from 0.368 to 0.420 on the final gate. This
+confirms that the verifier has useful ranking signal. However, the gain is
+small compared with repair, so the verifier is best viewed as a scaffold for
+identifying a candidate to repair rather than as the full solution.
+
+\paragraph{Planner and solvability signals are weak semantic selectors.}
+Planner and solvability policies did not pass the cached replay gate. This is
+consistent with the motivation from Planetarium: solvability is not semantic
+faithfulness. A solvable \pddl problem can still encode the wrong initial state
+or goal.
+
+\paragraph{Additional verifier training did not solve selection.}
+We trained several verifier successors, including ranking-aligned and focused
+pointwise variants. Some improved offline metrics or cached replay, but none
+beat the frozen round-4 verifier sufficiently to become the paper-facing
+selector. The remaining bottleneck was not solved by simply training the same
+verifier harder.
+
+\paragraph{Guarded repair did not fix blocksworld hurts.}
+A simple verifier-score guard was tested on fresh seeds 67--71. It replicated
+the large repair gain but did not reduce blocksworld hurts relative to
+unconditional repair, so it is not promoted. This suggests that future repair
+acceptance checks should use stronger structural signals rather than only the
+same verifier score.
+
+\section{Limitations}
+
+The final claim is intentionally scoped. First, we evaluate only in-domain
+Planetarium \texttt{blocksworld} and \texttt{gripper}; we make no final claim
+for \texttt{floor-tile} or arbitrary new planning domains. Second, the repair
+stage is domain-aware. This is appropriate for our in-domain system, but it may
+limit immediate transfer to new domains. Third, repair is not uniformly
+harmless: the final system is a large net win, but blocksworld shows that
+repairing an already-correct candidate can introduce errors. Fourth, the
+verifier remains imperfect and text-only; richer semantic validators,
+graph-based verifiers, or structural repair acceptance checks may reduce the
+remaining hurts. Finally, calibration and abstention were explored during
+development but are not the final paper-facing mechanism.
+
+\section{Conclusion}
+
+\vcsr addresses a central failure mode in text-to-\pddl generation: generated
+planning problems can be formally plausible yet semantically wrong. Our results
+show that verifier-ranked best-of-$K$ search alone is helpful but insufficient.
+The decisive improvement comes from adding one repair step to the
+verifier-selected candidate. On untouched final seeds, repair-augmented \vcsr
+raises semantic equivalence from 36.8\% for prompt-only generation to 77.2\%
+at the main $K=8$ operating point, while maintaining high parseability. The
+lesson is practical: if the goal is faithful planning formalization,
+solvability and one-shot prompting are not enough; semantic search and targeted
+repair are complementary ingredients.
+
+\appendix
+
+\section{Claude-Family Robustness Benchmark}
+
+After freezing the main result, we ran a small Claude-family robustness
+benchmark on new seeds 72--74 with 10 rows per seed and model. This benchmark is
+supporting evidence, not a replacement for the final seed 51--55 result.
+Table~\ref{tab:modelbench} compares prompt-only generation against full \vcsr
+for Claude Haiku 4.5, Claude Sonnet 4.5, and Claude Opus 4.6. All three improve
+substantially under \vcsr. With prompt-only Opus, about 36.7\% of rows were
+semantically correct; with full \vcsr around Opus, 90.0\% were semantically
+correct, a +53.3 percentage-point gain on this small benchmark.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lccccc}
+\toprule
+Model & Prompt $K=1$ & \vcsr repair $K=8$ & Delta vs prompt & Random $K=8$ & Verifier $K=8$ \\
+\midrule
+Claude Haiku 4.5 & 0.400 & 0.900 & +0.500 & 0.300 & 0.467 \\
+Claude Sonnet 4.5 & 0.500 & 0.933 & +0.433 & 0.467 & 0.533 \\
+Claude Opus 4.6 & 0.367 & 0.900 & +0.533 & 0.433 & 0.433 \\
+\bottomrule
+\end{tabular}
+\caption{Small post-freeze Claude-family robustness benchmark. These results
+support the view that \vcsr is a useful wrapper, but the main paper evidence
+remains the untouched final seed 51--55 gate.}
+\label{tab:modelbench}
+\end{table}
+
+\section{Development Evidence Summary}
+
+Round 4 remains the frozen verifier because it was the strongest checkpoint
+under the replay and fresh held-out gates. Pairwise round 5, conservative
+ranking round 6, and focused pointwise round 7 were useful diagnostics but were
+not promoted. This history is important because it shows that the final gain is
+not simply the result of training the verifier longer; the decisive improvement
+comes from adding repair to the verifier-selected candidate.
+
+\bibliographystyle{plainnat}
+\bibliography{../references}
+
+\end{document}
