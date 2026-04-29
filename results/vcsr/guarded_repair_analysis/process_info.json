@@ -1,0 +1,6 @@
+{
+  "pid": 10920,
+  "started_at": 1777182328.6945093,
+  "config": "configs\\vcsr_guarded_repair_analysis.yaml",
+  "output_dir": "results\\vcsr\\guarded_repair_analysis"
+}

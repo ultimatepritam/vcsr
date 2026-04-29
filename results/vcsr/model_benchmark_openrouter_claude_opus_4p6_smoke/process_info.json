@@ -1,0 +1,6 @@
+{
+  "pid": 18748,
+  "started_at": 1777376896.7478986,
+  "config": "configs\\vcsr_model_benchmark_openrouter_claude_opus_4p6_smoke.yaml",
+  "output_dir": "results\\vcsr\\model_benchmark_openrouter_claude_opus_4p6_smoke"
+}

@@ -1,0 +1,8 @@
+{
+  "pid": 24848,
+  "started_at": "2026-04-25T02:10:03",
+  "command": "scripts\\analyze_round4_selection.py",
+  "output_dir": "results\\vcsr\\round4_selection_analysis",
+  "progress_log": "results\\vcsr\\round4_selection_analysis\\progress.log",
+  "progress_json": "results\\vcsr\\round4_selection_analysis\\progress.json"
+}

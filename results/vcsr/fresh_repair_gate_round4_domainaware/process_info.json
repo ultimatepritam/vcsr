@@ -1,0 +1,6 @@
+{
+  "pid": 26304,
+  "started_at": 1777144430.3026936,
+  "config": "configs\\vcsr_fresh_repair_gate_domainaware_replay.yaml",
+  "output_dir": "results\\vcsr\\fresh_repair_gate_round4_domainaware"
+}

@@ -1,0 +1,6 @@
+{
+  "pid": 27264,
+  "started_at": 1777304597.702865,
+  "config": "results\\vcsr\\model_benchmark_qwen35_smoke\\qwen_3p5_9b\\seed_72\\benchmark_run_config.yaml",
+  "output_dir": "results\\vcsr\\model_benchmark_qwen35_smoke\\qwen_3p5_9b\\seed_72"
+}

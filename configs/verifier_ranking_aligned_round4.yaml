@@ -1,0 +1,45 @@
+experiment:
+  name: verifier_ranking_aligned_round4
+  seed: 42
+
+data:
+  train_jsonl: results/neggen/pilot/verifier_train.relabeled.jsonl
+  extra_train_jsonl: results/verifier/ranking_aligned_round4/mined_examples.jsonl
+  extra_train_repeat: 6
+  val_fraction: 0.15
+  filter_unparseable: true
+
+model:
+  backbone: microsoft/deberta-v3-base
+  revision: refs/pr/14
+  max_seq_len: 512
+  dropout: 0.1
+  init_selection_path: results/verifier/best_current/selection.yaml
+
+training:
+  learning_rate: 1.0e-5
+  batch_size: 8
+  gradient_accumulation_steps: 16
+  epochs: 6
+  early_stopping_patience: 2
+  early_stopping_metric: val_auc
+  weight_decay: 0.01
+  warmup_ratio: 0.05
+  fp16: true
+  max_grad_norm: 1.0
+  dataloader_workers: 0
+
+evaluation:
+  eval_steps: 0
+  metrics: [auc, accuracy, f1, precision, recall]
+  per_source: true
+  per_domain: true
+
+output:
+  dir: results/verifier/ranking_aligned_round4/retrain_from_round3_focused
+  save_best_model: true
+  save_last_model: true
+
+logging:
+  wandb_project: null
+  log_every_n_steps: 1

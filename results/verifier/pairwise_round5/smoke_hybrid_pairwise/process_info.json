@@ -1,0 +1,8 @@
+{
+  "pid": 10032,
+  "started_at": "2026-04-25T00:38:22",
+  "command": "scripts\\train_verifier.py --config configs\\verifier_pairwise_round5.yaml --dry_run --output_dir results\\verifier\\pairwise_round5\\smoke_hybrid_pairwise",
+  "output_dir": "results\\verifier\\pairwise_round5\\smoke_hybrid_pairwise",
+  "progress_log": "results\\verifier\\pairwise_round5\\smoke_hybrid_pairwise\\progress.log",
+  "progress_json": "results\\verifier\\pairwise_round5\\smoke_hybrid_pairwise\\progress.json"
+}

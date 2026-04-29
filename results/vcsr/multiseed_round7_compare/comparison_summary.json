@@ -1,0 +1,225 @@
+{
+  "base_config": "configs/vcsr_bestofk_round3_holdout_eval.yaml",
+  "rows_per_run": 50,
+  "seeds": [
+    56,
+    57,
+    58
+  ],
+  "clear_proxy_env": true,
+  "verifiers": [
+    {
+      "name": "round4_best_current",
+      "selection": "results/verifier/best_current/selection.yaml",
+      "runs": [
+        {
+          "seed": 56,
+          "output_dir": "results\\vcsr\\multiseed_round7_compare\\round4_best_current\\seed_56",
+          "summary_path": "results\\vcsr\\multiseed_round7_compare\\round4_best_current\\seed_56\\aggregate_metrics.json"
+        },
+        {
+          "seed": 57,
+          "output_dir": "results\\vcsr\\multiseed_round7_compare\\round4_best_current\\seed_57",
+          "summary_path": "results\\vcsr\\multiseed_round7_compare\\round4_best_current\\seed_57\\aggregate_metrics.json"
+        },
+        {
+          "seed": 58,
+          "output_dir": "results\\vcsr\\multiseed_round7_compare\\round4_best_current\\seed_58",
+          "summary_path": "results\\vcsr\\multiseed_round7_compare\\round4_best_current\\seed_58\\aggregate_metrics.json"
+        }
+      ],
+      "mean_metrics": {
+        "1": {
+          "greedy_first": {
+            "parse_rate": 0.9533333333333333,
+            "equiv_rate": 0.36000000000000004,
+            "equiv_given_parse": 0.37649733806566105
+          },
+          "random_parseable": {
+            "parse_rate": 0.9533333333333333,
+            "equiv_rate": 0.36000000000000004,
+            "equiv_given_parse": 0.37649733806566105
+          },
+          "verifier_ranked": {
+            "parse_rate": 0.9533333333333333,
+            "equiv_rate": 0.36000000000000004,
+            "equiv_given_parse": 0.37649733806566105
+          }
+        },
+        "4": {
+          "greedy_first": {
+            "parse_rate": 0.9533333333333333,
+            "equiv_rate": 0.36000000000000004,
+            "equiv_given_parse": 0.37649733806566105
+          },
+          "random_parseable": {
+            "parse_rate": 0.9866666666666667,
+            "equiv_rate": 0.39999999999999997,
+            "equiv_given_parse": 0.4050340136054422
+          },
+          "verifier_ranked": {
+            "parse_rate": 0.9866666666666667,
+            "equiv_rate": 0.39999999999999997,
+            "equiv_given_parse": 0.40517006802721084
+          }
+        },
+        "8": {
+          "greedy_first": {
+            "parse_rate": 0.9533333333333333,
+            "equiv_rate": 0.36000000000000004,
+            "equiv_given_parse": 0.37649733806566105
+          },
+          "random_parseable": {
+            "parse_rate": 0.9933333333333333,
+            "equiv_rate": 0.3466666666666667,
+            "equiv_given_parse": 0.34938775510204084
+          },
+          "verifier_ranked": {
+            "parse_rate": 0.9933333333333333,
+            "equiv_rate": 0.42,
+            "equiv_given_parse": 0.42353741496598635
+          }
+        }
+      }
+    },
+    {
+      "name": "round7_focused_pointwise",
+      "selection": "results/verifier/focused_round7/retrain_from_round4_pointwise/selection.yaml",
+      "runs": [
+        {
+          "seed": 56,
+          "output_dir": "results\\vcsr\\multiseed_round7_compare\\round7_focused_pointwise\\seed_56",
+          "summary_path": "results\\vcsr\\multiseed_round7_compare\\round7_focused_pointwise\\seed_56\\aggregate_metrics.json"
+        },
+        {
+          "seed": 57,
+          "output_dir": "results\\vcsr\\multiseed_round7_compare\\round7_focused_pointwise\\seed_57",
+          "summary_path": "results\\vcsr\\multiseed_round7_compare\\round7_focused_pointwise\\seed_57\\aggregate_metrics.json"
+        },
+        {
+          "seed": 58,
+          "output_dir": "results\\vcsr\\multiseed_round7_compare\\round7_focused_pointwise\\seed_58",
+          "summary_path": "results\\vcsr\\multiseed_round7_compare\\round7_focused_pointwise\\seed_58\\aggregate_metrics.json"
+        }
+      ],
+      "mean_metrics": {
+        "1": {
+          "greedy_first": {
+            "parse_rate": 0.9533333333333333,
+            "equiv_rate": 0.3666666666666667,
+            "equiv_given_parse": 0.3834259259259259
+          },
+          "random_parseable": {
+            "parse_rate": 0.9533333333333333,
+            "equiv_rate": 0.3666666666666667,
+            "equiv_given_parse": 0.3834259259259259
+          },
+          "verifier_ranked": {
+            "parse_rate": 0.9533333333333333,
+            "equiv_rate": 0.3666666666666667,
+            "equiv_given_parse": 0.3834259259259259
+          }
+        },
+        "4": {
+          "greedy_first": {
+            "parse_rate": 0.9533333333333333,
+            "equiv_rate": 0.3666666666666667,
+            "equiv_given_parse": 0.3834259259259259
+          },
+          "random_parseable": {
+            "parse_rate": 0.9866666666666667,
+            "equiv_rate": 0.37333333333333335,
+            "equiv_given_parse": 0.37666666666666665
+          },
+          "verifier_ranked": {
+            "parse_rate": 0.9866666666666667,
+            "equiv_rate": 0.4133333333333334,
+            "equiv_given_parse": 0.4172222222222222
+          }
+        },
+        "8": {
+          "greedy_first": {
+            "parse_rate": 0.9533333333333333,
+            "equiv_rate": 0.3666666666666667,
+            "equiv_given_parse": 0.3834259259259259
+          },
+          "random_parseable": {
+            "parse_rate": 1.0,
+            "equiv_rate": 0.4066666666666667,
+            "equiv_given_parse": 0.4066666666666667
+          },
+          "verifier_ranked": {
+            "parse_rate": 1.0,
+            "equiv_rate": 0.42,
+            "equiv_given_parse": 0.42
+          }
+        }
+      }
+    }
+  ],
+  "head_to_head": [
+    {
+      "K": 4,
+      "policy": "verifier_ranked",
+      "baseline": "round4_best_current",
+      "candidate": "round7_focused_pointwise",
+      "candidate_wins": 2,
+      "baseline_wins": 1,
+      "ties": 0,
+      "mean_equiv_delta": 0.013333333333333364
+    },
+    {
+      "K": 8,
+      "policy": "verifier_ranked",
+      "baseline": "round4_best_current",
+      "candidate": "round7_focused_pointwise",
+      "candidate_wins": 2,
+      "baseline_wins": 1,
+      "ties": 0,
+      "mean_equiv_delta": 0.0
+    }
+  ],
+  "verifier_ranked_by_seed": {
+    "4": [
+      {
+        "seed": 56,
+        "baseline_equiv_rate": 0.44,
+        "candidate_equiv_rate": 0.4,
+        "delta": -0.03999999999999998
+      },
+      {
+        "seed": 57,
+        "baseline_equiv_rate": 0.26,
+        "candidate_equiv_rate": 0.28,
+        "delta": 0.020000000000000018
+      },
+      {
+        "seed": 58,
+        "baseline_equiv_rate": 0.5,
+        "candidate_equiv_rate": 0.56,
+        "delta": 0.06000000000000005
+      }
+    ],
+    "8": [
+      {
+        "seed": 56,
+        "baseline_equiv_rate": 0.48,
+        "candidate_equiv_rate": 0.4,
+        "delta": -0.07999999999999996
+      },
+      {
+        "seed": 57,
+        "baseline_equiv_rate": 0.26,
+        "candidate_equiv_rate": 0.28,
+        "delta": 0.020000000000000018
+      },
+      {
+        "seed": 58,
+        "baseline_equiv_rate": 0.52,
+        "candidate_equiv_rate": 0.58,
+        "delta": 0.05999999999999994
+      }
+    ]
+  },
+  "recommendation": "Keep `round4_best_current` as the official frozen baseline for now. `round7_focused_pointwise` remains a provisional candidate, but the multi-seed fresh held-out gate did not show a clean enough verifier-ranked win profile at both K=4 and K=8 to justify promotion."
+}

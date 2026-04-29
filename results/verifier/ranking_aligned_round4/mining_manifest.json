@@ -1,0 +1,323 @@
+{
+  "inputs": {
+    "failure_cases": "results/vcsr/bestofk_round3_holdout_eval/failure_analysis/failure_cases.jsonl",
+    "base_jsonl": "results/neggen/pilot/verifier_train.relabeled.jsonl",
+    "comparison_role": "heldout",
+    "k_values": [
+      4,
+      8
+    ],
+    "focus_domain": "blocksworld",
+    "focus_style": null,
+    "miss_types": [
+      "equivalent_in_pool_but_misranked",
+      "near_tie_misranking"
+    ],
+    "max_score_gap": 0.1,
+    "near_tie_margin": 0.03,
+    "moderate_gap_margin": 0.1,
+    "max_positives_per_case": 2,
+    "max_negatives_per_case": 4
+  },
+  "summary": {
+    "target_cases_selected": 9,
+    "target_cases_mined": 9,
+    "unique_target_rows": 5,
+    "raw_examples_before_dedup": 38,
+    "merged_examples_total": 22,
+    "merged_positive_examples": 7,
+    "merged_negative_examples": 15,
+    "new_examples_added_to_augmented_train": 22,
+    "augmented_train_total": 2417,
+    "rows_skipped_missing_source": 0,
+    "rows_skipped_no_parseable_positive": 0
+  },
+  "by_source": {
+    "bestofk_round4_focus_negative": 15,
+    "bestofk_round4_focus_positive": 7
+  },
+  "by_domain": {
+    "blocksworld": 22
+  },
+  "by_style": {
+    "abstract/abstract": 19,
+    "explicit/explicit": 3
+  },
+  "by_miss_type": {
+    "equivalent_in_pool_but_misranked": 5,
+    "near_tie_misranking": 4
+  },
+  "by_k": {
+    "4": 5,
+    "8": 4
+  },
+  "target_cases": [
+    {
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 23,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_2_2_2_2_3_5",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "K": 4,
+      "verifier_miss_type": "near_tie_misranking",
+      "score_gap": 0.000244140625,
+      "selected_wrong_index": 3,
+      "chosen_positive_indices": [
+        2
+      ],
+      "chosen_negative_indices": [
+        3,
+        1
+      ],
+      "available_positive_indices": [
+        2
+      ],
+      "available_negative_indices": [
+        1,
+        3
+      ],
+      "best_positive_score": 0.4990234375
+    },
+    {
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 6,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_2_2_4_6",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "K": 4,
+      "verifier_miss_type": "near_tie_misranking",
+      "score_gap": 0.010498046875,
+      "selected_wrong_index": 0,
+      "chosen_positive_indices": [
+        2
+      ],
+      "chosen_negative_indices": [
+        0,
+        3,
+        1
+      ],
+      "available_positive_indices": [
+        2
+      ],
+      "available_negative_indices": [
+        0,
+        1,
+        3
+      ],
+      "best_positive_score": 0.4853515625
+    },
+    {
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 0,
+      "planetarium_name": "blocksworld_swap_to_swap_blocks_list_16_2",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "K": 4,
+      "verifier_miss_type": "near_tie_misranking",
+      "score_gap": 0.02978515625,
+      "selected_wrong_index": 1,
+      "chosen_positive_indices": [
+        0,
+        3
+      ],
+      "chosen_negative_indices": [
+        1,
+        2
+      ],
+      "available_positive_indices": [
+        0,
+        3
+      ],
+      "available_negative_indices": [
+        1,
+        2
+      ],
+      "best_positive_score": 0.70068359375
+    },
+    {
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 26,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_2_2_5_6_6",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "K": 4,
+      "verifier_miss_type": "equivalent_in_pool_but_misranked",
+      "score_gap": 0.05908203125,
+      "selected_wrong_index": 2,
+      "chosen_positive_indices": [
+        0
+      ],
+      "chosen_negative_indices": [
+        2,
+        3,
+        1
+      ],
+      "available_positive_indices": [
+        0
+      ],
+      "available_negative_indices": [
+        1,
+        2,
+        3
+      ],
+      "best_positive_score": 0.4072265625
+    },
+    {
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 9,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_4_4_4_4",
+      "domain": "blocksworld",
+      "style": "explicit/explicit",
+      "K": 4,
+      "verifier_miss_type": "equivalent_in_pool_but_misranked",
+      "score_gap": 0.04052734375,
+      "selected_wrong_index": 3,
+      "chosen_positive_indices": [
+        0,
+        1
+      ],
+      "chosen_negative_indices": [
+        3
+      ],
+      "available_positive_indices": [
+        0,
+        1,
+        2
+      ],
+      "available_negative_indices": [
+        3
+      ],
+      "best_positive_score": 0.59814453125
+    },
+    {
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 0,
+      "planetarium_name": "blocksworld_swap_to_swap_blocks_list_16_2",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "K": 8,
+      "verifier_miss_type": "near_tie_misranking",
+      "score_gap": 0.02978515625,
+      "selected_wrong_index": 1,
+      "chosen_positive_indices": [
+        0,
+        3
+      ],
+      "chosen_negative_indices": [
+        1,
+        2,
+        6
+      ],
+      "available_positive_indices": [
+        0,
+        3,
+        4,
+        5,
+        7
+      ],
+      "available_negative_indices": [
+        1,
+        2,
+        6
+      ],
+      "best_positive_score": 0.70068359375
+    },
+    {
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 23,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_2_2_2_2_3_5",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "K": 8,
+      "verifier_miss_type": "equivalent_in_pool_but_misranked",
+      "score_gap": 0.06884765625,
+      "selected_wrong_index": 4,
+      "chosen_positive_indices": [
+        2,
+        7
+      ],
+      "chosen_negative_indices": [
+        4,
+        5,
+        3,
+        1
+      ],
+      "available_positive_indices": [
+        2,
+        7
+      ],
+      "available_negative_indices": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "best_positive_score": 0.4990234375
+    },
+    {
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 26,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_2_2_5_6_6",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "K": 8,
+      "verifier_miss_type": "equivalent_in_pool_but_misranked",
+      "score_gap": 0.070556640625,
+      "selected_wrong_index": 6,
+      "chosen_positive_indices": [
+        0
+      ],
+      "chosen_negative_indices": [
+        6,
+        4,
+        2,
+        3
+      ],
+      "available_positive_indices": [
+        0
+      ],
+      "available_negative_indices": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "best_positive_score": 0.4072265625
+    },
+    {
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 9,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_4_4_4_4",
+      "domain": "blocksworld",
+      "style": "explicit/explicit",
+      "K": 8,
+      "verifier_miss_type": "equivalent_in_pool_but_misranked",
+      "score_gap": 0.03173828125,
+      "selected_wrong_index": 3,
+      "chosen_positive_indices": [
+        4,
+        0
+      ],
+      "chosen_negative_indices": [
+        3,
+        5
+      ],
+      "available_positive_indices": [
+        0,
+        1,
+        2,
+        4,
+        6,
+        7
+      ],
+      "available_negative_indices": [
+        3,
+        5
+      ],
+      "best_positive_score": 0.60693359375
+    }
+  ]
+}

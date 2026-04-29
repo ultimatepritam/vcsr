@@ -1,0 +1,5 @@
+{
+    "pid":  15888,
+    "command":  "python scripts/run_verifier_bestofk.py --config configs/vcsr_bestofk_round3_pool.yaml --seed 47 --output_dir results/vcsr/round3_pool_seed47",
+    "started_at":  "2026-04-19T17:24:00.7008123+05:30"
+}

@@ -1,0 +1,26 @@
+selected_at: '2026-04-25'
+selected_run: results\verifier\pairwise_round5\retrain_from_round4_hybrid_pairwise
+checkpoint_path: results\verifier\pairwise_round5\retrain_from_round4_hybrid_pairwise\best_model\model.pt
+training_history_path: results\verifier\pairwise_round5\retrain_from_round4_hybrid_pairwise\train_history.json
+val_metrics_path: results\verifier\pairwise_round5\retrain_from_round4_hybrid_pairwise\val_metrics.json
+calibration_report_path: results\verifier\pairwise_round5\retrain_from_round4_hybrid_pairwise\calibration_report.json
+
+selection_reason:
+  summary: Provisional round-5 hybrid pairwise verifier warm-started from promoted round 4 and trained on cached within-pool ranking pairs mined from round-3 multi-pool candidates.
+  criteria:
+    - trained with hybrid pairwise logistic loss plus pointwise BCE retention
+    - mined same-row parseable equivalent-vs-non-equivalent pairs from cached K=4 and K=8 candidate pools
+    - excluded unparseable candidates and negative-only rows from the pairwise branch
+    - retained negative-only rows in the pointwise branch to preserve broad invalid-candidate discrimination
+    - intended for replay/fresh gates against the promoted round-4 verifier before any promotion decision
+
+metrics_snapshot:
+  val_auc: 0.792668776371308
+  val_f1: 0.46808510638297873
+  val_pairwise_accuracy: 0.5789473684210527
+  val_pairwise_mean_margin: 0.8999537417763158
+  eval_raw_auc: 0.7797335203366058
+  best_raw_f1: 0.6630434782608695
+  best_raw_threshold: 0.35
+  best_temp_f1: 0.6630434782608695
+  best_temp_threshold: 0.25

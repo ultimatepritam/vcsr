@@ -1,0 +1,18 @@
+{
+  "total": 22,
+  "positives": 7,
+  "negatives": 15,
+  "unparseable": 0,
+  "pos_neg_ratio": 0.4667,
+  "by_source": {
+    "bestofk_round4_focus_negative": 15,
+    "bestofk_round4_focus_positive": 7
+  },
+  "by_domain": {
+    "blocksworld": 22
+  },
+  "by_perturbation_type": {},
+  "by_source_model": {
+    "global.anthropic.claude-haiku-4-5-20251001-v1:0": 22
+  }
+}

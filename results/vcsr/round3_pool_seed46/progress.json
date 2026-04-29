@@ -1,0 +1,10 @@
+{
+  "total_rows": 50,
+  "completed_rows": 50,
+  "remaining_rows": 0,
+  "elapsed_sec": 1237.8225758075714,
+  "avg_sec_per_row": 24.75645151615143,
+  "eta_sec": 0.0,
+  "current_row_name": "gripper_n_room_distributed_to_focus_min_balls_in_grippers_0_0_balls_in_rooms_1_2_2_2_2_6_7",
+  "current_domain": "gripper"
+}

@@ -1,0 +1,22 @@
+base_config: configs/vcsr_bestofk_guarded_repair.yaml
+output_dir: results/vcsr/final_guarded_repair_gate_round4
+seeds:
+  - 67
+  - 68
+  - 69
+  - 70
+  - 71
+max_rows: 50
+force: false
+
+acceptance:
+  k: 8
+  baseline_policy: verifier_ranked
+  repair_policy: verifier_ranked_repair_guarded
+  comparison_policy: verifier_ranked_repair
+  min_mean_delta: 0.10
+  min_nonnegative_seeds: 4
+  max_large_regression: -0.05
+  min_repair_parse_rate: 0.90
+  max_mean_loss_vs_comparison: 0.00
+  require_blocksworld_hurt_reduction: true

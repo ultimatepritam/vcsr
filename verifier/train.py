@@ -9,8 +9,10 @@ from __future__ import annotations
 
 import logging
 import math
+import json
 import sys
 import time
+from itertools import cycle
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
@@ -20,8 +22,8 @@ from torch.amp import GradScaler, autocast
 from torch.optim import AdamW
 from torch.utils.data import DataLoader
 
-from verifier.dataset import VerifierDataset, collate_fn
-from verifier.evaluate import evaluate
+from verifier.dataset import PairwiseVerifierDataset, VerifierDataset, collate_fn, collate_pairwise_fn
+from verifier.evaluate import evaluate, evaluate_pairwise
 from verifier.model import VerifierModel
 
 logger = logging.getLogger(__name__)
@@ -32,6 +34,38 @@ def _flush_logs():
         h.flush()
     sys.stdout.flush()
     sys.stderr.flush()
+
+
+def _write_progress_snapshot(
+    output_dir: Path,
+    *,
+    status: str,
+    started_at: float,
+    epoch: int,
+    total_epochs: int,
+    global_step: int,
+    total_opt_steps: int,
+    best_metric: float,
+    best_epoch: int,
+    patience_counter: int,
+    current_train_loss: float | None = None,
+    current_val_metrics: dict | None = None,
+) -> None:
+    snapshot = {
+        "status": status,
+        "elapsed_sec": max(0.0, time.time() - started_at),
+        "epoch": epoch,
+        "total_epochs": total_epochs,
+        "global_step": global_step,
+        "total_optimizer_steps": total_opt_steps,
+        "best_metric": best_metric,
+        "best_epoch": best_epoch,
+        "patience_counter": patience_counter,
+        "current_train_loss": current_train_loss,
+        "current_val_metrics": current_val_metrics,
+    }
+    with open(output_dir / "progress.json", "w", encoding="utf-8") as f:
+        json.dump(snapshot, f, indent=2)
 
 
 @dataclass
@@ -53,6 +87,9 @@ class TrainConfig:
     save_last_model: bool = False
     output_dir: str = "results/verifier/pilot"
     wandb_project: Optional[str] = None
+    objective: str = "pointwise"
+    pairwise_loss_weight: float = 1.0
+    pointwise_loss_weight: float = 0.5
 
 
 @dataclass
@@ -82,6 +119,8 @@ def train(
     val_ds: VerifierDataset,
     config: TrainConfig,
     val_rows: Optional[list] = None,
+    pairwise_train_ds: Optional[PairwiseVerifierDataset] = None,
+    pairwise_val_ds: Optional[PairwiseVerifierDataset] = None,
 ) -> TrainState:
     output_dir = Path(config.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -114,6 +153,30 @@ def train(
         num_workers=config.dataloader_workers,
         pin_memory=device.type == "cuda",
     )
+    use_pairwise = config.objective in {"pairwise", "hybrid_pairwise"}
+    if use_pairwise and pairwise_train_ds is None:
+        raise ValueError("Pairwise objective requires pairwise_train_ds")
+
+    pairwise_loader = None
+    pairwise_val_loader = None
+    if pairwise_train_ds is not None:
+        pairwise_loader = DataLoader(
+            pairwise_train_ds,
+            batch_size=config.batch_size,
+            shuffle=True,
+            collate_fn=collate_pairwise_fn,
+            num_workers=config.dataloader_workers,
+            pin_memory=device.type == "cuda",
+        )
+    if pairwise_val_ds is not None and len(pairwise_val_ds) > 0:
+        pairwise_val_loader = DataLoader(
+            pairwise_val_ds,
+            batch_size=config.batch_size * 2,
+            shuffle=False,
+            collate_fn=collate_pairwise_fn,
+            num_workers=config.dataloader_workers,
+            pin_memory=device.type == "cuda",
+        )
 
     no_decay = {"bias", "LayerNorm.weight", "layernorm.weight"}
     param_groups = [
@@ -138,6 +201,19 @@ def train(
     scaler = GradScaler("cuda", enabled=use_amp)
 
     state = TrainState()
+    started_at = time.time()
+    _write_progress_snapshot(
+        output_dir,
+        status="starting",
+        started_at=started_at,
+        epoch=0,
+        total_epochs=config.epochs,
+        global_step=0,
+        total_opt_steps=total_opt_steps,
+        best_metric=state.best_metric,
+        best_epoch=state.best_epoch,
+        patience_counter=state.patience_counter,
+    )
 
     logger.info(
         "Each epoch: %d batches → ~%d optimizer steps (accum=%d). First progress line was slow before; now logs every %d step(s).",
@@ -147,13 +223,21 @@ def train(
         max(1, config.log_every_n_steps),
     )
     _flush_logs()
+    logger.info("Training objective: %s", config.objective)
+    if pairwise_loader is not None:
+        logger.info("Pairwise train batches per epoch: %d", len(pairwise_loader))
+    _flush_logs()
 
     for epoch in range(1, config.epochs + 1):
         state.epoch = epoch
         model.train()
         epoch_loss = 0.0
+        epoch_pointwise_loss = 0.0
+        epoch_pairwise_loss = 0.0
         n_batches = 0
+        n_pairwise_batches = 0
         t0 = time.time()
+        pairwise_iter = cycle(pairwise_loader) if use_pairwise and pairwise_loader is not None else None
 
         optimizer.zero_grad()
 
@@ -163,6 +247,18 @@ def train(
             config.epochs,
             batches_per_epoch,
             opt_steps_per_epoch,
+        )
+        _write_progress_snapshot(
+            output_dir,
+            status="epoch_start",
+            started_at=started_at,
+            epoch=epoch,
+            total_epochs=config.epochs,
+            global_step=state.global_step,
+            total_opt_steps=total_opt_steps,
+            best_metric=state.best_metric,
+            best_epoch=state.best_epoch,
+            patience_counter=state.patience_counter,
         )
         _flush_logs()
 
@@ -176,17 +272,40 @@ def train(
                     token_type_ids=batch.get("token_type_ids"),
                     labels=batch["labels"],
                 )
-                loss = out["loss"] / config.gradient_accumulation_steps
+                pointwise_loss = out["loss"]
+                total_loss = pointwise_loss
+                pairwise_loss = None
+
+                if pairwise_iter is not None:
+                    pair_batch = next(pairwise_iter)
+                    pos = {k: v.to(device) for k, v in pair_batch["positive"].items()}
+                    neg = {k: v.to(device) for k, v in pair_batch["negative"].items()}
+                    pos_logits = model(**pos)["logits"]
+                    neg_logits = model(**neg)["logits"]
+                    pairwise_loss = torch.nn.functional.softplus(-(pos_logits - neg_logits)).mean()
+                    if config.objective == "pairwise":
+                        total_loss = config.pairwise_loss_weight * pairwise_loss
+                    else:
+                        total_loss = (
+                            config.pointwise_loss_weight * pointwise_loss
+                            + config.pairwise_loss_weight * pairwise_loss
+                        )
+
+                loss = total_loss / config.gradient_accumulation_steps
 
             scaler.scale(loss).backward()
-            epoch_loss += out["loss"].item()
+            epoch_loss += total_loss.item()
+            epoch_pointwise_loss += pointwise_loss.item()
+            if pairwise_loss is not None:
+                epoch_pairwise_loss += pairwise_loss.item()
+                n_pairwise_batches += 1
             n_batches += 1
 
             if batch_idx == 0:
                 logger.info(
                     "  First micro-batch OK (batch 0/%d) — loss=%.4f",
                     batches_per_epoch - 1,
-                    out["loss"].item(),
+                    total_loss.item(),
                 )
                 _flush_logs()
 
@@ -204,15 +323,19 @@ def train(
                 )
                 if log_this:
                     avg = epoch_loss / n_batches
+                    point_avg = epoch_pointwise_loss / n_batches
+                    pair_avg = epoch_pairwise_loss / max(1, n_pairwise_batches) if n_pairwise_batches else 0.0
                     lr = scheduler.get_last_lr()[0]
                     logger.info(
-                        "epoch %d optimizer_step %d/%d (epoch batch %d/%d) | loss=%.4f lr=%.2e",
+                        "epoch %d optimizer_step %d/%d (epoch batch %d/%d) | loss=%.4f point=%.4f pair=%.4f lr=%.2e",
                         epoch,
                         state.global_step,
                         total_opt_steps,
                         batch_idx + 1,
                         batches_per_epoch,
                         avg,
+                        point_avg,
+                        pair_avg,
                         lr,
                     )
                     _flush_logs()
@@ -221,7 +344,17 @@ def train(
 
         epoch_time = time.time() - t0
         avg_loss = epoch_loss / max(1, n_batches)
+        avg_pointwise_loss = epoch_pointwise_loss / max(1, n_batches)
+        avg_pairwise_loss = epoch_pairwise_loss / max(1, n_pairwise_batches) if n_pairwise_batches else 0.0
         logger.info("Epoch %d done in %.1fs — avg loss %.4f", epoch, epoch_time, avg_loss)
+
+        if use_pairwise:
+            logger.info(
+                "Epoch %d loss details: pointwise=%.4f pairwise=%.4f",
+                epoch,
+                avg_pointwise_loss,
+                avg_pairwise_loss,
+            )
 
         # Validation
         logger.info("Evaluating on val set...")
@@ -237,9 +370,42 @@ def train(
         if metrics.get("per_domain"):
             for dom, dom_m in metrics["per_domain"].items():
                 logger.info("  domain=%s: AUC=%.4f acc=%.4f n=%d", dom, dom_m.get("auc", 0), dom_m.get("accuracy", 0), dom_m.get("n", 0))
+        if pairwise_val_loader is not None:
+            pair_metrics = evaluate_pairwise(model, pairwise_val_loader, device)
+            metrics["pairwise_accuracy"] = pair_metrics["pairwise_accuracy"]
+            metrics["pairwise_mean_margin"] = pair_metrics["mean_margin"]
+            metrics["pairwise_n"] = pair_metrics["n"]
+            metrics["pairwise"] = pair_metrics
+            logger.info(
+                "Pairwise val: acc=%.4f mean_margin=%.4f n=%d",
+                pair_metrics["pairwise_accuracy"],
+                pair_metrics["mean_margin"],
+                pair_metrics["n"],
+            )
 
-        record = {"epoch": epoch, "train_loss": avg_loss, **{f"val_{k}": v for k, v in metrics.items() if isinstance(v, (int, float))}}
+        record = {
+            "epoch": epoch,
+            "train_loss": avg_loss,
+            "train_pointwise_loss": avg_pointwise_loss,
+            "train_pairwise_loss": avg_pairwise_loss,
+            **{f"val_{k}": v for k, v in metrics.items() if isinstance(v, (int, float))},
+        }
         state.history.append(record)
+        _write_progress_snapshot(
+            output_dir,
+            status="epoch_evaluated",
+            started_at=started_at,
+            epoch=epoch,
+            total_epochs=config.epochs,
+            global_step=state.global_step,
+            total_opt_steps=total_opt_steps,
+            best_metric=state.best_metric,
+            best_epoch=state.best_epoch,
+            patience_counter=state.patience_counter,
+            current_train_loss=avg_loss,
+            current_val_metrics={k: v for k, v in metrics.items() if isinstance(v, (int, float))},
+        )
+        _flush_logs()
 
         if wandb_run:
             wandb_run.log({f"val/{k}": v for k, v in metrics.items() if isinstance(v, (int, float))}, step=state.global_step)
@@ -264,7 +430,38 @@ def train(
             )
             if state.patience_counter >= config.early_stopping_patience:
                 logger.info("Early stopping triggered.")
+                _write_progress_snapshot(
+                    output_dir,
+                    status="early_stopped",
+                    started_at=started_at,
+                    epoch=epoch,
+                    total_epochs=config.epochs,
+                    global_step=state.global_step,
+                    total_opt_steps=total_opt_steps,
+                    best_metric=state.best_metric,
+                    best_epoch=state.best_epoch,
+                    patience_counter=state.patience_counter,
+                    current_train_loss=avg_loss,
+                    current_val_metrics={k: v for k, v in metrics.items() if isinstance(v, (int, float))},
+                )
+                _flush_logs()
                 break
+
+        _write_progress_snapshot(
+            output_dir,
+            status="epoch_finalized",
+            started_at=started_at,
+            epoch=epoch,
+            total_epochs=config.epochs,
+            global_step=state.global_step,
+            total_opt_steps=total_opt_steps,
+            best_metric=state.best_metric,
+            best_epoch=state.best_epoch,
+            patience_counter=state.patience_counter,
+            current_train_loss=avg_loss,
+            current_val_metrics={k: v for k, v in metrics.items() if isinstance(v, (int, float))},
+        )
+        _flush_logs()
 
     if config.save_last_model:
         last_dir = output_dir / "last_model"
@@ -273,5 +470,21 @@ def train(
 
     if wandb_run:
         wandb_run.finish()
+
+    _write_progress_snapshot(
+        output_dir,
+        status="completed",
+        started_at=started_at,
+        epoch=state.epoch,
+        total_epochs=config.epochs,
+        global_step=state.global_step,
+        total_opt_steps=total_opt_steps,
+        best_metric=state.best_metric,
+        best_epoch=state.best_epoch,
+        patience_counter=state.patience_counter,
+        current_train_loss=state.history[-1]["train_loss"] if state.history else None,
+        current_val_metrics=state.history[-1] if state.history else None,
+    )
+    _flush_logs()
 
     return state

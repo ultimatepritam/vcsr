@@ -1,0 +1,515 @@
+{
+  "config": {
+    "experiment": {
+      "name": "repair_pilot_round4",
+      "seed": 42
+    },
+    "inputs": {
+      "candidate_pools": [
+        "results/vcsr/bestofk_round4_holdout_eval_clean/candidate_dump.jsonl",
+        "results/vcsr/fixed_pool_round7_compare/pools/seed_59/candidate_dump.jsonl",
+        "results/vcsr/fixed_pool_round7_compare/pools/seed_60/candidate_dump.jsonl",
+        "results/vcsr/fixed_pool_round7_compare/pools/seed_61/candidate_dump.jsonl",
+        "results/vcsr/bestofk_round3_holdout_eval/candidate_dump.jsonl",
+        "results/vcsr/bestofk_pilot/candidate_dump.jsonl"
+      ]
+    },
+    "selection": {
+      "verifier_selection": "results/verifier/best_current/selection.yaml",
+      "policy": "verifier_ranked",
+      "K": 8,
+      "max_rows": 30,
+      "scoring_batch_size": 8
+    },
+    "generation": {
+      "clear_proxy_env": true,
+      "backends": [
+        {
+          "type": "openrouter",
+          "K": 1
+        }
+      ],
+      "temperature": 0.4,
+      "top_p": 0.9,
+      "max_new_tokens": 1024,
+      "retry_attempts": 3,
+      "retry_delay_sec": 2
+    },
+    "evaluation": {
+      "equivalence_timeout_sec": 0
+    },
+    "output": {
+      "dir": "results/vcsr/repair_pilot_round4"
+    }
+  },
+  "metrics": {
+    "total": 30,
+    "original_equiv_count": 0,
+    "repair_parse_count": 29,
+    "repair_solvable_count": 28,
+    "repair_equiv_count": 23,
+    "original_equiv_rate": 0.0,
+    "repair_parse_rate": 0.9666666666666667,
+    "repair_solvable_rate": 0.9333333333333333,
+    "repair_equiv_rate": 0.7666666666666667,
+    "repair_equiv_given_parse": 0.7931034482758621,
+    "helped": 23,
+    "hurt": 0,
+    "tied": 7
+  },
+  "domain_breakdown": {
+    "blocksworld": {
+      "total": 26,
+      "original_equiv_count": 0,
+      "repair_parse_count": 25,
+      "repair_solvable_count": 24,
+      "repair_equiv_count": 22,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 0.9615384615384616,
+      "repair_solvable_rate": 0.9230769230769231,
+      "repair_equiv_rate": 0.8461538461538461,
+      "repair_equiv_given_parse": 0.88,
+      "helped": 22,
+      "hurt": 0,
+      "tied": 4
+    },
+    "gripper": {
+      "total": 4,
+      "original_equiv_count": 0,
+      "repair_parse_count": 4,
+      "repair_solvable_count": 4,
+      "repair_equiv_count": 1,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 1.0,
+      "repair_equiv_rate": 0.25,
+      "repair_equiv_given_parse": 0.25,
+      "helped": 1,
+      "hurt": 0,
+      "tied": 3
+    }
+  },
+  "style_breakdown": {
+    "abstract/abstract": {
+      "total": 28,
+      "original_equiv_count": 0,
+      "repair_parse_count": 27,
+      "repair_solvable_count": 27,
+      "repair_equiv_count": 22,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 0.9642857142857143,
+      "repair_solvable_rate": 0.9642857142857143,
+      "repair_equiv_rate": 0.7857142857142857,
+      "repair_equiv_given_parse": 0.8148148148148148,
+      "helped": 22,
+      "hurt": 0,
+      "tied": 6
+    },
+    "explicit/explicit": {
+      "total": 2,
+      "original_equiv_count": 0,
+      "repair_parse_count": 2,
+      "repair_solvable_count": 1,
+      "repair_equiv_count": 1,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 0.5,
+      "repair_equiv_rate": 0.5,
+      "repair_equiv_given_parse": 0.5,
+      "helped": 1,
+      "hurt": 0,
+      "tied": 1
+    }
+  },
+  "failure_type_breakdown": {
+    "high_verifier_score_wrong_candidate": {
+      "total": 2,
+      "original_equiv_count": 0,
+      "repair_parse_count": 2,
+      "repair_solvable_count": 2,
+      "repair_equiv_count": 2,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 1.0,
+      "repair_equiv_rate": 1.0,
+      "repair_equiv_given_parse": 1.0,
+      "helped": 2,
+      "hurt": 0,
+      "tied": 0
+    },
+    "low_verifier_score_wrong_candidate": {
+      "total": 24,
+      "original_equiv_count": 0,
+      "repair_parse_count": 24,
+      "repair_solvable_count": 24,
+      "repair_equiv_count": 19,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 1.0,
+      "repair_equiv_rate": 0.7916666666666666,
+      "repair_equiv_given_parse": 0.7916666666666666,
+      "helped": 19,
+      "hurt": 0,
+      "tied": 5
+    },
+    "unsolvable_selected_candidate": {
+      "total": 4,
+      "original_equiv_count": 0,
+      "repair_parse_count": 3,
+      "repair_solvable_count": 2,
+      "repair_equiv_count": 2,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 0.75,
+      "repair_solvable_rate": 0.5,
+      "repair_equiv_rate": 0.5,
+      "repair_equiv_given_parse": 0.6666666666666666,
+      "helped": 2,
+      "hurt": 0,
+      "tied": 2
+    }
+  },
+  "outcome_counts": [
+    [
+      "repair_helped",
+      23
+    ],
+    [
+      "both_fail",
+      7
+    ]
+  ],
+  "rows": [
+    {
+      "pool": "fixed_pool_round7_compare/seed_61",
+      "planetarium_name": "blocksworld_swap_to_swap_blocks_list_8_16",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.9765625,
+      "failure_type": "high_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_60",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_6_13",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.404541015625,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "bestofk_pilot",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_2_2_2_2_2_3",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.369140625,
+      "failure_type": "unsolvable_selected_candidate"
+    },
+    {
+      "pool": "bestofk_round3_holdout_eval",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_2_2_2_2_3_5",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "both_fail",
+      "repair_parseable": false,
+      "repair_equivalent": false,
+      "repair_verifier_score": null,
+      "failure_type": "unsolvable_selected_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_60",
+      "planetarium_name": "blocksworld_swap_to_swap_blocks_list_11_4",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.313232421875,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "bestofk_round3_holdout_eval",
+      "planetarium_name": "blocksworld_swap_to_swap_blocks_list_16_2",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.291015625,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "bestofk_round3_holdout_eval",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_2_2_5_6_6",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.292724609375,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_59",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_1_1_6_12",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.294677734375,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_59",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_2_2_2_3_3_6",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.29345703125,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_60",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_2_2_2_2_2_3_4",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.291259765625,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_60",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_3_4_4_5_5",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.290771484375,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_60",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_3_4_6_7",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.293212890625,
+      "failure_type": "unsolvable_selected_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_61",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_2_2_2_2_2_3_3_6",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.289794921875,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_60",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_1_1_1_3_4_10",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "both_fail",
+      "repair_parseable": true,
+      "repair_equivalent": false,
+      "repair_verifier_score": 0.291015625,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_61",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_2_3_13",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.292236328125,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "bestofk_round3_holdout_eval",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_9_9",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.284423828125,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "bestofk_pilot",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_2_2_2_12",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.282470703125,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_61",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_2_2_5_7",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.280517578125,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "bestofk_round3_holdout_eval",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_2_4",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.284423828125,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_60",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_1_1_2_11",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "both_fail",
+      "repair_parseable": true,
+      "repair_equivalent": false,
+      "repair_verifier_score": 0.28125,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_60",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_1_2_2_3_4",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.284912109375,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "bestofk_round3_holdout_eval",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_2_2_6_7",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.279296875,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "bestofk_round4_holdout_eval_clean",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_2_2_6_7",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.279296875,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "bestofk_round4_holdout_eval_clean",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_2_3_3_7",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.276611328125,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_60",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_7_10",
+      "domain": "blocksworld",
+      "style": "explicit/explicit",
+      "outcome": "both_fail",
+      "repair_parseable": true,
+      "repair_equivalent": false,
+      "repair_verifier_score": 0.974609375,
+      "failure_type": "unsolvable_selected_candidate"
+    },
+    {
+      "pool": "bestofk_round4_holdout_eval_clean",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_4_4_4_4",
+      "domain": "blocksworld",
+      "style": "explicit/explicit",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.974609375,
+      "failure_type": "high_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_61",
+      "planetarium_name": "gripper_one_room_to_focus_min_balls_in_grippers_0_0_balls_in_rooms_24_0",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "outcome": "both_fail",
+      "repair_parseable": true,
+      "repair_equivalent": false,
+      "repair_verifier_score": 0.015960693359375,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "bestofk_round4_holdout_eval_clean",
+      "planetarium_name": "gripper_juggle_to_juggle_balls_in_grippers_1_1_1_1_1_1_balls_in_rooms_7",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.2122802734375,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "bestofk_pilot",
+      "planetarium_name": "gripper_holding_to_drop_and_pickup_balls_in_grippers_1_1_0_balls_in_rooms_1_0",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "outcome": "both_fail",
+      "repair_parseable": true,
+      "repair_equivalent": false,
+      "repair_verifier_score": 0.0016040802001953125,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "bestofk_round4_holdout_eval_clean",
+      "planetarium_name": "gripper_juggle_to_juggle_balls_in_grippers_1_1_1_0_0_0_0_0_0_0_balls_in_rooms_3_0_0_0_0",
+      "domain": "gripper",
+      "style": "abstract/abstract",
+      "outcome": "both_fail",
+      "repair_parseable": true,
+      "repair_equivalent": false,
+      "repair_verifier_score": 0.0014781951904296875,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    }
+  ],
+  "accepted": true,
+  "recommendation": "Repair is promising; run a fresh fixed-pool repair gate next."
+}

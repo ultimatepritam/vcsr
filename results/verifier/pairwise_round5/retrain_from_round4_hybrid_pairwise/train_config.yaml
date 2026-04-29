@@ -1,0 +1,51 @@
+data:
+  extra_train_jsonl: results/verifier/pairwise_round5/pointwise_extra.jsonl
+  extra_train_repeat: 3
+  filter_unparseable: true
+  pairwise_train_jsonl: results/verifier/pairwise_round5/pairwise_train.jsonl
+  pairwise_val_fraction: 0.15
+  train_jsonl: results/neggen/pilot/verifier_train.relabeled.jsonl
+  val_fraction: 0.15
+evaluation:
+  eval_steps: 0
+  metrics:
+  - auc
+  - accuracy
+  - f1
+  - precision
+  - recall
+  - pairwise_accuracy
+  - pairwise_mean_margin
+  per_domain: true
+  per_source: true
+experiment:
+  name: verifier_pairwise_round5
+  seed: 42
+logging:
+  log_every_n_steps: 1
+  wandb_project: null
+model:
+  backbone: microsoft/deberta-v3-base
+  dropout: 0.1
+  init_selection_path: results/verifier/best_current/selection.yaml
+  max_seq_len: 512
+  revision: refs/pr/14
+output:
+  dir: results/verifier/pairwise_round5/retrain_from_round4_hybrid_pairwise
+  save_best_model: true
+  save_last_model: true
+training:
+  batch_size: 2
+  dataloader_workers: 0
+  early_stopping_metric: val_pairwise_accuracy
+  early_stopping_patience: 2
+  epochs: 6
+  fp16: true
+  gradient_accumulation_steps: 64
+  learning_rate: 1.0e-05
+  max_grad_norm: 1.0
+  objective: hybrid_pairwise
+  pairwise_loss_weight: 1.0
+  pointwise_loss_weight: 0.5
+  warmup_ratio: 0.05
+  weight_decay: 0.01

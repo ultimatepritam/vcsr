@@ -1,0 +1,51 @@
+experiment:
+  name: vcsr_bestofk_final_repair
+  seed: 54
+dataset:
+  split: test
+  split_strategy: template_hash
+  domains:
+  - blocksworld
+  - gripper
+  max_samples: 50
+generation:
+  clear_proxy_env: true
+  backends:
+  - type: openrouter
+    K: 8
+  temperature: 0.8
+  top_p: 0.95
+  K_values:
+  - 1
+  - 4
+  - 8
+  max_new_tokens: 1024
+  retry_attempts: 3
+  retry_delay_sec: 2
+verifier:
+  selection_metadata: results/verifier/best_current/selection.yaml
+  scoring_batch_size: 8
+repair:
+  enabled: true
+  K: 8
+  generation:
+    backends:
+    - type: openrouter
+      K: 1
+    temperature: 0.2
+    top_p: 0.9
+    max_new_tokens: 1024
+    retry_attempts: 3
+    retry_delay_sec: 2
+evaluation:
+  check_parse: true
+  check_equivalence: true
+  planner_filter: false
+  policies:
+  - greedy_first
+  - random_parseable
+  - verifier_ranked
+  - verifier_ranked_repair
+output:
+  dir: results\vcsr\final_repair_gate_round4\seed_54
+  save_predictions: true

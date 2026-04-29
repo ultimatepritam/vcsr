@@ -1,0 +1,35 @@
+base_config: configs/vcsr_bestofk_round3_holdout_eval.yaml
+output_dir: results/vcsr/fresh_repair_gate_round4_domainaware
+clear_proxy_env: true
+force: false
+force_repairs: false
+
+experiment:
+  seed: 42
+
+pool_generation:
+  selection: results/verifier/best_current/selection.yaml
+  source_root: results/vcsr/fresh_repair_gate_round4
+  max_rows: 50
+  seeds:
+    - 62
+    - 63
+    - 64
+
+repair:
+  verifier_selection: results/verifier/best_current/selection.yaml
+  K: 8
+  max_repairs_per_seed: 30
+  scoring_batch_size: 8
+  generation:
+    clear_proxy_env: true
+    backends:
+      - type: openrouter
+        K: 1
+    temperature: 0.2
+    top_p: 0.9
+    max_new_tokens: 1024
+    retry_attempts: 3
+    retry_delay_sec: 2
+  evaluation:
+    equivalence_timeout_sec: 0

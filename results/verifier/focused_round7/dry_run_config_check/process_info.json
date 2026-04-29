@@ -1,0 +1,8 @@
+{
+  "pid": 5912,
+  "started_at": "2026-04-25T02:28:47",
+  "command": "scripts/train_verifier.py --config configs/verifier_focused_round7.yaml --dry_run --output_dir results/verifier/focused_round7/dry_run_config_check",
+  "output_dir": "results\\verifier\\focused_round7\\dry_run_config_check",
+  "progress_log": "results\\verifier\\focused_round7\\dry_run_config_check\\progress.log",
+  "progress_json": "results\\verifier\\focused_round7\\dry_run_config_check\\progress.json"
+}

@@ -1,0 +1,6 @@
+{
+  "pid": 20456,
+  "started_at": 1777143955.9924448,
+  "config": "configs\\vcsr_gripper_repair_prompt_pilot.yaml",
+  "output_dir": "results\\vcsr\\gripper_repair_prompt_pilot"
+}

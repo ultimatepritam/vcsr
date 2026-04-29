@@ -1,0 +1,111 @@
+{
+  "base_config": "configs/vcsr_bestofk_final_repair.yaml",
+  "seeds": [
+    66
+  ],
+  "rows_per_seed": 3,
+  "k": 8,
+  "seed_reports": [
+    {
+      "seed": 66,
+      "output_dir": "results\\vcsr\\final_repair_gate_round4_smoke\\seed_66",
+      "baseline_k8_equiv_rate": 0.3333333333333333,
+      "repair_augmented_k8_equiv_rate": 1.0,
+      "delta_k8": 0.6666666666666667,
+      "repair_metrics": {
+        "total": 3,
+        "repair_parse_count": 3,
+        "repair_equiv_count": 3,
+        "repair_parse_rate": 1.0,
+        "repair_equiv_rate": 1.0,
+        "repair_equiv_given_parse": 1.0,
+        "helped": 2,
+        "hurt": 0,
+        "tied": 1
+      },
+      "repair_summary": {
+        "enabled": true,
+        "metrics": {
+          "total": 3,
+          "repair_parse_count": 3,
+          "repair_equiv_count": 3,
+          "repair_parse_rate": 1.0,
+          "repair_equiv_rate": 1.0,
+          "repair_equiv_given_parse": 1.0,
+          "helped": 2,
+          "hurt": 0,
+          "tied": 1
+        },
+        "outcome_counts": [
+          [
+            "repair_helped",
+            2
+          ],
+          [
+            "both_success",
+            1
+          ]
+        ],
+        "domain_breakdown": {
+          "blocksworld": {
+            "total": 1,
+            "repair_parse_count": 1,
+            "repair_equiv_count": 1,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 1.0,
+            "repair_equiv_given_parse": 1.0,
+            "helped": 0,
+            "hurt": 0,
+            "tied": 1
+          },
+          "gripper": {
+            "total": 2,
+            "repair_parse_count": 2,
+            "repair_equiv_count": 2,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 1.0,
+            "repair_equiv_given_parse": 1.0,
+            "helped": 2,
+            "hurt": 0,
+            "tied": 0
+          }
+        },
+        "style_breakdown": {
+          "explicit/explicit": {
+            "total": 3,
+            "repair_parse_count": 3,
+            "repair_equiv_count": 3,
+            "repair_parse_rate": 1.0,
+            "repair_equiv_rate": 1.0,
+            "repair_equiv_given_parse": 1.0,
+            "helped": 2,
+            "hurt": 0,
+            "tied": 1
+          }
+        },
+        "repair_outputs": "results\\vcsr\\final_repair_gate_round4_smoke\\seed_66\\repair_outputs.jsonl"
+      }
+    }
+  ],
+  "mean_metrics": {
+    "baseline_k8_equiv_rate": 0.3333333333333333,
+    "repair_augmented_k8_equiv_rate": 1.0,
+    "mean_delta_k8": 0.6666666666666667,
+    "baseline_k8_values": [
+      0.3333333333333333
+    ],
+    "repair_augmented_k8_values": [
+      1.0
+    ],
+    "deltas": [
+      0.6666666666666667
+    ],
+    "nonnegative_seeds": 1,
+    "worst_delta": 0.6666666666666667,
+    "repair_parse_rate_mean": 1.0,
+    "total_helped": 2,
+    "total_hurt": 0
+  },
+  "accepted": true,
+  "recommendation": "Repair-augmented VCSR passes the final fresh gate."
+}

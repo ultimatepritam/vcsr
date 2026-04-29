@@ -1,0 +1,6 @@
+{
+  "pid": 164,
+  "started_at": 1777190114.3824437,
+  "config": "configs\\vcsr_final_guarded_repair_gate.yaml",
+  "output_dir": "results\\vcsr\\final_guarded_repair_gate_round4"
+}

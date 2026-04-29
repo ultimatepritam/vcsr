@@ -1,0 +1,6 @@
+{
+  "pid": 15704,
+  "started_at": 1777182430.5579953,
+  "config": "configs\\vcsr_bestofk_guarded_repair.yaml",
+  "output_dir": "results\\vcsr\\guarded_repair_smoke"
+}

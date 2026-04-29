@@ -55,3 +55,4 @@ wandb/
 
 # Environment variables
 .env
+.local

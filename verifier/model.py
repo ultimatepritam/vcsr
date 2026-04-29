@@ -28,8 +28,17 @@ class VerifierModel(nn.Module):
         revision: Optional[str] = None,
     ):
         super().__init__()
-        config = AutoConfig.from_pretrained(backbone_name, revision=revision)
-        self.backbone = AutoModel.from_pretrained(backbone_name, config=config, revision=revision)
+        config = AutoConfig.from_pretrained(
+            backbone_name,
+            revision=revision,
+            local_files_only=True,
+        )
+        self.backbone = AutoModel.from_pretrained(
+            backbone_name,
+            config=config,
+            revision=revision,
+            local_files_only=True,
+        )
         h = hidden_size or config.hidden_size
         self.head = nn.Sequential(
             nn.Dropout(dropout),

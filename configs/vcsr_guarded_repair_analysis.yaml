@@ -1,0 +1,11 @@
+input:
+  dev_gate_summary: results/vcsr/fresh_repair_gate_round4_domainaware/fresh_repair_gate_summary.json
+  repair_glob: results/vcsr/fresh_repair_gate_round4_domainaware/seed_*/repair/repair_outputs.jsonl
+
+margins:
+  - 0.00
+  - 0.01
+  - 0.02
+  - 0.05
+
+output_dir: results/vcsr/guarded_repair_analysis

@@ -1,0 +1,28 @@
+{
+  "total": 2407,
+  "positives": 921,
+  "negatives": 1486,
+  "unparseable": 0,
+  "pos_neg_ratio": 0.6198,
+  "by_source": {
+    "perturbation": 993,
+    "llm_bedrock": 902,
+    "gold": 500,
+    "bestofk_mined_negative": 8,
+    "bestofk_mined_positive": 4
+  },
+  "by_domain": {
+    "blocksworld": 1491,
+    "gripper": 916
+  },
+  "by_perturbation_type": {
+    "negate_goal": 253,
+    "drop_init_pred": 241,
+    "add_extra_object": 228,
+    "swap_pred_args": 189,
+    "swap_goal_pred": 82
+  },
+  "by_source_model": {
+    "global.anthropic.claude-haiku-4-5-20251001-v1:0": 914
+  }
+}

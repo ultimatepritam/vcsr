@@ -1,0 +1,25 @@
+{
+  "status": "completed",
+  "elapsed_sec": 3.919306516647339,
+  "epoch": 1,
+  "total_epochs": 1,
+  "global_step": 1,
+  "total_optimizer_steps": 1,
+  "best_metric": 0.8008658008658008,
+  "best_epoch": 1,
+  "patience_counter": 0,
+  "current_train_loss": 0.5245177205651999,
+  "current_val_metrics": {
+    "epoch": 1,
+    "train_loss": 0.5245177205651999,
+    "train_pointwise_loss": 0.5245177205651999,
+    "train_pairwise_loss": 0.0,
+    "val_auc": 0.8008658008658008,
+    "val_accuracy": 0.71875,
+    "val_f1": 0.47058823529411764,
+    "val_precision": 0.6666666666666666,
+    "val_recall": 0.36363636363636365,
+    "val_n": 32,
+    "val_loss": 0.410519003868103
+  }
+}

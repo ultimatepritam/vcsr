@@ -1,0 +1,30 @@
+{
+  "seed": 62,
+  "candidate_dump": "results\\vcsr\\fresh_repair_gate_round4\\seed_62\\pool\\candidate_dump.jsonl",
+  "repair_dir": "results\\vcsr\\fresh_repair_gate_round4\\seed_62\\repair",
+  "rows": 50,
+  "baseline_k8_equiv_rate": 0.5,
+  "repair_augmented_k8_equiv_rate": 0.5,
+  "delta_k8": 0.0,
+  "repair_metrics": {
+    "total": 26,
+    "original_equiv_count": 0,
+    "repair_parse_count": 26,
+    "repair_solvable_count": 9,
+    "repair_equiv_count": 0,
+    "original_equiv_rate": 0.0,
+    "repair_parse_rate": 1.0,
+    "repair_solvable_rate": 0.34615384615384615,
+    "repair_equiv_rate": 0.0,
+    "repair_equiv_given_parse": 0.0,
+    "helped": 0,
+    "hurt": 0,
+    "tied": 26
+  },
+  "outcome_counts": [
+    [
+      "both_fail",
+      26
+    ]
+  ]
+}

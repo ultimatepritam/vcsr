@@ -1,0 +1,6 @@
+{
+  "pid": 25408,
+  "started_at": 1777304588.0032992,
+  "config": "configs\\vcsr_model_benchmark_qwen35_smoke.yaml",
+  "output_dir": "results\\vcsr\\model_benchmark_qwen35_smoke"
+}

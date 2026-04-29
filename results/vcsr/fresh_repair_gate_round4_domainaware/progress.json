@@ -1,0 +1,11 @@
+{
+  "stage": "complete",
+  "seed": null,
+  "completed_steps": 6,
+  "total_steps": 6,
+  "remaining_steps": 0,
+  "elapsed_sec": 180.63139629364014,
+  "avg_sec_per_step": 30.10523271560669,
+  "eta_sec": 0.0,
+  "current_case": ""
+}

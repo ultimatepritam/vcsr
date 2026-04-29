@@ -1,0 +1,53 @@
+experiment:
+  name: vcsr_model_benchmark_qwen_3p5_9b
+  seed: 72
+dataset:
+  split: test
+  split_strategy: template_hash
+  domains:
+  - blocksworld
+  - gripper
+  max_samples: 3
+generation:
+  clear_proxy_env: true
+  backends:
+  - type: openrouter
+    model: qwen/qwen3.5-9b
+    K: 8
+  temperature: 0.8
+  top_p: 0.95
+  K_values:
+  - 1
+  - 4
+  - 8
+  max_new_tokens: 1024
+  retry_attempts: 2
+  retry_delay_sec: 1.0
+verifier:
+  selection_metadata: results/verifier/best_current/selection.yaml
+  scoring_batch_size: 8
+repair:
+  enabled: true
+  K: 8
+  generation:
+    backends:
+    - type: openrouter
+      model: qwen/qwen3.5-9b
+      K: 1
+    temperature: 0.2
+    top_p: 0.9
+    max_new_tokens: 1024
+    retry_attempts: 2
+    retry_delay_sec: 1.0
+evaluation:
+  check_parse: true
+  check_equivalence: true
+  planner_filter: false
+  policies:
+  - greedy_first
+  - random_parseable
+  - verifier_ranked
+  - verifier_ranked_repair
+output:
+  dir: results\vcsr\model_benchmark_qwen35_smoke\qwen_3p5_9b\seed_72
+  save_predictions: true

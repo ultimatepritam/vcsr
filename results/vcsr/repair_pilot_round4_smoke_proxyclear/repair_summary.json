@@ -1,0 +1,158 @@
+{
+  "config": {
+    "experiment": {
+      "name": "repair_pilot_round4",
+      "seed": 42
+    },
+    "inputs": {
+      "candidate_pools": [
+        "results/vcsr/bestofk_round4_holdout_eval_clean/candidate_dump.jsonl",
+        "results/vcsr/fixed_pool_round7_compare/pools/seed_59/candidate_dump.jsonl",
+        "results/vcsr/fixed_pool_round7_compare/pools/seed_60/candidate_dump.jsonl",
+        "results/vcsr/fixed_pool_round7_compare/pools/seed_61/candidate_dump.jsonl",
+        "results/vcsr/bestofk_round3_holdout_eval/candidate_dump.jsonl",
+        "results/vcsr/bestofk_pilot/candidate_dump.jsonl"
+      ]
+    },
+    "selection": {
+      "verifier_selection": "results/verifier/best_current/selection.yaml",
+      "policy": "verifier_ranked",
+      "K": 8,
+      "max_rows": 2,
+      "scoring_batch_size": 8
+    },
+    "generation": {
+      "clear_proxy_env": true,
+      "backends": [
+        {
+          "type": "openrouter",
+          "K": 1
+        }
+      ],
+      "temperature": 0.4,
+      "top_p": 0.9,
+      "max_new_tokens": 1024,
+      "retry_attempts": 3,
+      "retry_delay_sec": 2
+    },
+    "evaluation": {
+      "equivalence_timeout_sec": 0
+    },
+    "output": {
+      "dir": "results\\vcsr\\repair_pilot_round4_smoke_proxyclear"
+    }
+  },
+  "metrics": {
+    "total": 2,
+    "original_equiv_count": 0,
+    "repair_parse_count": 2,
+    "repair_solvable_count": 2,
+    "repair_equiv_count": 2,
+    "original_equiv_rate": 0.0,
+    "repair_parse_rate": 1.0,
+    "repair_solvable_rate": 1.0,
+    "repair_equiv_rate": 1.0,
+    "repair_equiv_given_parse": 1.0,
+    "helped": 2,
+    "hurt": 0,
+    "tied": 0
+  },
+  "domain_breakdown": {
+    "blocksworld": {
+      "total": 2,
+      "original_equiv_count": 0,
+      "repair_parse_count": 2,
+      "repair_solvable_count": 2,
+      "repair_equiv_count": 2,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 1.0,
+      "repair_equiv_rate": 1.0,
+      "repair_equiv_given_parse": 1.0,
+      "helped": 2,
+      "hurt": 0,
+      "tied": 0
+    }
+  },
+  "style_breakdown": {
+    "abstract/abstract": {
+      "total": 2,
+      "original_equiv_count": 0,
+      "repair_parse_count": 2,
+      "repair_solvable_count": 2,
+      "repair_equiv_count": 2,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 1.0,
+      "repair_equiv_rate": 1.0,
+      "repair_equiv_given_parse": 1.0,
+      "helped": 2,
+      "hurt": 0,
+      "tied": 0
+    }
+  },
+  "failure_type_breakdown": {
+    "high_verifier_score_wrong_candidate": {
+      "total": 1,
+      "original_equiv_count": 0,
+      "repair_parse_count": 1,
+      "repair_solvable_count": 1,
+      "repair_equiv_count": 1,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 1.0,
+      "repair_equiv_rate": 1.0,
+      "repair_equiv_given_parse": 1.0,
+      "helped": 1,
+      "hurt": 0,
+      "tied": 0
+    },
+    "low_verifier_score_wrong_candidate": {
+      "total": 1,
+      "original_equiv_count": 0,
+      "repair_parse_count": 1,
+      "repair_solvable_count": 1,
+      "repair_equiv_count": 1,
+      "original_equiv_rate": 0.0,
+      "repair_parse_rate": 1.0,
+      "repair_solvable_rate": 1.0,
+      "repair_equiv_rate": 1.0,
+      "repair_equiv_given_parse": 1.0,
+      "helped": 1,
+      "hurt": 0,
+      "tied": 0
+    }
+  },
+  "outcome_counts": [
+    [
+      "repair_helped",
+      2
+    ]
+  ],
+  "rows": [
+    {
+      "pool": "fixed_pool_round7_compare/seed_61",
+      "planetarium_name": "blocksworld_swap_to_swap_blocks_list_8_16",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.9765625,
+      "failure_type": "high_verifier_score_wrong_candidate"
+    },
+    {
+      "pool": "fixed_pool_round7_compare/seed_60",
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_6_13",
+      "domain": "blocksworld",
+      "style": "abstract/abstract",
+      "outcome": "repair_helped",
+      "repair_parseable": true,
+      "repair_equivalent": true,
+      "repair_verifier_score": 0.404541015625,
+      "failure_type": "low_verifier_score_wrong_candidate"
+    }
+  ],
+  "accepted": true,
+  "recommendation": "Repair is promising; run a fresh fixed-pool repair gate next."
+}

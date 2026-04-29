@@ -1,0 +1,6 @@
+{
+  "pid": 23604,
+  "started_at": 1777119109.7686434,
+  "config": "configs\\vcsr_repair_pilot.yaml",
+  "output_dir": "results\\vcsr\\repair_pilot_round4_smoke_proxyclear"
+}

@@ -1,0 +1,10 @@
+﻿{
+    "pid":  17944,
+    "started_at":  "2026-04-20T00:37:12",
+    "command":  ".\\\\.venv\\\\Scripts\\\\python.exe -u scripts\\\\run_multiseed_holdout_compare.py --config configs\\\\vcsr_multiseed_holdout_compare.yaml",
+    "output_dir":  "results\\vcsr\\multiseed_holdout_compare",
+    "stdout_log":  "results\\vcsr\\multiseed_holdout_compare\\run_stdout.log",
+    "stderr_log":  "results\\vcsr\\multiseed_holdout_compare\\run_stderr.log",
+    "progress_log":  "results\\vcsr\\multiseed_holdout_compare\\progress.log",
+    "progress_json":  "results\\vcsr\\multiseed_holdout_compare\\progress.json"
+}

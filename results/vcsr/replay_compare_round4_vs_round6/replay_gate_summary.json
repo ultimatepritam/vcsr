@@ -1,0 +1,68 @@
+{
+  "verdict": "reject_round6",
+  "baseline": "round4_best_current",
+  "candidate": "round6_conservative_pairwise",
+  "rows": [
+    {
+      "pool": "round4_holdout_clean",
+      "K": 4,
+      "round4_verifier_ranked": 0.5,
+      "round6_verifier_ranked": 0.48,
+      "delta": -0.02,
+      "oracle": 0.52
+    },
+    {
+      "pool": "round4_holdout_clean",
+      "K": 8,
+      "round4_verifier_ranked": 0.52,
+      "round6_verifier_ranked": 0.5,
+      "delta": -0.02,
+      "oracle": 0.54
+    },
+    {
+      "pool": "round3_holdout",
+      "K": 4,
+      "round4_verifier_ranked": 0.5,
+      "round6_verifier_ranked": 0.44,
+      "delta": -0.06,
+      "oracle": 0.52
+    },
+    {
+      "pool": "round3_holdout",
+      "K": 8,
+      "round4_verifier_ranked": 0.46,
+      "round6_verifier_ranked": 0.46,
+      "delta": 0.0,
+      "oracle": 0.54
+    },
+    {
+      "pool": "pilot",
+      "K": 4,
+      "round4_verifier_ranked": 0.5,
+      "round6_verifier_ranked": 0.5,
+      "delta": 0.0,
+      "oracle": 0.5666666666666667
+    },
+    {
+      "pool": "pilot",
+      "K": 8,
+      "round4_verifier_ranked": 0.5666666666666667,
+      "round6_verifier_ranked": 0.5333333333333333,
+      "delta": -0.03333333333333333,
+      "oracle": 0.6
+    }
+  ],
+  "mean_by_k": {
+    "4": {
+      "round4": 0.5,
+      "round6": 0.47333333333333333,
+      "delta": -0.026666666666666672
+    },
+    "8": {
+      "round4": 0.5155555555555555,
+      "round6": 0.4977777777777778,
+      "delta": -0.017777777777777726
+    }
+  },
+  "recommendation": "Keep round 4 as best_current and do not run fresh generation for round 6."
+}

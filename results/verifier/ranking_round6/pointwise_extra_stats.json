@@ -1,0 +1,21 @@
+{
+  "total": 817,
+  "positives": 300,
+  "negatives": 517,
+  "unparseable": 0,
+  "pos_neg_ratio": 0.5803,
+  "by_source": {
+    "ranking_round6_negative_only": 268,
+    "ranking_round6_pair_negative": 249,
+    "ranking_round6_pair_positive": 156,
+    "ranking_round6_positive_only": 144
+  },
+  "by_domain": {
+    "blocksworld": 570,
+    "gripper": 247
+  },
+  "by_perturbation_type": {},
+  "by_source_model": {
+    "global.anthropic.claude-haiku-4-5-20251001-v1:0": 817
+  }
+}

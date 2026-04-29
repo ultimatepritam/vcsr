@@ -1,0 +1,1073 @@
+{
+  "config": "configs\\vcsr_model_benchmark.yaml",
+  "base_config": "configs/vcsr_bestofk_final_repair.yaml",
+  "output_dir": "results\\vcsr\\model_benchmark",
+  "seeds": [
+    72,
+    73,
+    74
+  ],
+  "rows_per_seed": 10,
+  "main_k": 8,
+  "successful_runs": 9,
+  "failed_runs": [],
+  "models": {
+    "claude_haiku_4p5": {
+      "model_id": "anthropic/claude-haiku-4.5",
+      "num_successful_runs": 3,
+      "metrics": {
+        "k1:greedy_first": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.4,
+          "equiv_given_parse": 0.4,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 12
+          }
+        },
+        "k1:random_parseable": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.4,
+          "equiv_given_parse": 0.4,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 12
+          }
+        },
+        "k1:verifier_ranked": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.4,
+          "equiv_given_parse": 0.4,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 12
+          }
+        },
+        "k1:verifier_ranked_repair": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.4,
+          "equiv_given_parse": 0.4,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 12
+          }
+        },
+        "k4:greedy_first": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.4,
+          "equiv_given_parse": 0.4,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 12
+          }
+        },
+        "k4:random_parseable": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.4,
+          "equiv_given_parse": 0.4,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 12
+          }
+        },
+        "k4:verifier_ranked": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.43333333333333335,
+          "equiv_given_parse": 0.43333333333333335,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 13
+          }
+        },
+        "k4:verifier_ranked_repair": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.43333333333333335,
+          "equiv_given_parse": 0.43333333333333335,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 13
+          }
+        },
+        "k8:greedy_first": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.4,
+          "equiv_given_parse": 0.4,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 12
+          }
+        },
+        "k8:random_parseable": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.3,
+          "equiv_given_parse": 0.3,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 9
+          }
+        },
+        "k8:verifier_ranked": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.4666666666666667,
+          "equiv_given_parse": 0.4666666666666667,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 14
+          }
+        },
+        "k8:verifier_ranked_repair": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.9,
+          "equiv_given_parse": 0.9,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 27
+          }
+        }
+      },
+      "main_deltas": {
+        "mean_verifier_minus_prompt": 0.06666666666666667,
+        "mean_repair_minus_prompt": 0.5,
+        "mean_repair_minus_verifier": 0.43333333333333335
+      },
+      "per_seed": [
+        {
+          "seed": 72,
+          "output_dir": "results\\vcsr\\model_benchmark\\claude_haiku_4p5\\seed_72",
+          "prompt_only_equiv": 0.3,
+          "bestof8_random_parseable_equiv": 0.1,
+          "bestof8_verifier_ranked_equiv": 0.4,
+          "bestof8_vcsr_repair_equiv": 0.9,
+          "verifier_minus_prompt": 0.10000000000000003,
+          "repair_minus_prompt": 0.6000000000000001,
+          "repair_minus_verifier": 0.5,
+          "latency": {
+            "generation_calls": 200,
+            "repair_calls": 10,
+            "generation_errors": 0,
+            "repair_errors": 0,
+            "generation_latency_total_sec": 281.99458479881287,
+            "repair_latency_total_sec": 42.5360209941864,
+            "generation_latency_mean_sec": 3.524932309985161,
+            "repair_latency_mean_sec": 4.25360209941864
+          }
+        },
+        {
+          "seed": 73,
+          "output_dir": "results\\vcsr\\model_benchmark\\claude_haiku_4p5\\seed_73",
+          "prompt_only_equiv": 0.5,
+          "bestof8_random_parseable_equiv": 0.5,
+          "bestof8_verifier_ranked_equiv": 0.5,
+          "bestof8_vcsr_repair_equiv": 0.9,
+          "verifier_minus_prompt": 0.0,
+          "repair_minus_prompt": 0.4,
+          "repair_minus_verifier": 0.4,
+          "latency": {
+            "generation_calls": 200,
+            "repair_calls": 10,
+            "generation_errors": 0,
+            "repair_errors": 0,
+            "generation_latency_total_sec": 271.2345805168152,
+            "repair_latency_total_sec": 39.830798387527466,
+            "generation_latency_mean_sec": 3.3904322564601896,
+            "repair_latency_mean_sec": 3.9830798387527464
+          }
+        },
+        {
+          "seed": 74,
+          "output_dir": "results\\vcsr\\model_benchmark\\claude_haiku_4p5\\seed_74",
+          "prompt_only_equiv": 0.4,
+          "bestof8_random_parseable_equiv": 0.3,
+          "bestof8_verifier_ranked_equiv": 0.5,
+          "bestof8_vcsr_repair_equiv": 0.9,
+          "verifier_minus_prompt": 0.09999999999999998,
+          "repair_minus_prompt": 0.5,
+          "repair_minus_verifier": 0.4,
+          "latency": {
+            "generation_calls": 200,
+            "repair_calls": 10,
+            "generation_errors": 0,
+            "repair_errors": 0,
+            "generation_latency_total_sec": 281.5740325450897,
+            "repair_latency_total_sec": 41.697571992874146,
+            "generation_latency_mean_sec": 3.5196754068136213,
+            "repair_latency_mean_sec": 4.169757199287415
+          }
+        }
+      ],
+      "k8_slice_breakdown": {
+        "k8:greedy_first:domain=blocksworld": {
+          "counts": {
+            "total": 14,
+            "parse_count": 14,
+            "equiv_count": 12
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.8571428571428571
+        },
+        "k8:greedy_first:domain=gripper": {
+          "counts": {
+            "total": 16,
+            "parse_count": 16,
+            "equiv_count": 0
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.0
+        },
+        "k8:greedy_first:style=abstract/abstract": {
+          "counts": {
+            "total": 17,
+            "parse_count": 17,
+            "equiv_count": 5
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.29411764705882354
+        },
+        "k8:greedy_first:style=explicit/explicit": {
+          "counts": {
+            "total": 13,
+            "parse_count": 13,
+            "equiv_count": 7
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.5384615384615384
+        },
+        "k8:random_parseable:domain=blocksworld": {
+          "counts": {
+            "total": 14,
+            "parse_count": 14,
+            "equiv_count": 9
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.6428571428571429
+        },
+        "k8:random_parseable:domain=gripper": {
+          "counts": {
+            "total": 16,
+            "parse_count": 16,
+            "equiv_count": 0
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.0
+        },
+        "k8:random_parseable:style=abstract/abstract": {
+          "counts": {
+            "total": 17,
+            "parse_count": 17,
+            "equiv_count": 2
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.11764705882352941
+        },
+        "k8:random_parseable:style=explicit/explicit": {
+          "counts": {
+            "total": 13,
+            "parse_count": 13,
+            "equiv_count": 7
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.5384615384615384
+        },
+        "k8:verifier_ranked:domain=blocksworld": {
+          "counts": {
+            "total": 14,
+            "parse_count": 14,
+            "equiv_count": 13
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.9285714285714286
+        },
+        "k8:verifier_ranked:domain=gripper": {
+          "counts": {
+            "total": 16,
+            "parse_count": 16,
+            "equiv_count": 1
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.0625
+        },
+        "k8:verifier_ranked:style=abstract/abstract": {
+          "counts": {
+            "total": 17,
+            "parse_count": 17,
+            "equiv_count": 6
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.35294117647058826
+        },
+        "k8:verifier_ranked:style=explicit/explicit": {
+          "counts": {
+            "total": 13,
+            "parse_count": 13,
+            "equiv_count": 8
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.6153846153846154
+        },
+        "k8:verifier_ranked_repair:domain=blocksworld": {
+          "counts": {
+            "total": 14,
+            "parse_count": 14,
+            "equiv_count": 13
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.9285714285714286
+        },
+        "k8:verifier_ranked_repair:domain=gripper": {
+          "counts": {
+            "total": 16,
+            "parse_count": 16,
+            "equiv_count": 14
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.875
+        },
+        "k8:verifier_ranked_repair:style=abstract/abstract": {
+          "counts": {
+            "total": 17,
+            "parse_count": 17,
+            "equiv_count": 14
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.8235294117647058
+        },
+        "k8:verifier_ranked_repair:style=explicit/explicit": {
+          "counts": {
+            "total": 13,
+            "parse_count": 13,
+            "equiv_count": 13
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 1.0
+        }
+      },
+      "latency": {
+        "generation_calls": 600,
+        "repair_calls": 30,
+        "generation_errors": 0,
+        "repair_errors": 0,
+        "generation_latency_total_sec": 834.8031978607178,
+        "repair_latency_total_sec": 124.06439137458801,
+        "generation_latency_mean_sec": 10.435039973258972,
+        "repair_latency_mean_sec": 12.4064391374588
+      }
+    },
+    "claude_opus_4p6": {
+      "model_id": "anthropic/claude-opus-4.6",
+      "num_successful_runs": 3,
+      "metrics": {
+        "k1:greedy_first": {
+          "parse_rate": 0.7333333333333333,
+          "equiv_rate": 0.3666666666666667,
+          "equiv_given_parse": 0.48677248677248675,
+          "counts": {
+            "total": 30,
+            "parse_count": 22,
+            "equiv_count": 11
+          }
+        },
+        "k1:random_parseable": {
+          "parse_rate": 0.7333333333333333,
+          "equiv_rate": 0.3666666666666667,
+          "equiv_given_parse": 0.48677248677248675,
+          "counts": {
+            "total": 30,
+            "parse_count": 22,
+            "equiv_count": 11
+          }
+        },
+        "k1:verifier_ranked": {
+          "parse_rate": 0.7333333333333333,
+          "equiv_rate": 0.3666666666666667,
+          "equiv_given_parse": 0.48677248677248675,
+          "counts": {
+            "total": 30,
+            "parse_count": 22,
+            "equiv_count": 11
+          }
+        },
+        "k1:verifier_ranked_repair": {
+          "parse_rate": 0.7333333333333333,
+          "equiv_rate": 0.3666666666666667,
+          "equiv_given_parse": 0.48677248677248675,
+          "counts": {
+            "total": 30,
+            "parse_count": 22,
+            "equiv_count": 11
+          }
+        },
+        "k4:greedy_first": {
+          "parse_rate": 0.7333333333333333,
+          "equiv_rate": 0.3666666666666667,
+          "equiv_given_parse": 0.48677248677248675,
+          "counts": {
+            "total": 30,
+            "parse_count": 22,
+            "equiv_count": 11
+          }
+        },
+        "k4:random_parseable": {
+          "parse_rate": 0.9,
+          "equiv_rate": 0.43333333333333335,
+          "equiv_given_parse": 0.4861111111111111,
+          "counts": {
+            "total": 30,
+            "parse_count": 27,
+            "equiv_count": 13
+          }
+        },
+        "k4:verifier_ranked": {
+          "parse_rate": 0.9,
+          "equiv_rate": 0.43333333333333335,
+          "equiv_given_parse": 0.4861111111111111,
+          "counts": {
+            "total": 30,
+            "parse_count": 27,
+            "equiv_count": 13
+          }
+        },
+        "k4:verifier_ranked_repair": {
+          "parse_rate": 0.9,
+          "equiv_rate": 0.43333333333333335,
+          "equiv_given_parse": 0.4861111111111111,
+          "counts": {
+            "total": 30,
+            "parse_count": 27,
+            "equiv_count": 13
+          }
+        },
+        "k8:greedy_first": {
+          "parse_rate": 0.7333333333333333,
+          "equiv_rate": 0.3666666666666667,
+          "equiv_given_parse": 0.48677248677248675,
+          "counts": {
+            "total": 30,
+            "parse_count": 22,
+            "equiv_count": 11
+          }
+        },
+        "k8:random_parseable": {
+          "parse_rate": 0.9,
+          "equiv_rate": 0.43333333333333335,
+          "equiv_given_parse": 0.4861111111111111,
+          "counts": {
+            "total": 30,
+            "parse_count": 27,
+            "equiv_count": 13
+          }
+        },
+        "k8:verifier_ranked": {
+          "parse_rate": 0.9,
+          "equiv_rate": 0.43333333333333335,
+          "equiv_given_parse": 0.4861111111111111,
+          "counts": {
+            "total": 30,
+            "parse_count": 27,
+            "equiv_count": 13
+          }
+        },
+        "k8:verifier_ranked_repair": {
+          "parse_rate": 0.9,
+          "equiv_rate": 0.9,
+          "equiv_given_parse": 1.0,
+          "counts": {
+            "total": 30,
+            "parse_count": 27,
+            "equiv_count": 27
+          }
+        }
+      },
+      "main_deltas": {
+        "mean_verifier_minus_prompt": 0.06666666666666665,
+        "mean_repair_minus_prompt": 0.5333333333333333,
+        "mean_repair_minus_verifier": 0.46666666666666673
+      },
+      "per_seed": [
+        {
+          "seed": 72,
+          "output_dir": "results\\vcsr\\model_benchmark\\claude_opus_4p6\\seed_72",
+          "prompt_only_equiv": 0.2,
+          "bestof8_random_parseable_equiv": 0.3,
+          "bestof8_verifier_ranked_equiv": 0.3,
+          "bestof8_vcsr_repair_equiv": 0.9,
+          "verifier_minus_prompt": 0.09999999999999998,
+          "repair_minus_prompt": 0.7,
+          "repair_minus_verifier": 0.6000000000000001,
+          "latency": {
+            "generation_calls": 200,
+            "repair_calls": 9,
+            "generation_errors": 0,
+            "repair_errors": 3,
+            "generation_latency_total_sec": 763.8598744869232,
+            "repair_latency_total_sec": 88.5262975692749,
+            "generation_latency_mean_sec": 9.54824843108654,
+            "repair_latency_mean_sec": 9.836255285474989
+          }
+        },
+        {
+          "seed": 73,
+          "output_dir": "results\\vcsr\\model_benchmark\\claude_opus_4p6\\seed_73",
+          "prompt_only_equiv": 0.5,
+          "bestof8_random_parseable_equiv": 0.5,
+          "bestof8_verifier_ranked_equiv": 0.5,
+          "bestof8_vcsr_repair_equiv": 1.0,
+          "verifier_minus_prompt": 0.0,
+          "repair_minus_prompt": 0.5,
+          "repair_minus_verifier": 0.5,
+          "latency": {
+            "generation_calls": 200,
+            "repair_calls": 10,
+            "generation_errors": 0,
+            "repair_errors": 0,
+            "generation_latency_total_sec": 573.1312923431396,
+            "repair_latency_total_sec": 67.73112392425537,
+            "generation_latency_mean_sec": 7.164141154289245,
+            "repair_latency_mean_sec": 6.773112392425537
+          }
+        },
+        {
+          "seed": 74,
+          "output_dir": "results\\vcsr\\model_benchmark\\claude_opus_4p6\\seed_74",
+          "prompt_only_equiv": 0.4,
+          "bestof8_random_parseable_equiv": 0.5,
+          "bestof8_verifier_ranked_equiv": 0.5,
+          "bestof8_vcsr_repair_equiv": 0.8,
+          "verifier_minus_prompt": 0.09999999999999998,
+          "repair_minus_prompt": 0.4,
+          "repair_minus_verifier": 0.30000000000000004,
+          "latency": {
+            "generation_calls": 200,
+            "repair_calls": 8,
+            "generation_errors": 0,
+            "repair_errors": 0,
+            "generation_latency_total_sec": 689.5360827445984,
+            "repair_latency_total_sec": 74.34673619270325,
+            "generation_latency_mean_sec": 8.61920103430748,
+            "repair_latency_mean_sec": 9.293342024087906
+          }
+        }
+      ],
+      "k8_slice_breakdown": {
+        "k8:greedy_first:domain=blocksworld": {
+          "counts": {
+            "total": 14,
+            "parse_count": 11,
+            "equiv_count": 11
+          },
+          "parse_rate": 0.7857142857142857,
+          "equiv_rate": 0.7857142857142857
+        },
+        "k8:greedy_first:domain=gripper": {
+          "counts": {
+            "total": 16,
+            "parse_count": 11,
+            "equiv_count": 0
+          },
+          "parse_rate": 0.6875,
+          "equiv_rate": 0.0
+        },
+        "k8:greedy_first:style=abstract/abstract": {
+          "counts": {
+            "total": 17,
+            "parse_count": 9,
+            "equiv_count": 4
+          },
+          "parse_rate": 0.5294117647058824,
+          "equiv_rate": 0.23529411764705882
+        },
+        "k8:greedy_first:style=explicit/explicit": {
+          "counts": {
+            "total": 13,
+            "parse_count": 13,
+            "equiv_count": 7
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.5384615384615384
+        },
+        "k8:random_parseable:domain=blocksworld": {
+          "counts": {
+            "total": 14,
+            "parse_count": 13,
+            "equiv_count": 13
+          },
+          "parse_rate": 0.9285714285714286,
+          "equiv_rate": 0.9285714285714286
+        },
+        "k8:random_parseable:domain=gripper": {
+          "counts": {
+            "total": 16,
+            "parse_count": 14,
+            "equiv_count": 0
+          },
+          "parse_rate": 0.875,
+          "equiv_rate": 0.0
+        },
+        "k8:random_parseable:style=abstract/abstract": {
+          "counts": {
+            "total": 17,
+            "parse_count": 14,
+            "equiv_count": 6
+          },
+          "parse_rate": 0.8235294117647058,
+          "equiv_rate": 0.35294117647058826
+        },
+        "k8:random_parseable:style=explicit/explicit": {
+          "counts": {
+            "total": 13,
+            "parse_count": 13,
+            "equiv_count": 7
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.5384615384615384
+        },
+        "k8:verifier_ranked:domain=blocksworld": {
+          "counts": {
+            "total": 14,
+            "parse_count": 13,
+            "equiv_count": 13
+          },
+          "parse_rate": 0.9285714285714286,
+          "equiv_rate": 0.9285714285714286
+        },
+        "k8:verifier_ranked:domain=gripper": {
+          "counts": {
+            "total": 16,
+            "parse_count": 14,
+            "equiv_count": 0
+          },
+          "parse_rate": 0.875,
+          "equiv_rate": 0.0
+        },
+        "k8:verifier_ranked:style=abstract/abstract": {
+          "counts": {
+            "total": 17,
+            "parse_count": 14,
+            "equiv_count": 6
+          },
+          "parse_rate": 0.8235294117647058,
+          "equiv_rate": 0.35294117647058826
+        },
+        "k8:verifier_ranked:style=explicit/explicit": {
+          "counts": {
+            "total": 13,
+            "parse_count": 13,
+            "equiv_count": 7
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.5384615384615384
+        },
+        "k8:verifier_ranked_repair:domain=blocksworld": {
+          "counts": {
+            "total": 14,
+            "parse_count": 13,
+            "equiv_count": 13
+          },
+          "parse_rate": 0.9285714285714286,
+          "equiv_rate": 0.9285714285714286
+        },
+        "k8:verifier_ranked_repair:domain=gripper": {
+          "counts": {
+            "total": 16,
+            "parse_count": 14,
+            "equiv_count": 14
+          },
+          "parse_rate": 0.875,
+          "equiv_rate": 0.875
+        },
+        "k8:verifier_ranked_repair:style=abstract/abstract": {
+          "counts": {
+            "total": 17,
+            "parse_count": 14,
+            "equiv_count": 14
+          },
+          "parse_rate": 0.8235294117647058,
+          "equiv_rate": 0.8235294117647058
+        },
+        "k8:verifier_ranked_repair:style=explicit/explicit": {
+          "counts": {
+            "total": 13,
+            "parse_count": 13,
+            "equiv_count": 13
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 1.0
+        }
+      },
+      "latency": {
+        "generation_calls": 600,
+        "repair_calls": 27,
+        "generation_errors": 0,
+        "repair_errors": 3,
+        "generation_latency_total_sec": 2026.5272495746613,
+        "repair_latency_total_sec": 230.60415768623352,
+        "generation_latency_mean_sec": 25.331590619683265,
+        "repair_latency_mean_sec": 25.90270970198843
+      }
+    },
+    "claude_sonnet_4p5": {
+      "model_id": "anthropic/claude-sonnet-4.5",
+      "num_successful_runs": 3,
+      "metrics": {
+        "k1:greedy_first": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.5,
+          "equiv_given_parse": 0.5,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 15
+          }
+        },
+        "k1:random_parseable": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.5,
+          "equiv_given_parse": 0.5,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 15
+          }
+        },
+        "k1:verifier_ranked": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.5,
+          "equiv_given_parse": 0.5,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 15
+          }
+        },
+        "k1:verifier_ranked_repair": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.5,
+          "equiv_given_parse": 0.5,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 15
+          }
+        },
+        "k4:greedy_first": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.5,
+          "equiv_given_parse": 0.5,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 15
+          }
+        },
+        "k4:random_parseable": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.4666666666666667,
+          "equiv_given_parse": 0.4666666666666667,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 14
+          }
+        },
+        "k4:verifier_ranked": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.5333333333333333,
+          "equiv_given_parse": 0.5333333333333333,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 16
+          }
+        },
+        "k4:verifier_ranked_repair": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.5333333333333333,
+          "equiv_given_parse": 0.5333333333333333,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 16
+          }
+        },
+        "k8:greedy_first": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.5,
+          "equiv_given_parse": 0.5,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 15
+          }
+        },
+        "k8:random_parseable": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.4666666666666667,
+          "equiv_given_parse": 0.4666666666666667,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 14
+          }
+        },
+        "k8:verifier_ranked": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.5333333333333333,
+          "equiv_given_parse": 0.5333333333333333,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 16
+          }
+        },
+        "k8:verifier_ranked_repair": {
+          "parse_rate": 1.0,
+          "equiv_rate": 0.9333333333333333,
+          "equiv_given_parse": 0.9333333333333333,
+          "counts": {
+            "total": 30,
+            "parse_count": 30,
+            "equiv_count": 28
+          }
+        }
+      },
+      "main_deltas": {
+        "mean_verifier_minus_prompt": 0.033333333333333326,
+        "mean_repair_minus_prompt": 0.43333333333333335,
+        "mean_repair_minus_verifier": 0.4
+      },
+      "per_seed": [
+        {
+          "seed": 72,
+          "output_dir": "results\\vcsr\\model_benchmark\\claude_sonnet_4p5\\seed_72",
+          "prompt_only_equiv": 0.4,
+          "bestof8_random_parseable_equiv": 0.4,
+          "bestof8_verifier_ranked_equiv": 0.5,
+          "bestof8_vcsr_repair_equiv": 1.0,
+          "verifier_minus_prompt": 0.09999999999999998,
+          "repair_minus_prompt": 0.6,
+          "repair_minus_verifier": 0.5,
+          "latency": {
+            "generation_calls": 200,
+            "repair_calls": 10,
+            "generation_errors": 0,
+            "repair_errors": 0,
+            "generation_latency_total_sec": 570.8984141349792,
+            "repair_latency_total_sec": 73.69201517105103,
+            "generation_latency_mean_sec": 7.13623017668724,
+            "repair_latency_mean_sec": 7.369201517105102
+          }
+        },
+        {
+          "seed": 73,
+          "output_dir": "results\\vcsr\\model_benchmark\\claude_sonnet_4p5\\seed_73",
+          "prompt_only_equiv": 0.6,
+          "bestof8_random_parseable_equiv": 0.5,
+          "bestof8_verifier_ranked_equiv": 0.6,
+          "bestof8_vcsr_repair_equiv": 0.8,
+          "verifier_minus_prompt": 0.0,
+          "repair_minus_prompt": 0.20000000000000007,
+          "repair_minus_verifier": 0.20000000000000007,
+          "latency": {
+            "generation_calls": 200,
+            "repair_calls": 10,
+            "generation_errors": 0,
+            "repair_errors": 0,
+            "generation_latency_total_sec": 501.10074853897095,
+            "repair_latency_total_sec": 60.05426788330078,
+            "generation_latency_mean_sec": 6.263759356737137,
+            "repair_latency_mean_sec": 6.0054267883300785
+          }
+        },
+        {
+          "seed": 74,
+          "output_dir": "results\\vcsr\\model_benchmark\\claude_sonnet_4p5\\seed_74",
+          "prompt_only_equiv": 0.5,
+          "bestof8_random_parseable_equiv": 0.5,
+          "bestof8_verifier_ranked_equiv": 0.5,
+          "bestof8_vcsr_repair_equiv": 1.0,
+          "verifier_minus_prompt": 0.0,
+          "repair_minus_prompt": 0.5,
+          "repair_minus_verifier": 0.5,
+          "latency": {
+            "generation_calls": 200,
+            "repair_calls": 10,
+            "generation_errors": 0,
+            "repair_errors": 0,
+            "generation_latency_total_sec": 580.7399415969849,
+            "repair_latency_total_sec": 73.77788615226746,
+            "generation_latency_mean_sec": 7.259249269962311,
+            "repair_latency_mean_sec": 7.377788615226746
+          }
+        }
+      ],
+      "k8_slice_breakdown": {
+        "k8:greedy_first:domain=blocksworld": {
+          "counts": {
+            "total": 14,
+            "parse_count": 14,
+            "equiv_count": 14
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 1.0
+        },
+        "k8:greedy_first:domain=gripper": {
+          "counts": {
+            "total": 16,
+            "parse_count": 16,
+            "equiv_count": 1
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.0625
+        },
+        "k8:greedy_first:style=abstract/abstract": {
+          "counts": {
+            "total": 17,
+            "parse_count": 17,
+            "equiv_count": 7
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.4117647058823529
+        },
+        "k8:greedy_first:style=explicit/explicit": {
+          "counts": {
+            "total": 13,
+            "parse_count": 13,
+            "equiv_count": 8
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.6153846153846154
+        },
+        "k8:random_parseable:domain=blocksworld": {
+          "counts": {
+            "total": 14,
+            "parse_count": 14,
+            "equiv_count": 14
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 1.0
+        },
+        "k8:random_parseable:domain=gripper": {
+          "counts": {
+            "total": 16,
+            "parse_count": 16,
+            "equiv_count": 0
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.0
+        },
+        "k8:random_parseable:style=abstract/abstract": {
+          "counts": {
+            "total": 17,
+            "parse_count": 17,
+            "equiv_count": 7
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.4117647058823529
+        },
+        "k8:random_parseable:style=explicit/explicit": {
+          "counts": {
+            "total": 13,
+            "parse_count": 13,
+            "equiv_count": 7
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.5384615384615384
+        },
+        "k8:verifier_ranked:domain=blocksworld": {
+          "counts": {
+            "total": 14,
+            "parse_count": 14,
+            "equiv_count": 14
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 1.0
+        },
+        "k8:verifier_ranked:domain=gripper": {
+          "counts": {
+            "total": 16,
+            "parse_count": 16,
+            "equiv_count": 2
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.125
+        },
+        "k8:verifier_ranked:style=abstract/abstract": {
+          "counts": {
+            "total": 17,
+            "parse_count": 17,
+            "equiv_count": 7
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.4117647058823529
+        },
+        "k8:verifier_ranked:style=explicit/explicit": {
+          "counts": {
+            "total": 13,
+            "parse_count": 13,
+            "equiv_count": 9
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.6923076923076923
+        },
+        "k8:verifier_ranked_repair:domain=blocksworld": {
+          "counts": {
+            "total": 14,
+            "parse_count": 14,
+            "equiv_count": 14
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 1.0
+        },
+        "k8:verifier_ranked_repair:domain=gripper": {
+          "counts": {
+            "total": 16,
+            "parse_count": 16,
+            "equiv_count": 14
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.875
+        },
+        "k8:verifier_ranked_repair:style=abstract/abstract": {
+          "counts": {
+            "total": 17,
+            "parse_count": 17,
+            "equiv_count": 15
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 0.8823529411764706
+        },
+        "k8:verifier_ranked_repair:style=explicit/explicit": {
+          "counts": {
+            "total": 13,
+            "parse_count": 13,
+            "equiv_count": 13
+          },
+          "parse_rate": 1.0,
+          "equiv_rate": 1.0
+        }
+      },
+      "latency": {
+        "generation_calls": 600,
+        "repair_calls": 30,
+        "generation_errors": 0,
+        "repair_errors": 0,
+        "generation_latency_total_sec": 1652.739104270935,
+        "repair_latency_total_sec": 207.52416920661926,
+        "generation_latency_mean_sec": 20.65923880338669,
+        "repair_latency_mean_sec": 20.752416920661926
+      }
+    }
+  },
+  "note": "Post-paper robustness benchmark. Do not treat as replacement evidence for frozen final seeds 51-55."
+}

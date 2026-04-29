@@ -1,0 +1,225 @@
+{
+  "base_config": "configs/vcsr_bestofk_round3_holdout_eval.yaml",
+  "rows_per_run": 50,
+  "seeds": [
+    48,
+    49,
+    50
+  ],
+  "clear_proxy_env": true,
+  "verifiers": [
+    {
+      "name": "round3_best_current",
+      "selection": "results/verifier/best_current/selection.yaml",
+      "runs": [
+        {
+          "seed": 48,
+          "output_dir": "results\\vcsr\\multiseed_holdout_compare\\round3_best_current\\seed_48",
+          "summary_path": "results\\vcsr\\multiseed_holdout_compare\\round3_best_current\\seed_48\\aggregate_metrics.json"
+        },
+        {
+          "seed": 49,
+          "output_dir": "results\\vcsr\\multiseed_holdout_compare\\round3_best_current\\seed_49",
+          "summary_path": "results\\vcsr\\multiseed_holdout_compare\\round3_best_current\\seed_49\\aggregate_metrics.json"
+        },
+        {
+          "seed": 50,
+          "output_dir": "results\\vcsr\\multiseed_holdout_compare\\round3_best_current\\seed_50",
+          "summary_path": "results\\vcsr\\multiseed_holdout_compare\\round3_best_current\\seed_50\\aggregate_metrics.json"
+        }
+      ],
+      "mean_metrics": {
+        "1": {
+          "greedy_first": {
+            "parse_rate": 0.98,
+            "equiv_rate": 0.38000000000000006,
+            "equiv_given_parse": 0.38884353741496597
+          },
+          "random_parseable": {
+            "parse_rate": 0.98,
+            "equiv_rate": 0.38000000000000006,
+            "equiv_given_parse": 0.38884353741496597
+          },
+          "verifier_ranked": {
+            "parse_rate": 0.98,
+            "equiv_rate": 0.38000000000000006,
+            "equiv_given_parse": 0.38884353741496597
+          }
+        },
+        "4": {
+          "greedy_first": {
+            "parse_rate": 0.98,
+            "equiv_rate": 0.38000000000000006,
+            "equiv_given_parse": 0.38884353741496597
+          },
+          "random_parseable": {
+            "parse_rate": 0.9866666666666667,
+            "equiv_rate": 0.39999999999999997,
+            "equiv_given_parse": 0.4058503401360544
+          },
+          "verifier_ranked": {
+            "parse_rate": 0.9866666666666667,
+            "equiv_rate": 0.39999999999999997,
+            "equiv_given_parse": 0.4057142857142857
+          }
+        },
+        "8": {
+          "greedy_first": {
+            "parse_rate": 0.98,
+            "equiv_rate": 0.38000000000000006,
+            "equiv_given_parse": 0.38884353741496597
+          },
+          "random_parseable": {
+            "parse_rate": 0.9933333333333333,
+            "equiv_rate": 0.36000000000000004,
+            "equiv_given_parse": 0.36299319727891155
+          },
+          "verifier_ranked": {
+            "parse_rate": 0.9933333333333333,
+            "equiv_rate": 0.39999999999999997,
+            "equiv_given_parse": 0.4034013605442177
+          }
+        }
+      }
+    },
+    {
+      "name": "round4_focused",
+      "selection": "results/verifier/ranking_aligned_round4/retrain_from_round3_focused/selection.yaml",
+      "runs": [
+        {
+          "seed": 48,
+          "output_dir": "results\\vcsr\\multiseed_holdout_compare\\round4_focused\\seed_48",
+          "summary_path": "results\\vcsr\\multiseed_holdout_compare\\round4_focused\\seed_48\\aggregate_metrics.json"
+        },
+        {
+          "seed": 49,
+          "output_dir": "results\\vcsr\\multiseed_holdout_compare\\round4_focused\\seed_49",
+          "summary_path": "results\\vcsr\\multiseed_holdout_compare\\round4_focused\\seed_49\\aggregate_metrics.json"
+        },
+        {
+          "seed": 50,
+          "output_dir": "results\\vcsr\\multiseed_holdout_compare\\round4_focused\\seed_50",
+          "summary_path": "results\\vcsr\\multiseed_holdout_compare\\round4_focused\\seed_50\\aggregate_metrics.json"
+        }
+      ],
+      "mean_metrics": {
+        "1": {
+          "greedy_first": {
+            "parse_rate": 0.9533333333333333,
+            "equiv_rate": 0.3666666666666667,
+            "equiv_given_parse": 0.38692324755989355
+          },
+          "random_parseable": {
+            "parse_rate": 0.9533333333333333,
+            "equiv_rate": 0.3666666666666667,
+            "equiv_given_parse": 0.38692324755989355
+          },
+          "verifier_ranked": {
+            "parse_rate": 0.9533333333333333,
+            "equiv_rate": 0.3666666666666667,
+            "equiv_given_parse": 0.38692324755989355
+          }
+        },
+        "4": {
+          "greedy_first": {
+            "parse_rate": 0.9533333333333333,
+            "equiv_rate": 0.3666666666666667,
+            "equiv_given_parse": 0.38692324755989355
+          },
+          "random_parseable": {
+            "parse_rate": 0.9933333333333333,
+            "equiv_rate": 0.37333333333333335,
+            "equiv_given_parse": 0.3763265306122449
+          },
+          "verifier_ranked": {
+            "parse_rate": 0.9933333333333333,
+            "equiv_rate": 0.39999999999999997,
+            "equiv_given_parse": 0.4034013605442177
+          }
+        },
+        "8": {
+          "greedy_first": {
+            "parse_rate": 0.9533333333333333,
+            "equiv_rate": 0.3666666666666667,
+            "equiv_given_parse": 0.38692324755989355
+          },
+          "random_parseable": {
+            "parse_rate": 1.0,
+            "equiv_rate": 0.3866666666666667,
+            "equiv_given_parse": 0.3866666666666667
+          },
+          "verifier_ranked": {
+            "parse_rate": 1.0,
+            "equiv_rate": 0.4266666666666667,
+            "equiv_given_parse": 0.4266666666666667
+          }
+        }
+      }
+    }
+  ],
+  "head_to_head": [
+    {
+      "K": 4,
+      "policy": "verifier_ranked",
+      "baseline": "round3_best_current",
+      "candidate": "round4_focused",
+      "candidate_wins": 1,
+      "baseline_wins": 1,
+      "ties": 1,
+      "mean_equiv_delta": 1.850371707708594e-17
+    },
+    {
+      "K": 8,
+      "policy": "verifier_ranked",
+      "baseline": "round3_best_current",
+      "candidate": "round4_focused",
+      "candidate_wins": 2,
+      "baseline_wins": 0,
+      "ties": 1,
+      "mean_equiv_delta": 0.02666666666666669
+    }
+  ],
+  "verifier_ranked_by_seed": {
+    "4": [
+      {
+        "seed": 48,
+        "baseline_equiv_rate": 0.48,
+        "candidate_equiv_rate": 0.5,
+        "delta": 0.020000000000000018
+      },
+      {
+        "seed": 49,
+        "baseline_equiv_rate": 0.36,
+        "candidate_equiv_rate": 0.34,
+        "delta": -0.019999999999999962
+      },
+      {
+        "seed": 50,
+        "baseline_equiv_rate": 0.36,
+        "candidate_equiv_rate": 0.36,
+        "delta": 0.0
+      }
+    ],
+    "8": [
+      {
+        "seed": 48,
+        "baseline_equiv_rate": 0.5,
+        "candidate_equiv_rate": 0.54,
+        "delta": 0.040000000000000036
+      },
+      {
+        "seed": 49,
+        "baseline_equiv_rate": 0.34,
+        "candidate_equiv_rate": 0.34,
+        "delta": 0.0
+      },
+      {
+        "seed": 50,
+        "baseline_equiv_rate": 0.36,
+        "candidate_equiv_rate": 0.4,
+        "delta": 0.040000000000000036
+      }
+    ]
+  },
+  "recommendation": "Promote `round4_focused` only if you are comfortable treating this multi-seed result as the new end-to-end gate: it beat or matched `round3_best_current` across the evaluated fresh held-out seeds and showed a positive mean verifier-ranked delta at both K=4 and K=8."
+}

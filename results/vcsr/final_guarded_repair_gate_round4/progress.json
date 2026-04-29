@@ -1,0 +1,10 @@
+{
+  "stage": "complete",
+  "total_runs": 5,
+  "completed_runs": 5,
+  "remaining_runs": 0,
+  "elapsed_sec": 0.07219433784484863,
+  "avg_sec_per_run": 0.014438867568969727,
+  "eta_sec": 0.0,
+  "current_seed": null
+}

@@ -1,0 +1,270 @@
+{
+  "inputs": {
+    "pool_dirs": [
+      "results\\vcsr\\round3_pool_seed43",
+      "results\\vcsr\\round3_pool_seed44",
+      "results\\vcsr\\round3_pool_seed45",
+      "results\\vcsr\\round3_pool_seed46",
+      "results\\vcsr\\round3_pool_seed47",
+      "results\\vcsr\\bestofk_round3_holdout_eval",
+      "results\\vcsr\\bestofk_round4_holdout_eval_clean",
+      "results\\vcsr\\bestofk_pilot",
+      "results\\vcsr\\bestofk_ranking_round2_pool",
+      "results\\vcsr\\bestofk_capacity_push_lr2"
+    ],
+    "round5_regression_rows": "results/verifier/pairwise_round5/regression_analysis/changed_rows.jsonl",
+    "k_values": [
+      4,
+      8
+    ],
+    "pairwise_dev_fraction": 0.2
+  },
+  "summary": {
+    "raw_pairs": 828,
+    "deduped_pairs": 558,
+    "pairwise_train": 434,
+    "pairwise_dev": 124,
+    "raw_pointwise": 2163,
+    "pointwise": 817
+  },
+  "pairwise_all": {
+    "total": 558,
+    "by_domain": {
+      "blocksworld": 546,
+      "gripper": 12
+    },
+    "by_style": {
+      "abstract/abstract": 485,
+      "explicit/explicit": 73
+    },
+    "by_k": {
+      "4": 186,
+      "8": 372
+    },
+    "by_pair_type": {
+      "near_tie": 199,
+      "selected_wrong": 147,
+      "outranks_positive": 106,
+      "moderate_gap": 75,
+      "hard_negative": 28,
+      "round5_regression": 3
+    },
+    "round5_hurt_pairs": 28
+  },
+  "pairwise_train": {
+    "total": 434,
+    "by_domain": {
+      "blocksworld": 422,
+      "gripper": 12
+    },
+    "by_style": {
+      "abstract/abstract": 367,
+      "explicit/explicit": 67
+    },
+    "by_k": {
+      "4": 147,
+      "8": 287
+    },
+    "by_pair_type": {
+      "near_tie": 146,
+      "selected_wrong": 124,
+      "outranks_positive": 86,
+      "moderate_gap": 53,
+      "hard_negative": 22,
+      "round5_regression": 3
+    },
+    "round5_hurt_pairs": 28
+  },
+  "pairwise_dev": {
+    "total": 124,
+    "by_domain": {
+      "blocksworld": 124
+    },
+    "by_style": {
+      "abstract/abstract": 118,
+      "explicit/explicit": 6
+    },
+    "by_k": {
+      "4": 39,
+      "8": 85
+    },
+    "by_pair_type": {
+      "near_tie": 53,
+      "selected_wrong": 23,
+      "moderate_gap": 22,
+      "outranks_positive": 20,
+      "hard_negative": 6
+    },
+    "round5_hurt_pairs": 0
+  },
+  "pools": [
+    {
+      "pool_dir": "results\\vcsr\\round3_pool_seed43",
+      "candidate_dump": "results\\vcsr\\round3_pool_seed43\\candidate_dump.jsonl",
+      "run_config": "results\\vcsr\\round3_pool_seed43\\run_config.yaml",
+      "seed": 43,
+      "summary": {
+        "positive_only_rows": 34,
+        "negative_only_rows": 50,
+        "pair_type:selected_wrong": 14,
+        "pair_type:outranks_positive": 13,
+        "positive_negative_rows": 16,
+        "pair_rows": 51,
+        "pair_type:hard_negative": 4,
+        "pair_type:near_tie": 20
+      }
+    },
+    {
+      "pool_dir": "results\\vcsr\\round3_pool_seed44",
+      "candidate_dump": "results\\vcsr\\round3_pool_seed44\\candidate_dump.jsonl",
+      "run_config": "results\\vcsr\\round3_pool_seed44\\run_config.yaml",
+      "seed": 44,
+      "summary": {
+        "pair_type:selected_wrong": 17,
+        "pair_type:outranks_positive": 38,
+        "positive_negative_rows": 26,
+        "pair_rows": 105,
+        "positive_only_rows": 29,
+        "negative_only_rows": 44,
+        "pair_type:moderate_gap": 13,
+        "pair_type:near_tie": 37,
+        "rows_without_parseable_pool": 1
+      }
+    },
+    {
+      "pool_dir": "results\\vcsr\\round3_pool_seed45",
+      "candidate_dump": "results\\vcsr\\round3_pool_seed45\\candidate_dump.jsonl",
+      "run_config": "results\\vcsr\\round3_pool_seed45\\run_config.yaml",
+      "seed": 45,
+      "summary": {
+        "pair_type:selected_wrong": 24,
+        "positive_negative_rows": 24,
+        "pair_rows": 88,
+        "pair_type:outranks_positive": 29,
+        "pair_type:near_tie": 32,
+        "positive_only_rows": 26,
+        "negative_only_rows": 50,
+        "pair_type:moderate_gap": 3
+      }
+    },
+    {
+      "pool_dir": "results\\vcsr\\round3_pool_seed46",
+      "candidate_dump": "results\\vcsr\\round3_pool_seed46\\candidate_dump.jsonl",
+      "run_config": "results\\vcsr\\round3_pool_seed46\\run_config.yaml",
+      "seed": 46,
+      "summary": {
+        "positive_only_rows": 26,
+        "pair_type:selected_wrong": 21,
+        "pair_type:near_tie": 27,
+        "positive_negative_rows": 15,
+        "pair_rows": 63,
+        "negative_only_rows": 59,
+        "pair_type:outranks_positive": 14,
+        "pair_type:moderate_gap": 1
+      }
+    },
+    {
+      "pool_dir": "results\\vcsr\\round3_pool_seed47",
+      "candidate_dump": "results\\vcsr\\round3_pool_seed47\\candidate_dump.jsonl",
+      "run_config": "results\\vcsr\\round3_pool_seed47\\run_config.yaml",
+      "seed": 47,
+      "summary": {
+        "negative_only_rows": 66,
+        "positive_only_rows": 16,
+        "pair_type:selected_wrong": 16,
+        "pair_type:outranks_positive": 18,
+        "positive_negative_rows": 18,
+        "pair_rows": 70,
+        "pair_type:near_tie": 28,
+        "pair_type:moderate_gap": 1,
+        "pair_type:hard_negative": 7
+      }
+    },
+    {
+      "pool_dir": "results\\vcsr\\bestofk_round3_holdout_eval",
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "run_config": "results\\vcsr\\bestofk_round3_holdout_eval\\run_config.yaml",
+      "seed": 48,
+      "summary": {
+        "pair_type:selected_wrong": 14,
+        "pair_type:outranks_positive": 16,
+        "positive_negative_rows": 21,
+        "pair_rows": 81,
+        "positive_only_rows": 32,
+        "negative_only_rows": 47,
+        "pair_type:near_tie": 14,
+        "pair_type:moderate_gap": 35,
+        "pair_type:round5_regression": 2
+      }
+    },
+    {
+      "pool_dir": "results\\vcsr\\bestofk_round4_holdout_eval_clean",
+      "candidate_dump": "results\\vcsr\\bestofk_round4_holdout_eval_clean\\candidate_dump.jsonl",
+      "run_config": "results\\vcsr\\bestofk_round4_holdout_eval_clean\\run_config.yaml",
+      "seed": 48,
+      "summary": {
+        "pair_type:selected_wrong": 13,
+        "pair_type:hard_negative": 3,
+        "positive_negative_rows": 21,
+        "pair_rows": 82,
+        "pair_type:outranks_positive": 10,
+        "pair_type:moderate_gap": 11,
+        "positive_only_rows": 32,
+        "pair_type:near_tie": 41,
+        "pair_type:round5_regression": 4,
+        "negative_only_rows": 47
+      }
+    },
+    {
+      "pool_dir": "results\\vcsr\\bestofk_pilot",
+      "candidate_dump": "results\\vcsr\\bestofk_pilot\\candidate_dump.jsonl",
+      "run_config": "results\\vcsr\\bestofk_pilot\\run_config.yaml",
+      "seed": 42,
+      "summary": {
+        "negative_only_rows": 23,
+        "pair_type:selected_wrong": 13,
+        "pair_type:outranks_positive": 24,
+        "positive_negative_rows": 20,
+        "pair_rows": 78,
+        "positive_only_rows": 15,
+        "pair_type:near_tie": 30,
+        "pair_type:hard_negative": 3,
+        "pair_type:moderate_gap": 8,
+        "rows_without_parseable_pool": 2
+      }
+    },
+    {
+      "pool_dir": "results\\vcsr\\bestofk_ranking_round2_pool",
+      "candidate_dump": "results\\vcsr\\bestofk_ranking_round2_pool\\candidate_dump.jsonl",
+      "run_config": "results\\vcsr\\bestofk_ranking_round2_pool\\run_config.yaml",
+      "seed": 42,
+      "summary": {
+        "pair_type:selected_wrong": 23,
+        "pair_type:outranks_positive": 38,
+        "pair_type:hard_negative": 25,
+        "positive_negative_rows": 33,
+        "pair_rows": 120,
+        "positive_only_rows": 26,
+        "pair_type:moderate_gap": 15,
+        "negative_only_rows": 41,
+        "pair_type:near_tie": 19
+      }
+    },
+    {
+      "pool_dir": "results\\vcsr\\bestofk_capacity_push_lr2",
+      "candidate_dump": "results\\vcsr\\bestofk_capacity_push_lr2\\candidate_dump.jsonl",
+      "run_config": "results\\vcsr\\bestofk_capacity_push_lr2\\run_config.yaml",
+      "seed": 42,
+      "summary": {
+        "negative_only_rows": 24,
+        "positive_only_rows": 13,
+        "pair_type:selected_wrong": 20,
+        "positive_negative_rows": 23,
+        "pair_rows": 90,
+        "pair_type:near_tie": 27,
+        "pair_type:moderate_gap": 8,
+        "pair_type:outranks_positive": 35
+      }
+    }
+  ]
+}

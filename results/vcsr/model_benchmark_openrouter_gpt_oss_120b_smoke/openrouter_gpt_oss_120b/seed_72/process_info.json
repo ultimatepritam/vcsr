@@ -1,0 +1,6 @@
+{
+  "pid": 15084,
+  "started_at": 1777318731.11483,
+  "config": "results\\vcsr\\model_benchmark_openrouter_gpt_oss_120b_smoke\\openrouter_gpt_oss_120b\\seed_72\\benchmark_run_config.yaml",
+  "output_dir": "results\\vcsr\\model_benchmark_openrouter_gpt_oss_120b_smoke\\openrouter_gpt_oss_120b\\seed_72"
+}

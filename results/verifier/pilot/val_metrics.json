@@ -1,0 +1,53 @@
+{
+  "auc": 0.6904761904761905,
+  "accuracy": 0.65625,
+  "f1": 0.0,
+  "precision": 0.0,
+  "recall": 0.0,
+  "n": 32,
+  "loss": 0.6469627171754837,
+  "per_source": {
+    "gold": {
+      "auc": 0.0,
+      "accuracy": 0.0,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 7
+    },
+    "llm_bedrock": {
+      "auc": 0.888888888888889,
+      "accuracy": 0.6923076923076923,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 13
+    },
+    "perturbation": {
+      "auc": 0.0,
+      "accuracy": 1.0,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 12
+    }
+  },
+  "per_domain": {
+    "blocksworld": {
+      "auc": 0.6312500000000001,
+      "accuracy": 0.5555555555555556,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 18
+    },
+    "gripper": {
+      "auc": 0.6363636363636364,
+      "accuracy": 0.7857142857142857,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 14
+    }
+  }
+}

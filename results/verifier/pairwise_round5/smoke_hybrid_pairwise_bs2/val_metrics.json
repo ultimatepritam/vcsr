@@ -1,0 +1,106 @@
+{
+  "auc": 0.854978354978355,
+  "accuracy": 0.78125,
+  "f1": 0.5333333333333333,
+  "precision": 1.0,
+  "recall": 0.36363636363636365,
+  "n": 32,
+  "loss": 0.38636982813477516,
+  "per_source": {
+    "gold": {
+      "auc": 0.0,
+      "accuracy": 0.0,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 7
+    },
+    "llm_bedrock": {
+      "auc": 1.0,
+      "accuracy": 1.0,
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "n": 13
+    },
+    "perturbation": {
+      "auc": 0.0,
+      "accuracy": 1.0,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 12
+    }
+  },
+  "per_domain": {
+    "blocksworld": {
+      "auc": 0.85625,
+      "accuracy": 0.7777777777777778,
+      "f1": 0.6666666666666666,
+      "precision": 1.0,
+      "recall": 0.5,
+      "n": 18
+    },
+    "gripper": {
+      "auc": 0.8787878787878788,
+      "accuracy": 0.7857142857142857,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 14
+    }
+  },
+  "pairwise": {
+    "n": 32,
+    "pairwise_accuracy": 0.65625,
+    "mean_margin": 0.10730743408203125,
+    "per_domain": {
+      "blocksworld": {
+        "n": 32,
+        "pairwise_accuracy": 0.65625,
+        "mean_margin": 0.10730743408203125
+      }
+    },
+    "per_style": {
+      "explicit/explicit": {
+        "n": 3,
+        "pairwise_accuracy": 0.3333333333333333,
+        "mean_margin": 0.03515625
+      },
+      "abstract/abstract": {
+        "n": 29,
+        "pairwise_accuracy": 0.6896551724137931,
+        "mean_margin": 0.11477134967672414
+      }
+    },
+    "per_k": {
+      "8": {
+        "n": 22,
+        "pairwise_accuracy": 0.6818181818181818,
+        "mean_margin": 0.08453924005681818
+      },
+      "4": {
+        "n": 10,
+        "pairwise_accuracy": 0.6,
+        "mean_margin": 0.1573974609375
+      }
+    },
+    "per_pair_type": {
+      "selected_wrong": {
+        "n": 13,
+        "pairwise_accuracy": 0.5384615384615384,
+        "mean_margin": 0.154541015625
+      },
+      "outranks_positive": {
+        "n": 7,
+        "pairwise_accuracy": 0.5714285714285714,
+        "mean_margin": 0.011300223214285714
+      },
+      "near_tie": {
+        "n": 12,
+        "pairwise_accuracy": 0.8333333333333334,
+        "mean_margin": 0.11214192708333333
+      }
+    }
+  }
+}

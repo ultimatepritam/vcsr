@@ -28,6 +28,38 @@ logger = logging.getLogger(__name__)
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 
+def _clear_proxy_env() -> None:
+    """Remove proxy variables that can break local Bedrock calls on this machine."""
+    proxy_keys = (
+        "HTTP_PROXY",
+        "HTTPS_PROXY",
+        "ALL_PROXY",
+        "NO_PROXY",
+        "http_proxy",
+        "https_proxy",
+        "all_proxy",
+        "no_proxy",
+    )
+    cleared = []
+    for key in proxy_keys:
+        if os.environ.pop(key, None) is not None:
+            cleared.append(key)
+    if cleared:
+        logger.info("Cleared proxy env vars for generation: %s", ", ".join(cleared))
+
+
+def _get_env(*keys: str, default: str = "") -> str:
+    """Return the first non-empty environment variable from the given keys."""
+    for key in keys:
+        value = os.environ.get(key, "")
+        if value:
+            value = value.strip()
+            if any(ch.isspace() for ch in value):
+                value = value.split()[0]
+            return value
+    return default
+
+
 @dataclass
 class SamplerConfig:
     temperature: float = 0.8
@@ -83,7 +115,24 @@ class BaseSampler(ABC):
 
         results = []
         for i in range(K):
+            logger.info(
+                "%s candidate %d/%d start (model=%s, domain=%s)",
+                self.backend_name,
+                i + 1,
+                K,
+                self.model,
+                domain or "unknown",
+            )
             result = self._sample_one(prompt, attempt_idx=i)
+            status = "ok" if not result.error else f"error={result.error}"
+            logger.info(
+                "%s candidate %d/%d done in %.1fs (%s)",
+                self.backend_name,
+                i + 1,
+                K,
+                result.latency_sec,
+                status,
+            )
             results.append(result)
 
         self.config.temperature = temp_backup
@@ -98,6 +147,7 @@ class BaseSampler(ABC):
         "api key",
         "authentication",
         "invalid_api_key",
+        "empty response content",
     ]
 
     def _is_retryable(self, error_msg: str) -> bool:
@@ -109,10 +159,28 @@ class BaseSampler(ABC):
         last_error = None
         for attempt in range(self.config.retry_attempts):
             try:
+                logger.info(
+                    "%s request start (sample=%d attempt=%d/%d)",
+                    self.backend_name,
+                    attempt_idx + 1,
+                    attempt + 1,
+                    self.config.retry_attempts,
+                )
                 t0 = time.time()
                 raw = self._call_llm(prompt, system=SYSTEM_PROMPT)
+                if raw is None:
+                    raise ValueError("empty response content from provider")
                 latency = time.time() - t0
                 pddl = extract_pddl_from_response(raw)
+                logger.info(
+                    "%s request success (sample=%d attempt=%d/%d latency=%.1fs extracted_chars=%d)",
+                    self.backend_name,
+                    attempt_idx + 1,
+                    attempt + 1,
+                    self.config.retry_attempts,
+                    latency,
+                    len(pddl or ""),
+                )
                 return SampleResult(
                     raw_response=raw,
                     extracted_pddl=pddl,
@@ -152,7 +220,8 @@ class BedrockSampler(BaseSampler):
         model: Optional[str] = None,
         config: Optional[SamplerConfig] = None,
     ):
-        resolved_model = model or os.environ.get("BEDROCK_MODEL_ID", "")
+        _clear_proxy_env()
+        resolved_model = model or _get_env("BEDROCK_MODEL_ID", "bedrock_model_id")
         if not resolved_model:
             raise ValueError(
                 "No Bedrock model ID. Set BEDROCK_MODEL_ID in .env or pass model=."
@@ -170,9 +239,9 @@ class BedrockSampler(BaseSampler):
         )
         self._client = boto3.client(
             "bedrock-runtime",
-            region_name=os.environ.get("AWS_REGION", "us-east-1"),
-            aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
-            aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
+            region_name=_get_env("AWS_REGION", default="us-east-1"),
+            aws_access_key_id=_get_env("AWS_ACCESS_KEY_ID"),
+            aws_secret_access_key=_get_env("AWS_SECRET_ACCESS_KEY"),
             config=boto_config,
         )
         logger.info(f"BedrockSampler initialized: model={self.model}")
@@ -239,11 +308,17 @@ class OpenRouterSampler(BaseSampler):
 
     def __init__(
         self,
-        model: str = "meta-llama/llama-3-8b-instruct",
+        model: Optional[str] = None,
         config: Optional[SamplerConfig] = None,
     ):
-        super().__init__(model, config)
-        api_key = os.environ.get("OPENROUTER_API_KEY", "")
+        resolved_model = model or _get_env("OPENROUTER_MODEL_ID", "openrouter_model_id")
+        if not resolved_model:
+            raise ValueError(
+                "No OpenRouter model ID. Set OPENROUTER_MODEL_ID in .env or pass model=."
+            )
+        super().__init__(resolved_model, config)
+
+        api_key = _get_env("OPENROUTER_API_KEY")
         if not api_key:
             raise ValueError("No OPENROUTER_API_KEY found in .env")
 
@@ -270,11 +345,18 @@ class OpenRouterSampler(BaseSampler):
             temperature=self.config.temperature,
             top_p=self.config.top_p,
         )
-        return response.choices[0].message.content
+        content = response.choices[0].message.content
+        if content is None:
+            raise ValueError("empty response content from OpenRouter")
+        return content
 
 
 class OpenAISampler(BaseSampler):
-    """Direct OpenAI API backend."""
+    """OpenAI-compatible API backend.
+
+    This supports both the hosted OpenAI API and local OpenAI-compatible
+    servers such as LM Studio when `base_url` is provided in the backend config.
+    """
 
     backend_name = "openai"
 
@@ -282,16 +364,28 @@ class OpenAISampler(BaseSampler):
         self,
         model: str = "gpt-4o-mini",
         config: Optional[SamplerConfig] = None,
+        base_url: Optional[str] = None,
+        api_key: Optional[str] = None,
+        api_key_env: str = "OPENAI_API_KEY",
     ):
         super().__init__(model, config)
-        api_key = os.environ.get("OPENAI_API_KEY", "")
-        if not api_key:
-            raise ValueError("No OPENAI_API_KEY found in .env")
+        resolved_api_key = api_key or os.environ.get(api_key_env, "")
+        if base_url and not resolved_api_key:
+            resolved_api_key = "lm-studio"
+        if not resolved_api_key:
+            raise ValueError(f"No {api_key_env} found in .env")
 
         from openai import OpenAI
 
-        self._client = OpenAI(api_key=api_key)
-        logger.info(f"OpenAISampler initialized: model={self.model}")
+        client_kwargs = {"api_key": resolved_api_key}
+        if base_url:
+            client_kwargs["base_url"] = base_url.rstrip("/")
+        self._client = OpenAI(**client_kwargs)
+        logger.info(
+            "OpenAISampler initialized: model=%s, base_url=%s",
+            self.model,
+            base_url or "openai-default",
+        )
 
     def _call_llm(self, prompt: str, system: str) -> str:
         response = self._client.chat.completions.create(
@@ -304,7 +398,10 @@ class OpenAISampler(BaseSampler):
             temperature=self.config.temperature,
             top_p=self.config.top_p,
         )
-        return response.choices[0].message.content
+        content = response.choices[0].message.content
+        if content is None:
+            raise ValueError("empty response content from OpenAI")
+        return content
 
 
 class HuggingFaceSampler(BaseSampler):

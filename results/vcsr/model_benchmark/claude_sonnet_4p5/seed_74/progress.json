@@ -1,0 +1,10 @@
+{
+  "total_rows": 10,
+  "completed_rows": 10,
+  "remaining_rows": 0,
+  "elapsed_sec": 673.5670397281647,
+  "avg_sec_per_row": 67.35670397281646,
+  "eta_sec": 0.0,
+  "current_row_name": "gripper_juggle_to_juggle_balls_in_grippers_1_1_1_1_1_0_0_0_0_balls_in_rooms_5_0",
+  "current_domain": "gripper"
+}

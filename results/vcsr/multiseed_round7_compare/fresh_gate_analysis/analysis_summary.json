@@ -1,0 +1,309 @@
+{
+  "input_dir": "results\\vcsr\\multiseed_round7_compare",
+  "baseline_name": "round4_best_current",
+  "candidate_name": "round7_focused_pointwise",
+  "seeds": [
+    56,
+    57,
+    58
+  ],
+  "k_values": [
+    4,
+    8
+  ],
+  "by_k": {
+    "4": {
+      "rows": 150,
+      "round4_equiv_count": 60,
+      "round7_equiv_count": 62,
+      "round4_equiv_rate": 0.4,
+      "round7_equiv_rate": 0.41333333333333333,
+      "delta": 0.013333333333333308,
+      "round7_helped": 7,
+      "round7_hurt": 5,
+      "ties": 138,
+      "outcome_counts": [
+        [
+          "both_fail",
+          83
+        ],
+        [
+          "both_success",
+          55
+        ],
+        [
+          "round7_helped",
+          7
+        ],
+        [
+          "round7_hurt",
+          5
+        ]
+      ],
+      "cause_counts": [
+        [
+          "both_no_oracle",
+          72
+        ],
+        [
+          "both_oracle_available_same_outcome",
+          59
+        ],
+        [
+          "oracle_availability_loss",
+          8
+        ],
+        [
+          "round7_selector_gain_with_oracle",
+          5
+        ],
+        [
+          "round7_selector_loss_with_oracle",
+          3
+        ],
+        [
+          "oracle_availability_gain",
+          3
+        ]
+      ],
+      "round4_oracle_available": 75,
+      "round7_oracle_available": 70
+    },
+    "8": {
+      "rows": 150,
+      "round4_equiv_count": 63,
+      "round7_equiv_count": 63,
+      "round4_equiv_rate": 0.42,
+      "round7_equiv_rate": 0.42,
+      "delta": 0.0,
+      "round7_helped": 11,
+      "round7_hurt": 11,
+      "ties": 128,
+      "outcome_counts": [
+        [
+          "both_fail",
+          76
+        ],
+        [
+          "both_success",
+          52
+        ],
+        [
+          "round7_hurt",
+          11
+        ],
+        [
+          "round7_helped",
+          11
+        ]
+      ],
+      "cause_counts": [
+        [
+          "both_no_oracle",
+          67
+        ],
+        [
+          "both_oracle_available_same_outcome",
+          59
+        ],
+        [
+          "round7_selector_loss_with_oracle",
+          7
+        ],
+        [
+          "round7_selector_gain_with_oracle",
+          7
+        ],
+        [
+          "oracle_availability_loss",
+          5
+        ],
+        [
+          "oracle_availability_gain",
+          5
+        ]
+      ],
+      "round4_oracle_available": 78,
+      "round7_oracle_available": 78
+    }
+  },
+  "seed_k8": {
+    "56": {
+      "rows": 50,
+      "round4_equiv_rate": 0.48,
+      "round7_equiv_rate": 0.4,
+      "delta": -0.07999999999999996,
+      "round7_helped": 3,
+      "round7_hurt": 7,
+      "cause_counts": [
+        [
+          "both_no_oracle",
+          21
+        ],
+        [
+          "both_oracle_available_same_outcome",
+          19
+        ],
+        [
+          "round7_selector_loss_with_oracle",
+          6
+        ],
+        [
+          "round7_selector_gain_with_oracle",
+          3
+        ],
+        [
+          "oracle_availability_loss",
+          1
+        ]
+      ]
+    },
+    "57": {
+      "rows": 50,
+      "round4_equiv_rate": 0.26,
+      "round7_equiv_rate": 0.28,
+      "delta": 0.020000000000000018,
+      "round7_helped": 3,
+      "round7_hurt": 2,
+      "cause_counts": [
+        [
+          "both_no_oracle",
+          29
+        ],
+        [
+          "both_oracle_available_same_outcome",
+          14
+        ],
+        [
+          "oracle_availability_gain",
+          3
+        ],
+        [
+          "oracle_availability_loss",
+          2
+        ],
+        [
+          "round7_selector_loss_with_oracle",
+          1
+        ],
+        [
+          "round7_selector_gain_with_oracle",
+          1
+        ]
+      ]
+    },
+    "58": {
+      "rows": 50,
+      "round4_equiv_rate": 0.52,
+      "round7_equiv_rate": 0.58,
+      "delta": 0.05999999999999994,
+      "round7_helped": 5,
+      "round7_hurt": 2,
+      "cause_counts": [
+        [
+          "both_oracle_available_same_outcome",
+          26
+        ],
+        [
+          "both_no_oracle",
+          17
+        ],
+        [
+          "round7_selector_gain_with_oracle",
+          3
+        ],
+        [
+          "oracle_availability_gain",
+          2
+        ],
+        [
+          "oracle_availability_loss",
+          2
+        ]
+      ]
+    }
+  },
+  "by_domain": {
+    "4": {
+      "blocksworld": {
+        "rows": 79,
+        "round4_equiv_rate": 0.7341772151898734,
+        "round7_equiv_rate": 0.7848101265822784,
+        "round7_helped": 7,
+        "round7_hurt": 3
+      },
+      "gripper": {
+        "rows": 71,
+        "round4_equiv_rate": 0.028169014084507043,
+        "round7_equiv_rate": 0.0,
+        "round7_helped": 0,
+        "round7_hurt": 2
+      }
+    },
+    "8": {
+      "blocksworld": {
+        "rows": 79,
+        "round4_equiv_rate": 0.7468354430379747,
+        "round7_equiv_rate": 0.7721518987341772,
+        "round7_helped": 9,
+        "round7_hurt": 7
+      },
+      "gripper": {
+        "rows": 71,
+        "round4_equiv_rate": 0.056338028169014086,
+        "round7_equiv_rate": 0.028169014084507043,
+        "round7_helped": 2,
+        "round7_hurt": 4
+      }
+    }
+  },
+  "by_style": {
+    "4": {
+      "explicit/explicit": {
+        "rows": 69,
+        "round4_equiv_rate": 0.4782608695652174,
+        "round7_equiv_rate": 0.463768115942029,
+        "round7_helped": 1,
+        "round7_hurt": 2
+      },
+      "abstract/abstract": {
+        "rows": 81,
+        "round4_equiv_rate": 0.3333333333333333,
+        "round7_equiv_rate": 0.37037037037037035,
+        "round7_helped": 6,
+        "round7_hurt": 3
+      }
+    },
+    "8": {
+      "explicit/explicit": {
+        "rows": 69,
+        "round4_equiv_rate": 0.4782608695652174,
+        "round7_equiv_rate": 0.463768115942029,
+        "round7_helped": 1,
+        "round7_hurt": 2
+      },
+      "abstract/abstract": {
+        "rows": 81,
+        "round4_equiv_rate": 0.37037037037037035,
+        "round7_equiv_rate": 0.38271604938271603,
+        "round7_helped": 10,
+        "round7_hurt": 9
+      }
+    }
+  },
+  "seed56_k8_focus": {
+    "rows": 50,
+    "round7_hurts": 7,
+    "selection_losses_with_oracle": 6,
+    "oracle_availability_losses": 1,
+    "round4_oracle_available": 29,
+    "round7_oracle_available": 28
+  },
+  "interpretation": [
+    "Round 7 tied round 4 at K=8 overall on the fresh gate, so it is not promotion-worthy despite replay gains.",
+    "The seed-56 K=8 drop is mixed: it includes both candidate-pool/oracle-availability effects and within-pool round-7 selector losses.",
+    "Round 7 is not uniformly worse; it helped and hurt different rows, which supports keeping it as evidence but not as best_current.",
+    "Round 7 improved K=4 slightly on fresh seeds, but the project operating point is K=8 and the K=8 gate did not move."
+  ],
+  "recommendation": "Keep round 4 as the official `best_current`. Treat round 7 as a useful focused-pointwise diagnostic, not a promoted model. The next step should not be another blind retrain; either design a fixed-pool fresh comparison to isolate verifier effects, or shift attention to candidate-pool/generator diversity because fresh-pool variance is now large enough to hide small verifier gains."
+}

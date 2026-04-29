@@ -1,0 +1,9 @@
+{
+    "pid":  16876,
+    "started_at":  "2026-04-19T18:13:52",
+    "output_dir":  "results/verifier/ranking_aligned_round3/retrain_from_round2_multipool",
+    "stdout_log":  "results\\verifier\\ranking_aligned_round3\\retrain_from_round2_multipool\\run_stdout.log",
+    "progress_log":  "results\\verifier\\ranking_aligned_round3\\retrain_from_round2_multipool\\progress.log",
+    "progress_json":  "results\\verifier\\ranking_aligned_round3\\retrain_from_round2_multipool\\progress.json",
+    "command":  ".\\.venv\\Scripts\\python.exe -u scripts/train_verifier.py --config configs/verifier_ranking_aligned_round3.yaml"
+}

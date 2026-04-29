@@ -1,0 +1,22 @@
+selected_at: 2026-04-18
+selected_run: results\verifier\ranking_aligned_round2\retrain_from_round1
+checkpoint_path: results\verifier\ranking_aligned_round2\retrain_from_round1\best_model\model.pt
+training_history_path: results\verifier\ranking_aligned_round2\retrain_from_round1\train_history.json
+val_metrics_path: results\verifier\ranking_aligned_round2\retrain_from_round1\val_metrics.json
+calibration_report_path: results\verifier\ranking_aligned_round2\retrain_from_round1\calibration_report.json
+
+selection_reason:
+  summary: Second ranking-aligned verifier fine-tune warm-started from ranking-aligned round 1 and trained on a larger real candidate-pool mining set.
+  criteria:
+    - larger pool-mined positives and hard negatives from results/vcsr/bestofk_ranking_round2_pool
+    - warm-started from results/verifier/ranking_aligned_round1/retrain_from_capacity_push
+    - intended for replay-based downstream verification rather than generic offline comparison alone
+
+metrics_snapshot:
+  val_auc: 0.8045830400289386
+  val_f1: 0.48128342245989303
+  eval_raw_auc: 0.8071749650698603
+  best_raw_f1: 0.6666666666666666
+  best_raw_threshold: 0.4
+  best_temp_f1: 0.6595744680851063
+  best_temp_threshold: 0.3

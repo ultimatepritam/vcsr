@@ -1,0 +1,23 @@
+{
+  "status": "completed",
+  "elapsed_sec": 505.5269911289215,
+  "epoch": 6,
+  "total_epochs": 6,
+  "global_step": 174,
+  "total_optimizer_steps": 174,
+  "best_metric": 0.7945323488045006,
+  "best_epoch": 6,
+  "patience_counter": 0,
+  "current_train_loss": 0.4066628861848427,
+  "current_val_metrics": {
+    "epoch": 6,
+    "train_loss": 0.4066628861848427,
+    "val_auc": 0.7945323488045006,
+    "val_accuracy": 0.7170868347338936,
+    "val_f1": 0.4656084656084656,
+    "val_precision": 0.6376811594202898,
+    "val_recall": 0.36666666666666664,
+    "val_n": 357,
+    "val_loss": 0.5118291533511617
+  }
+}

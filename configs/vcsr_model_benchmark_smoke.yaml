@@ -1,0 +1,76 @@
+# Smoke version of the multi-model benchmark.
+#
+# Uses the same model list as configs/vcsr_model_benchmark.yaml but only a tiny
+# sample budget, so we can check provider/model availability and rough behavior
+# before committing to the full benchmark.
+
+base_config: configs/vcsr_bestofk_final_repair.yaml
+output_dir: results/vcsr/model_benchmark_smoke
+
+dataset:
+  split: test
+  domains:
+    - blocksworld
+    - gripper
+  max_samples: 3
+
+seeds:
+  - 72
+
+k_values:
+  - 1
+  - 4
+  - 8
+
+policies:
+  - greedy_first
+  - random_parseable
+  - verifier_ranked
+  - verifier_ranked_repair
+
+verifier:
+  selection_metadata: results/verifier/best_current/selection.yaml
+  scoring_batch_size: 8
+
+generation:
+  backend_type: openrouter
+  K: 8
+  temperature: 0.8
+  top_p: 0.95
+  max_new_tokens: 1024
+  retry_attempts: 3
+  retry_delay_sec: 2
+  clear_proxy_env: true
+
+repair:
+  enabled: true
+  K: 8
+  same_model_as_generation: true
+  temperature: 0.2
+  top_p: 0.9
+  max_new_tokens: 1024
+  retry_attempts: 3
+  retry_delay_sec: 2
+
+models:
+  - name: claude_haiku_4p5
+    model_id: anthropic/claude-haiku-4.5
+  - name: claude_sonnet_4p5
+    model_id: anthropic/claude-sonnet-4.5
+  - name: qwen_3p6_27b
+    model_id: qwen/qwen3.6-27b
+  - name: gpt_5p4_mini
+    model_id: openai/gpt-5.4-mini
+  - name: deepseek_v4_flash
+    model_id: deepseek/deepseek-v4-flash
+
+execution:
+  force: false
+  continue_on_error: true
+
+summary:
+  main_k: 8
+  prompt_policy: greedy_first
+  random_policy: random_parseable
+  verifier_policy: verifier_ranked
+  repair_policy: verifier_ranked_repair

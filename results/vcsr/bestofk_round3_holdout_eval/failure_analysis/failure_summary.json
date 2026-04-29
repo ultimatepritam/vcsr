@@ -1,0 +1,1084 @@
+{
+  "inputs": {
+    "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+    "aggregate_metrics": "results\\vcsr\\bestofk_round3_holdout_eval\\aggregate_metrics.json",
+    "comparison_dumps": [
+      "results/vcsr/bestofk_pilot/candidate_dump.jsonl",
+      "results/vcsr/bestofk_ranking_round2_pool/candidate_dump.jsonl"
+    ],
+    "k_values": [
+      4,
+      8
+    ],
+    "policies": [
+      "greedy_first",
+      "random_parseable",
+      "verifier_ranked"
+    ],
+    "near_tie_margin": 0.03,
+    "moderate_gap_margin": 0.1
+  },
+  "validation": {
+    "aggregate_metrics_path": "results\\vcsr\\bestofk_round3_holdout_eval\\aggregate_metrics.json",
+    "validated": true,
+    "reason": "ok",
+    "mismatches": []
+  },
+  "heldout": {
+    "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+    "row_count": 50,
+    "summary_by_k": {
+      "4": {
+        "rows": 50,
+        "oracle_positive_rows": 26,
+        "verifier_hits": 21,
+        "verifier_oracle_misses": 5,
+        "verifier_miss_types": {
+          "near_tie_misranking": 3,
+          "success": 21,
+          "no_equivalent_in_pool": 24,
+          "equivalent_in_pool_but_misranked": 2
+        },
+        "verifier_gain_reasons": {
+          "already_solved_by_greedy": 19,
+          "within_pool_reranking": 1,
+          "dominated_by_unparseable_first_greedy_behavior": 1
+        },
+        "by_domain": [
+          {
+            "domain": "blocksworld",
+            "rows": 29,
+            "oracle_positive_rows": 26,
+            "verifier_hits": 21,
+            "verifier_oracle_misses": 5
+          },
+          {
+            "domain": "gripper",
+            "rows": 21,
+            "oracle_positive_rows": 0,
+            "verifier_hits": 0,
+            "verifier_oracle_misses": 0
+          }
+        ],
+        "by_style": [
+          {
+            "style": "abstract/abstract",
+            "rows": 28,
+            "oracle_positive_rows": 12,
+            "verifier_hits": 8,
+            "verifier_oracle_misses": 4
+          },
+          {
+            "style": "explicit/explicit",
+            "rows": 22,
+            "oracle_positive_rows": 14,
+            "verifier_hits": 13,
+            "verifier_oracle_misses": 1
+          }
+        ]
+      },
+      "8": {
+        "rows": 50,
+        "oracle_positive_rows": 27,
+        "verifier_hits": 23,
+        "verifier_oracle_misses": 4,
+        "verifier_miss_types": {
+          "near_tie_misranking": 1,
+          "success": 23,
+          "no_equivalent_in_pool": 23,
+          "equivalent_in_pool_but_misranked": 3
+        },
+        "verifier_gain_reasons": {
+          "already_solved_by_greedy": 19,
+          "within_pool_reranking": 2,
+          "requires_extra_k_candidates": 1,
+          "dominated_by_unparseable_first_greedy_behavior": 1
+        },
+        "by_domain": [
+          {
+            "domain": "blocksworld",
+            "rows": 29,
+            "oracle_positive_rows": 27,
+            "verifier_hits": 23,
+            "verifier_oracle_misses": 4
+          },
+          {
+            "domain": "gripper",
+            "rows": 21,
+            "oracle_positive_rows": 0,
+            "verifier_hits": 0,
+            "verifier_oracle_misses": 0
+          }
+        ],
+        "by_style": [
+          {
+            "style": "abstract/abstract",
+            "rows": 28,
+            "oracle_positive_rows": 13,
+            "verifier_hits": 10,
+            "verifier_oracle_misses": 3
+          },
+          {
+            "style": "explicit/explicit",
+            "rows": 22,
+            "oracle_positive_rows": 14,
+            "verifier_hits": 13,
+            "verifier_oracle_misses": 1
+          }
+        ]
+      }
+    },
+    "metrics": {
+      "4": {
+        "policies": {
+          "greedy_first": {
+            "metrics": {
+              "total": 50,
+              "parse_count": 47,
+              "solve_count": 0,
+              "equiv_count": 22,
+              "error_count": 3,
+              "parse_rate": 0.94,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.44,
+              "equiv_given_parse": 0.46808510638297873
+            },
+            "candidate_pool": {
+              "avg_parseable_candidates": 3.76,
+              "avg_equivalent_candidates": 1.64,
+              "oracle_bestofk_equiv_rate": 0.52
+            }
+          },
+          "random_parseable": {
+            "metrics": {
+              "total": 50,
+              "parse_count": 50,
+              "solve_count": 0,
+              "equiv_count": 22,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.44,
+              "equiv_given_parse": 0.44
+            },
+            "candidate_pool": {
+              "avg_parseable_candidates": 3.76,
+              "avg_equivalent_candidates": 1.64,
+              "oracle_bestofk_equiv_rate": 0.52
+            }
+          },
+          "verifier_ranked": {
+            "metrics": {
+              "total": 50,
+              "parse_count": 50,
+              "solve_count": 0,
+              "equiv_count": 21,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.42,
+              "equiv_given_parse": 0.42
+            },
+            "candidate_pool": {
+              "avg_parseable_candidates": 3.76,
+              "avg_equivalent_candidates": 1.64,
+              "oracle_bestofk_equiv_rate": 0.52
+            }
+          }
+        }
+      },
+      "8": {
+        "policies": {
+          "greedy_first": {
+            "metrics": {
+              "total": 50,
+              "parse_count": 47,
+              "solve_count": 0,
+              "equiv_count": 22,
+              "error_count": 3,
+              "parse_rate": 0.94,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.44,
+              "equiv_given_parse": 0.46808510638297873
+            },
+            "candidate_pool": {
+              "avg_parseable_candidates": 7.58,
+              "avg_equivalent_candidates": 3.34,
+              "oracle_bestofk_equiv_rate": 0.54
+            }
+          },
+          "random_parseable": {
+            "metrics": {
+              "total": 50,
+              "parse_count": 50,
+              "solve_count": 0,
+              "equiv_count": 19,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.38,
+              "equiv_given_parse": 0.38
+            },
+            "candidate_pool": {
+              "avg_parseable_candidates": 7.58,
+              "avg_equivalent_candidates": 3.34,
+              "oracle_bestofk_equiv_rate": 0.54
+            }
+          },
+          "verifier_ranked": {
+            "metrics": {
+              "total": 50,
+              "parse_count": 50,
+              "solve_count": 0,
+              "equiv_count": 23,
+              "error_count": 0,
+              "parse_rate": 1.0,
+              "solve_rate": 0.0,
+              "equiv_rate": 0.46,
+              "equiv_given_parse": 0.46
+            },
+            "candidate_pool": {
+              "avg_parseable_candidates": 7.58,
+              "avg_equivalent_candidates": 3.34,
+              "oracle_bestofk_equiv_rate": 0.54
+            }
+          }
+        }
+      }
+    }
+  },
+  "comparison_pools": [
+    {
+      "candidate_dump": "results\\vcsr\\bestofk_pilot\\candidate_dump.jsonl",
+      "row_count": 30,
+      "summary_by_k": {
+        "4": {
+          "rows": 30,
+          "oracle_positive_rows": 17,
+          "verifier_hits": 13,
+          "verifier_oracle_misses": 4,
+          "verifier_miss_types": {
+            "no_equivalent_in_pool": 13,
+            "success": 13,
+            "near_tie_misranking": 2,
+            "equivalent_in_pool_but_misranked": 2
+          },
+          "verifier_gain_reasons": {
+            "already_solved_by_greedy": 12,
+            "within_pool_reranking": 1
+          },
+          "by_domain": [
+            {
+              "domain": "blocksworld",
+              "rows": 19,
+              "oracle_positive_rows": 17,
+              "verifier_hits": 13,
+              "verifier_oracle_misses": 4
+            },
+            {
+              "domain": "gripper",
+              "rows": 11,
+              "oracle_positive_rows": 0,
+              "verifier_hits": 0,
+              "verifier_oracle_misses": 0
+            }
+          ],
+          "by_style": [
+            {
+              "style": "abstract/abstract",
+              "rows": 19,
+              "oracle_positive_rows": 10,
+              "verifier_hits": 7,
+              "verifier_oracle_misses": 3
+            },
+            {
+              "style": "explicit/explicit",
+              "rows": 11,
+              "oracle_positive_rows": 7,
+              "verifier_hits": 6,
+              "verifier_oracle_misses": 1
+            }
+          ]
+        },
+        "8": {
+          "rows": 30,
+          "oracle_positive_rows": 18,
+          "verifier_hits": 14,
+          "verifier_oracle_misses": 4,
+          "verifier_miss_types": {
+            "near_tie_misranking": 4,
+            "success": 14,
+            "no_equivalent_in_pool": 12
+          },
+          "verifier_gain_reasons": {
+            "already_solved_by_greedy": 13,
+            "within_pool_reranking": 1
+          },
+          "by_domain": [
+            {
+              "domain": "blocksworld",
+              "rows": 19,
+              "oracle_positive_rows": 18,
+              "verifier_hits": 14,
+              "verifier_oracle_misses": 4
+            },
+            {
+              "domain": "gripper",
+              "rows": 11,
+              "oracle_positive_rows": 0,
+              "verifier_hits": 0,
+              "verifier_oracle_misses": 0
+            }
+          ],
+          "by_style": [
+            {
+              "style": "abstract/abstract",
+              "rows": 19,
+              "oracle_positive_rows": 11,
+              "verifier_hits": 8,
+              "verifier_oracle_misses": 3
+            },
+            {
+              "style": "explicit/explicit",
+              "rows": 11,
+              "oracle_positive_rows": 7,
+              "verifier_hits": 6,
+              "verifier_oracle_misses": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "candidate_dump": "results\\vcsr\\bestofk_ranking_round2_pool\\candidate_dump.jsonl",
+      "row_count": 50,
+      "summary_by_k": {
+        "4": {
+          "rows": 50,
+          "oracle_positive_rows": 28,
+          "verifier_hits": 24,
+          "verifier_oracle_misses": 4,
+          "verifier_miss_types": {
+            "equivalent_in_pool_but_misranked": 3,
+            "success": 24,
+            "no_equivalent_in_pool": 22,
+            "near_tie_misranking": 1
+          },
+          "verifier_gain_reasons": {
+            "already_solved_by_greedy": 20,
+            "within_pool_reranking": 4
+          },
+          "by_domain": [
+            {
+              "domain": "blocksworld",
+              "rows": 30,
+              "oracle_positive_rows": 26,
+              "verifier_hits": 22,
+              "verifier_oracle_misses": 4
+            },
+            {
+              "domain": "gripper",
+              "rows": 20,
+              "oracle_positive_rows": 2,
+              "verifier_hits": 2,
+              "verifier_oracle_misses": 0
+            }
+          ],
+          "by_style": [
+            {
+              "style": "abstract/abstract",
+              "rows": 32,
+              "oracle_positive_rows": 17,
+              "verifier_hits": 14,
+              "verifier_oracle_misses": 3
+            },
+            {
+              "style": "explicit/explicit",
+              "rows": 18,
+              "oracle_positive_rows": 11,
+              "verifier_hits": 10,
+              "verifier_oracle_misses": 1
+            }
+          ]
+        },
+        "8": {
+          "rows": 50,
+          "oracle_positive_rows": 31,
+          "verifier_hits": 21,
+          "verifier_oracle_misses": 10,
+          "verifier_miss_types": {
+            "equivalent_in_pool_but_misranked": 6,
+            "success": 21,
+            "no_equivalent_in_pool": 19,
+            "near_tie_misranking": 4
+          },
+          "verifier_gain_reasons": {
+            "already_solved_by_greedy": 17,
+            "within_pool_reranking": 4
+          },
+          "by_domain": [
+            {
+              "domain": "blocksworld",
+              "rows": 30,
+              "oracle_positive_rows": 29,
+              "verifier_hits": 19,
+              "verifier_oracle_misses": 10
+            },
+            {
+              "domain": "gripper",
+              "rows": 20,
+              "oracle_positive_rows": 2,
+              "verifier_hits": 2,
+              "verifier_oracle_misses": 0
+            }
+          ],
+          "by_style": [
+            {
+              "style": "abstract/abstract",
+              "rows": 32,
+              "oracle_positive_rows": 19,
+              "verifier_hits": 11,
+              "verifier_oracle_misses": 8
+            },
+            {
+              "style": "explicit/explicit",
+              "rows": 18,
+              "oracle_positive_rows": 12,
+              "verifier_hits": 10,
+              "verifier_oracle_misses": 2
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "high_value_miss_cases": [
+    {
+      "comparison_role": "heldout",
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 0,
+      "planetarium_name": "blocksworld_swap_to_swap_blocks_list_16_2",
+      "domain": "blocksworld",
+      "init_is_abstract": 1,
+      "goal_is_abstract": 1,
+      "style": "abstract/abstract",
+      "K": 8,
+      "oracle_available": true,
+      "oracle_available_at_k4": true,
+      "gain_requires_extra_k_candidates": false,
+      "pool_parseable_count": 8,
+      "pool_equivalent_count": 5,
+      "pool_equivalent_candidate_count": 5,
+      "best_equivalent_candidate_index": 0,
+      "best_equivalent_verifier_score": 0.70068359375,
+      "best_wrong_candidate_index": 1,
+      "best_wrong_verifier_score": 0.73046875,
+      "selected_wrong_minus_best_equivalent_score_margin": 0.02978515625,
+      "greedy_first": {
+        "selected_index": 0,
+        "selection_reason": "first_candidate",
+        "parseable": true,
+        "equivalent": true,
+        "verifier_score": 0.70068359375,
+        "error": null
+      },
+      "random_parseable": {
+        "selected_index": 0,
+        "selection_reason": "random_parseable",
+        "parseable": true,
+        "equivalent": true,
+        "verifier_score": 0.70068359375,
+        "error": null
+      },
+      "verifier_ranked": {
+        "selected_index": 1,
+        "selection_reason": "highest_verifier_score",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.73046875,
+        "error": null
+      },
+      "verifier_miss_type": "near_tie_misranking",
+      "verifier_gain_over_greedy": false,
+      "verifier_gain_reason": "none"
+    },
+    {
+      "comparison_role": "heldout",
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 23,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_2_2_2_2_3_5",
+      "domain": "blocksworld",
+      "init_is_abstract": 1,
+      "goal_is_abstract": 1,
+      "style": "abstract/abstract",
+      "K": 8,
+      "oracle_available": true,
+      "oracle_available_at_k4": true,
+      "gain_requires_extra_k_candidates": false,
+      "pool_parseable_count": 6,
+      "pool_equivalent_count": 2,
+      "pool_equivalent_candidate_count": 2,
+      "best_equivalent_candidate_index": 2,
+      "best_equivalent_verifier_score": 0.4990234375,
+      "best_wrong_candidate_index": 4,
+      "best_wrong_verifier_score": 0.56787109375,
+      "selected_wrong_minus_best_equivalent_score_margin": 0.06884765625,
+      "greedy_first": {
+        "selected_index": 0,
+        "selection_reason": "first_candidate",
+        "parseable": false,
+        "equivalent": false,
+        "verifier_score": null,
+        "error": "parse_failed"
+      },
+      "random_parseable": {
+        "selected_index": 4,
+        "selection_reason": "random_parseable",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.56787109375,
+        "error": null
+      },
+      "verifier_ranked": {
+        "selected_index": 4,
+        "selection_reason": "highest_verifier_score",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.56787109375,
+        "error": null
+      },
+      "verifier_miss_type": "equivalent_in_pool_but_misranked",
+      "verifier_gain_over_greedy": false,
+      "verifier_gain_reason": "none"
+    },
+    {
+      "comparison_role": "heldout",
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 26,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_2_2_5_6_6",
+      "domain": "blocksworld",
+      "init_is_abstract": 1,
+      "goal_is_abstract": 1,
+      "style": "abstract/abstract",
+      "K": 8,
+      "oracle_available": true,
+      "oracle_available_at_k4": true,
+      "gain_requires_extra_k_candidates": false,
+      "pool_parseable_count": 8,
+      "pool_equivalent_count": 1,
+      "pool_equivalent_candidate_count": 1,
+      "best_equivalent_candidate_index": 0,
+      "best_equivalent_verifier_score": 0.4072265625,
+      "best_wrong_candidate_index": 6,
+      "best_wrong_verifier_score": 0.477783203125,
+      "selected_wrong_minus_best_equivalent_score_margin": 0.070556640625,
+      "greedy_first": {
+        "selected_index": 0,
+        "selection_reason": "first_candidate",
+        "parseable": true,
+        "equivalent": true,
+        "verifier_score": 0.4072265625,
+        "error": null
+      },
+      "random_parseable": {
+        "selected_index": 4,
+        "selection_reason": "random_parseable",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.467041015625,
+        "error": null
+      },
+      "verifier_ranked": {
+        "selected_index": 6,
+        "selection_reason": "highest_verifier_score",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.477783203125,
+        "error": null
+      },
+      "verifier_miss_type": "equivalent_in_pool_but_misranked",
+      "verifier_gain_over_greedy": false,
+      "verifier_gain_reason": "none"
+    },
+    {
+      "comparison_role": "heldout",
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 9,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_4_4_4_4",
+      "domain": "blocksworld",
+      "init_is_abstract": 0,
+      "goal_is_abstract": 0,
+      "style": "explicit/explicit",
+      "K": 8,
+      "oracle_available": true,
+      "oracle_available_at_k4": true,
+      "gain_requires_extra_k_candidates": false,
+      "pool_parseable_count": 8,
+      "pool_equivalent_count": 6,
+      "pool_equivalent_candidate_count": 6,
+      "best_equivalent_candidate_index": 4,
+      "best_equivalent_verifier_score": 0.60693359375,
+      "best_wrong_candidate_index": 3,
+      "best_wrong_verifier_score": 0.638671875,
+      "selected_wrong_minus_best_equivalent_score_margin": 0.03173828125,
+      "greedy_first": {
+        "selected_index": 0,
+        "selection_reason": "first_candidate",
+        "parseable": true,
+        "equivalent": true,
+        "verifier_score": 0.59814453125,
+        "error": null
+      },
+      "random_parseable": {
+        "selected_index": 3,
+        "selection_reason": "random_parseable",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.638671875,
+        "error": null
+      },
+      "verifier_ranked": {
+        "selected_index": 3,
+        "selection_reason": "highest_verifier_score",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.638671875,
+        "error": null
+      },
+      "verifier_miss_type": "equivalent_in_pool_but_misranked",
+      "verifier_gain_over_greedy": false,
+      "verifier_gain_reason": "none"
+    },
+    {
+      "comparison_role": "heldout",
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 0,
+      "planetarium_name": "blocksworld_swap_to_swap_blocks_list_16_2",
+      "domain": "blocksworld",
+      "init_is_abstract": 1,
+      "goal_is_abstract": 1,
+      "style": "abstract/abstract",
+      "K": 4,
+      "oracle_available": true,
+      "oracle_available_at_k4": true,
+      "gain_requires_extra_k_candidates": false,
+      "pool_parseable_count": 4,
+      "pool_equivalent_count": 2,
+      "pool_equivalent_candidate_count": 2,
+      "best_equivalent_candidate_index": 0,
+      "best_equivalent_verifier_score": 0.70068359375,
+      "best_wrong_candidate_index": 1,
+      "best_wrong_verifier_score": 0.73046875,
+      "selected_wrong_minus_best_equivalent_score_margin": 0.02978515625,
+      "greedy_first": {
+        "selected_index": 0,
+        "selection_reason": "first_candidate",
+        "parseable": true,
+        "equivalent": true,
+        "verifier_score": 0.70068359375,
+        "error": null
+      },
+      "random_parseable": {
+        "selected_index": 2,
+        "selection_reason": "random_parseable",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.73046875,
+        "error": null
+      },
+      "verifier_ranked": {
+        "selected_index": 1,
+        "selection_reason": "highest_verifier_score",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.73046875,
+        "error": null
+      },
+      "verifier_miss_type": "near_tie_misranking",
+      "verifier_gain_over_greedy": false,
+      "verifier_gain_reason": "none"
+    },
+    {
+      "comparison_role": "heldout",
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 23,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_2_2_2_2_3_5",
+      "domain": "blocksworld",
+      "init_is_abstract": 1,
+      "goal_is_abstract": 1,
+      "style": "abstract/abstract",
+      "K": 4,
+      "oracle_available": true,
+      "oracle_available_at_k4": true,
+      "gain_requires_extra_k_candidates": false,
+      "pool_parseable_count": 3,
+      "pool_equivalent_count": 1,
+      "pool_equivalent_candidate_count": 1,
+      "best_equivalent_candidate_index": 2,
+      "best_equivalent_verifier_score": 0.4990234375,
+      "best_wrong_candidate_index": 3,
+      "best_wrong_verifier_score": 0.499267578125,
+      "selected_wrong_minus_best_equivalent_score_margin": 0.000244140625,
+      "greedy_first": {
+        "selected_index": 0,
+        "selection_reason": "first_candidate",
+        "parseable": false,
+        "equivalent": false,
+        "verifier_score": null,
+        "error": "parse_failed"
+      },
+      "random_parseable": {
+        "selected_index": 3,
+        "selection_reason": "random_parseable",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.499267578125,
+        "error": null
+      },
+      "verifier_ranked": {
+        "selected_index": 3,
+        "selection_reason": "highest_verifier_score",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.499267578125,
+        "error": null
+      },
+      "verifier_miss_type": "near_tie_misranking",
+      "verifier_gain_over_greedy": false,
+      "verifier_gain_reason": "none"
+    },
+    {
+      "comparison_role": "heldout",
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 6,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_2_2_4_6",
+      "domain": "blocksworld",
+      "init_is_abstract": 1,
+      "goal_is_abstract": 1,
+      "style": "abstract/abstract",
+      "K": 4,
+      "oracle_available": true,
+      "oracle_available_at_k4": true,
+      "gain_requires_extra_k_candidates": false,
+      "pool_parseable_count": 4,
+      "pool_equivalent_count": 1,
+      "pool_equivalent_candidate_count": 1,
+      "best_equivalent_candidate_index": 2,
+      "best_equivalent_verifier_score": 0.4853515625,
+      "best_wrong_candidate_index": 0,
+      "best_wrong_verifier_score": 0.495849609375,
+      "selected_wrong_minus_best_equivalent_score_margin": 0.010498046875,
+      "greedy_first": {
+        "selected_index": 0,
+        "selection_reason": "first_candidate",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.495849609375,
+        "error": null
+      },
+      "random_parseable": {
+        "selected_index": 2,
+        "selection_reason": "random_parseable",
+        "parseable": true,
+        "equivalent": true,
+        "verifier_score": 0.4853515625,
+        "error": null
+      },
+      "verifier_ranked": {
+        "selected_index": 0,
+        "selection_reason": "highest_verifier_score",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.495849609375,
+        "error": null
+      },
+      "verifier_miss_type": "near_tie_misranking",
+      "verifier_gain_over_greedy": false,
+      "verifier_gain_reason": "none"
+    },
+    {
+      "comparison_role": "heldout",
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 26,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_2_2_5_6_6",
+      "domain": "blocksworld",
+      "init_is_abstract": 1,
+      "goal_is_abstract": 1,
+      "style": "abstract/abstract",
+      "K": 4,
+      "oracle_available": true,
+      "oracle_available_at_k4": true,
+      "gain_requires_extra_k_candidates": false,
+      "pool_parseable_count": 4,
+      "pool_equivalent_count": 1,
+      "pool_equivalent_candidate_count": 1,
+      "best_equivalent_candidate_index": 0,
+      "best_equivalent_verifier_score": 0.4072265625,
+      "best_wrong_candidate_index": 2,
+      "best_wrong_verifier_score": 0.46630859375,
+      "selected_wrong_minus_best_equivalent_score_margin": 0.05908203125,
+      "greedy_first": {
+        "selected_index": 0,
+        "selection_reason": "first_candidate",
+        "parseable": true,
+        "equivalent": true,
+        "verifier_score": 0.4072265625,
+        "error": null
+      },
+      "random_parseable": {
+        "selected_index": 3,
+        "selection_reason": "random_parseable",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.46630859375,
+        "error": null
+      },
+      "verifier_ranked": {
+        "selected_index": 2,
+        "selection_reason": "highest_verifier_score",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.46630859375,
+        "error": null
+      },
+      "verifier_miss_type": "equivalent_in_pool_but_misranked",
+      "verifier_gain_over_greedy": false,
+      "verifier_gain_reason": "none"
+    }
+  ],
+  "k8_gain_cases": [
+    {
+      "comparison_role": "heldout",
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 6,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_2_2_4_6",
+      "domain": "blocksworld",
+      "init_is_abstract": 1,
+      "goal_is_abstract": 1,
+      "style": "abstract/abstract",
+      "K": 8,
+      "oracle_available": true,
+      "oracle_available_at_k4": true,
+      "gain_requires_extra_k_candidates": false,
+      "pool_parseable_count": 8,
+      "pool_equivalent_count": 4,
+      "pool_equivalent_candidate_count": 4,
+      "best_equivalent_candidate_index": 4,
+      "best_equivalent_verifier_score": 0.56689453125,
+      "best_wrong_candidate_index": 0,
+      "best_wrong_verifier_score": 0.495849609375,
+      "selected_wrong_minus_best_equivalent_score_margin": null,
+      "greedy_first": {
+        "selected_index": 0,
+        "selection_reason": "first_candidate",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.495849609375,
+        "error": null
+      },
+      "random_parseable": {
+        "selected_index": 6,
+        "selection_reason": "random_parseable",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.495849609375,
+        "error": null
+      },
+      "verifier_ranked": {
+        "selected_index": 4,
+        "selection_reason": "highest_verifier_score",
+        "parseable": true,
+        "equivalent": true,
+        "verifier_score": 0.56689453125,
+        "error": null
+      },
+      "verifier_miss_type": "success",
+      "verifier_gain_over_greedy": true,
+      "verifier_gain_reason": "within_pool_reranking"
+    },
+    {
+      "comparison_role": "heldout",
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 7,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_3_4_8",
+      "domain": "blocksworld",
+      "init_is_abstract": 1,
+      "goal_is_abstract": 1,
+      "style": "abstract/abstract",
+      "K": 8,
+      "oracle_available": true,
+      "oracle_available_at_k4": true,
+      "gain_requires_extra_k_candidates": false,
+      "pool_parseable_count": 8,
+      "pool_equivalent_count": 5,
+      "pool_equivalent_candidate_count": 5,
+      "best_equivalent_candidate_index": 1,
+      "best_equivalent_verifier_score": 0.60107421875,
+      "best_wrong_candidate_index": 0,
+      "best_wrong_verifier_score": 0.51904296875,
+      "selected_wrong_minus_best_equivalent_score_margin": null,
+      "greedy_first": {
+        "selected_index": 0,
+        "selection_reason": "first_candidate",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.51904296875,
+        "error": null
+      },
+      "random_parseable": {
+        "selected_index": 2,
+        "selection_reason": "random_parseable",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.51904296875,
+        "error": null
+      },
+      "verifier_ranked": {
+        "selected_index": 1,
+        "selection_reason": "highest_verifier_score",
+        "parseable": true,
+        "equivalent": true,
+        "verifier_score": 0.60107421875,
+        "error": null
+      },
+      "verifier_miss_type": "success",
+      "verifier_gain_over_greedy": true,
+      "verifier_gain_reason": "within_pool_reranking"
+    },
+    {
+      "comparison_role": "heldout",
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 15,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_2_3_3_7",
+      "domain": "blocksworld",
+      "init_is_abstract": 1,
+      "goal_is_abstract": 1,
+      "style": "abstract/abstract",
+      "K": 8,
+      "oracle_available": true,
+      "oracle_available_at_k4": false,
+      "gain_requires_extra_k_candidates": true,
+      "pool_parseable_count": 8,
+      "pool_equivalent_count": 1,
+      "pool_equivalent_candidate_count": 1,
+      "best_equivalent_candidate_index": 6,
+      "best_equivalent_verifier_score": 0.55712890625,
+      "best_wrong_candidate_index": 5,
+      "best_wrong_verifier_score": 0.494384765625,
+      "selected_wrong_minus_best_equivalent_score_margin": null,
+      "greedy_first": {
+        "selected_index": 0,
+        "selection_reason": "first_candidate",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.483642578125,
+        "error": null
+      },
+      "random_parseable": {
+        "selected_index": 0,
+        "selection_reason": "random_parseable",
+        "parseable": true,
+        "equivalent": false,
+        "verifier_score": 0.483642578125,
+        "error": null
+      },
+      "verifier_ranked": {
+        "selected_index": 6,
+        "selection_reason": "highest_verifier_score",
+        "parseable": true,
+        "equivalent": true,
+        "verifier_score": 0.55712890625,
+        "error": null
+      },
+      "verifier_miss_type": "success",
+      "verifier_gain_over_greedy": true,
+      "verifier_gain_reason": "requires_extra_k_candidates"
+    },
+    {
+      "comparison_role": "heldout",
+      "candidate_dump": "results\\vcsr\\bestofk_round3_holdout_eval\\candidate_dump.jsonl",
+      "row_index": 16,
+      "planetarium_name": "blocksworld_invert_to_invert_blocks_list_1_1_1_1_2_2_2_4_4",
+      "domain": "blocksworld",
+      "init_is_abstract": 1,
+      "goal_is_abstract": 1,
+      "style": "abstract/abstract",
+      "K": 8,
+      "oracle_available": true,
+      "oracle_available_at_k4": true,
+      "gain_requires_extra_k_candidates": false,
+      "pool_parseable_count": 6,
+      "pool_equivalent_count": 6,
+      "pool_equivalent_candidate_count": 6,
+      "best_equivalent_candidate_index": 2,
+      "best_equivalent_verifier_score": 0.490234375,
+      "best_wrong_candidate_index": null,
+      "best_wrong_verifier_score": null,
+      "selected_wrong_minus_best_equivalent_score_margin": null,
+      "greedy_first": {
+        "selected_index": 0,
+        "selection_reason": "first_candidate",
+        "parseable": false,
+        "equivalent": false,
+        "verifier_score": null,
+        "error": "parse_failed"
+      },
+      "random_parseable": {
+        "selected_index": 1,
+        "selection_reason": "random_parseable",
+        "parseable": true,
+        "equivalent": true,
+        "verifier_score": 0.48583984375,
+        "error": null
+      },
+      "verifier_ranked": {
+        "selected_index": 2,
+        "selection_reason": "highest_verifier_score",
+        "parseable": true,
+        "equivalent": true,
+        "verifier_score": 0.490234375,
+        "error": null
+      },
+      "verifier_miss_type": "success",
+      "verifier_gain_over_greedy": true,
+      "verifier_gain_reason": "dominated_by_unparseable_first_greedy_behavior"
+    }
+  ],
+  "decision": {
+    "recommended_path": "focused_round4",
+    "rationale": "Most residual oracle-positive misses are still within-pool misrankings concentrated in blocksworld, especially abstract/abstract rows, with score gaps small enough to justify a targeted next mining round rather than an immediate objective change.",
+    "evidence": {
+      "miss_count": 9,
+      "blocksworld_ratio": 1.0,
+      "abstract_abstract_ratio": 0.7777777777777778,
+      "moderate_gap_ratio": 1.0,
+      "comparison_recurrence_support": true
+    },
+    "next_experiment": [
+      "Keep the DeBERTa cross-encoder backbone and current inference stack.",
+      "Do not run a broad LR or batch sweep.",
+      "Mine additional examples only from held-out-like blocksworld rows, especially abstract/abstract rows.",
+      "Prioritize rows where a verifier-selected wrong candidate outranks an equivalent candidate.",
+      "Prioritize rows with multiple equivalent candidates plus one or more high-scoring wrong candidates.",
+      "Emphasize near-tie ranking negatives and keep replay as the checkpoint-selection rule."
+    ],
+    "comparison_recurrence": [
+      {
+        "candidate_dump": "results\\vcsr\\bestofk_pilot\\candidate_dump.jsonl",
+        "k8_verifier_oracle_misses": 4,
+        "k8_blocksworld_misses": 4,
+        "k8_gripper_misses": 0,
+        "k8_abstract_abstract_misses": 3,
+        "k8_explicit_explicit_misses": 1
+      },
+      {
+        "candidate_dump": "results\\vcsr\\bestofk_ranking_round2_pool\\candidate_dump.jsonl",
+        "k8_verifier_oracle_misses": 10,
+        "k8_blocksworld_misses": 10,
+        "k8_gripper_misses": 0,
+        "k8_abstract_abstract_misses": 8,
+        "k8_explicit_explicit_misses": 2
+      }
+    ]
+  }
+}

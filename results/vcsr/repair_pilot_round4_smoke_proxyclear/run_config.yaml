@@ -1,0 +1,31 @@
+experiment:
+  name: repair_pilot_round4
+  seed: 42
+inputs:
+  candidate_pools:
+  - results/vcsr/bestofk_round4_holdout_eval_clean/candidate_dump.jsonl
+  - results/vcsr/fixed_pool_round7_compare/pools/seed_59/candidate_dump.jsonl
+  - results/vcsr/fixed_pool_round7_compare/pools/seed_60/candidate_dump.jsonl
+  - results/vcsr/fixed_pool_round7_compare/pools/seed_61/candidate_dump.jsonl
+  - results/vcsr/bestofk_round3_holdout_eval/candidate_dump.jsonl
+  - results/vcsr/bestofk_pilot/candidate_dump.jsonl
+selection:
+  verifier_selection: results/verifier/best_current/selection.yaml
+  policy: verifier_ranked
+  K: 8
+  max_rows: 2
+  scoring_batch_size: 8
+generation:
+  clear_proxy_env: true
+  backends:
+  - type: openrouter
+    K: 1
+  temperature: 0.4
+  top_p: 0.9
+  max_new_tokens: 1024
+  retry_attempts: 3
+  retry_delay_sec: 2
+evaluation:
+  equivalence_timeout_sec: 0
+output:
+  dir: results\vcsr\repair_pilot_round4_smoke_proxyclear

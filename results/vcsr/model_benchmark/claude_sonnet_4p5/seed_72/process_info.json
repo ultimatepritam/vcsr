@@ -1,0 +1,6 @@
+{
+  "pid": 6456,
+  "started_at": 1777379196.5169806,
+  "config": "results\\vcsr\\model_benchmark\\claude_sonnet_4p5\\seed_72\\benchmark_run_config.yaml",
+  "output_dir": "results\\vcsr\\model_benchmark\\claude_sonnet_4p5\\seed_72"
+}

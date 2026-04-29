@@ -1,0 +1,106 @@
+{
+  "auc": 0.792668776371308,
+  "accuracy": 0.7198879551820728,
+  "f1": 0.46808510638297873,
+  "precision": 0.6470588235294118,
+  "recall": 0.36666666666666664,
+  "n": 357,
+  "loss": 0.47115567790137397,
+  "per_source": {
+    "gold": {
+      "auc": 0.0,
+      "accuracy": 0.0,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 75
+    },
+    "llm_bedrock": {
+      "auc": 0.9257575757575758,
+      "accuracy": 0.8120300751879699,
+      "f1": 0.7787610619469026,
+      "precision": 0.6470588235294118,
+      "recall": 0.9777777777777777,
+      "n": 133
+    },
+    "perturbation": {
+      "auc": 0.0,
+      "accuracy": 1.0,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 149
+    }
+  },
+  "per_domain": {
+    "blocksworld": {
+      "auc": 0.7565891472868217,
+      "accuracy": 0.680365296803653,
+      "f1": 0.5569620253164557,
+      "precision": 0.6470588235294118,
+      "recall": 0.4888888888888889,
+      "n": 219
+    },
+    "gripper": {
+      "auc": 0.8293209876543209,
+      "accuracy": 0.782608695652174,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "n": 138
+    }
+  },
+  "pairwise": {
+    "n": 38,
+    "pairwise_accuracy": 0.5789473684210527,
+    "mean_margin": 0.8999537417763158,
+    "per_domain": {
+      "blocksworld": {
+        "n": 38,
+        "pairwise_accuracy": 0.5789473684210527,
+        "mean_margin": 0.8999537417763158
+      }
+    },
+    "per_style": {
+      "explicit/explicit": {
+        "n": 4,
+        "pairwise_accuracy": 0.25,
+        "mean_margin": 0.18017578125
+      },
+      "abstract/abstract": {
+        "n": 34,
+        "pairwise_accuracy": 0.6176470588235294,
+        "mean_margin": 0.9846335018382353
+      }
+    },
+    "per_k": {
+      "8": {
+        "n": 27,
+        "pairwise_accuracy": 0.5925925925925926,
+        "mean_margin": 0.6496129918981481
+      },
+      "4": {
+        "n": 11,
+        "pairwise_accuracy": 0.5454545454545454,
+        "mean_margin": 1.5144264914772727
+      }
+    },
+    "per_pair_type": {
+      "selected_wrong": {
+        "n": 16,
+        "pairwise_accuracy": 0.6875,
+        "mean_margin": 1.5407562255859375
+      },
+      "outranks_positive": {
+        "n": 7,
+        "pairwise_accuracy": 0.42857142857142855,
+        "mean_margin": 0.019566127232142856
+      },
+      "near_tie": {
+        "n": 15,
+        "pairwise_accuracy": 0.5333333333333333,
+        "mean_margin": 0.6272786458333334
+      }
+    }
+  }
+}
