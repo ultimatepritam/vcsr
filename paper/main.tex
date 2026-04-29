@@ -8,9 +8,12 @@
 \usepackage{xspace}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{tikz}
 \usepackage{hyperref}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
 
-\title{Verifier-Calibrated Search and Repair for Faithful Text-to-PDDL Generation}
+\title{When Valid Is Not Faithful:\\
+Verifier-Calibrated Search and Repair for Structured Generation}
 \author{Pritam Mondal}
 \date{}
 
@@ -21,27 +24,27 @@
 \maketitle
 
 \begin{abstract}
-Natural-language interfaces to automated planning promise to let users specify
-planning problems without manually writing Planning Domain Definition Language
-(\pddl) artifacts. However, generated \pddl can be syntactically valid, and even
-solvable, while still formalizing the wrong task. This is one instance of a
-broader problem: natural-language systems can produce structured outputs that
-are valid in form but unfaithful in meaning. We study this valid-but-wrong
-failure mode through semantic equivalence on Planetarium. We introduce \vcsr,
-a verifier-calibrated search-and-repair framework for faithful text-to-\pddl
-generation. \vcsr generates a small candidate pool, ranks
-parseable candidates with a learned semantic verifier, and applies one
-domain-aware repair call to the verifier-selected candidate. On an in-domain
-Planetarium evaluation over \texttt{blocksworld} and \texttt{gripper}, using
-untouched final seeds, full \vcsr improves mean semantic equivalence at $K=8$
-from 0.368 for prompt-only generation to 0.772, a gain of 40.4 percentage
-points. Verifier-only search improves to 0.420, making it a useful scaffold but
-not the final solution. The original $K=8$ candidate-pool oracle is only 0.464;
-\vcsr exceeds it because repair creates a new candidate outside the original
-pool. We also report negative evidence: planner/solvability search and further
-verifier training did not reliably solve semantic selection. The final system is
-a large net win, especially on \texttt{gripper}, but repair can hurt
-already-correct \texttt{blocksworld} candidates.
+Large language models increasingly translate natural language into structured
+artifacts such as programs, configurations, and planning problems. A central
+failure mode is that these artifacts can be valid in form while unfaithful in
+meaning. This matters especially for agentic systems, where an agent may first
+translate a user's request into an executable plan or intermediate program
+before acting. We study this valid-but-wrong problem in text-to-\pddl
+generation, where a generated planning problem can parse and even be solvable
+while formalizing the wrong task. We introduce \vcsr, a verifier-calibrated
+search-and-repair framework for faithful structured generation. \vcsr generates
+a small candidate pool, ranks parseable candidates with a learned semantic
+verifier, and applies one domain-aware repair call to the verifier-selected
+candidate. On an in-domain Planetarium evaluation over \texttt{blocksworld} and
+\texttt{gripper}, using untouched final seeds, full \vcsr improves mean semantic
+equivalence at $K=8$ from 0.368 for prompt-only generation to 0.772, a gain of
+40.4 percentage points. Verifier-only search improves to 0.420, making it a
+useful scaffold but not the final solution. The original $K=8$ candidate-pool
+oracle is only 0.464; \vcsr exceeds it because repair creates a new candidate
+outside the original pool. We also report negative evidence: planner/solvability
+search and further verifier training did not reliably solve semantic selection.
+The final system is a large net win, especially on \texttt{gripper}, but repair
+can hurt already-correct \texttt{blocksworld} candidates.
 \end{abstract}
 
 \section{Introduction}
@@ -60,7 +63,10 @@ semantic equivalence rather than merely by parsing or plan existence
 \citep{zuo2024planetarium}. This distinction matters: a generated problem can
 parse and admit a plan while changing objects, initial facts, or goals. A
 planner may then solve the formal problem perfectly while solving the wrong
-user task.
+user task. The same risk appears in agentic LLM systems: if an agent converts a
+request into an internal plan, tool call sequence, or executable specification,
+then a valid-looking intermediate artifact can still cause the agent to pursue
+the wrong objective.
 
 \paragraph{A simple example.}
 Imagine asking an assistant to turn ``deliver the package to Purbita after Utpal
@@ -87,30 +93,50 @@ Figure~\ref{fig:pipeline} summarizes the pipeline.
 
 \begin{figure}[t]
 \centering
-\fbox{
-\begin{minipage}{0.93\linewidth}
-\centering
-Natural-language task
-$\rightarrow$ generate $K$ \pddl candidates
-$\rightarrow$ parse candidates
-$\rightarrow$ score with frozen semantic verifier
-$\rightarrow$ select verifier-ranked candidate
-$\rightarrow$ one-step domain-aware repair
-$\rightarrow$ evaluate semantic equivalence.
-\end{minipage}}
+\begin{tikzpicture}[
+  node distance=0.55cm,
+  stage/.style={
+    draw,
+    rounded corners,
+    align=center,
+    minimum height=0.78cm,
+    minimum width=2.15cm,
+    font=\small,
+    fill=gray!8
+  },
+  repair/.style={
+    stage,
+    fill=blue!8,
+    draw=blue!45!black
+  },
+  arrow/.style={-{Stealth[length=2.2mm]}, thick}
+]
+\node[stage] (nl) {Natural\\language};
+\node[stage, right=of nl] (gen) {Generate\\$K$ candidates};
+\node[stage, right=of gen] (parse) {Parse\\\pddl};
+\node[stage, right=of parse] (verify) {Verifier\\rank};
+\node[repair, right=of verify] (repair) {One-step\\repair};
+\node[stage, right=of repair] (eval) {Semantic\\equivalence};
+\draw[arrow] (nl) -- (gen);
+\draw[arrow] (gen) -- (parse);
+\draw[arrow] (parse) -- (verify);
+\draw[arrow] (verify) -- (repair);
+\draw[arrow] (repair) -- (eval);
+\end{tikzpicture}
 \caption{\vcsr pipeline. The repair prompt receives the selected candidate and
 non-oracle feedback, but never gold \pddl or an equivalence label.}
 \label{fig:pipeline}
 \end{figure}
 
 This paper makes four contributions. First, we present a search-and-repair
-framework for faithful text-to-\pddl generation. Second, we use fixed-pool
-replay to separate candidate-pool randomness from verifier and policy changes.
-Third, we show on untouched final seeds that repair-augmented \vcsr improves
-semantic equivalence over prompt-only generation, random parseable best-of-$K$,
-planner/solvability search, and verifier-only search. Fourth, we report
-negative results that clarify why the final gain comes from repair: additional
-verifier training and simple solvability-based search were not enough.
+framework for faithful structured generation, instantiated and evaluated on
+text-to-\pddl. Second, we use fixed-pool replay to separate candidate-pool
+randomness from verifier and policy changes. Third, we show on untouched final
+seeds that repair-augmented \vcsr improves semantic equivalence over
+prompt-only generation, random parseable best-of-$K$, planner/solvability
+search, and verifier-only search. Fourth, we report negative results that
+clarify why the final gain comes from repair: additional verifier training and
+simple solvability-based search were not enough.
 
 \section{Related Work}
 
@@ -517,6 +543,25 @@ the large repair gain but did not reduce blocksworld hurts relative to
 unconditional repair, so it is not promoted. This suggests that future repair
 acceptance checks should use stronger structural signals rather than only the
 same verifier score.
+
+\section{Broader Applicability}
+
+Although our experiments use Planetarium text-to-\pddl as the testbed, the
+failure mode is not specific to planning. Many LLM applications ask a model to
+produce a structured artifact whose syntax can be checked more easily than its
+meaning: code that compiles but implements the wrong behavior, configuration
+files that validate but encode the wrong deployment, database queries that run
+but answer the wrong question, or domain-specific language programs that satisfy
+a grammar while violating user intent. The issue is especially relevant for
+agentic workflows, where structured plans or tool-call programs may be executed
+with real downstream consequences. In these settings, validity checks are
+necessary but not sufficient. The central design pattern behind \vcsr is to
+combine three ingredients: sample multiple candidates, use a task-specific
+semantic signal to choose a promising artifact, and then repair that artifact
+with non-oracle feedback. Our results do not prove that the same implementation
+will transfer unchanged to every structured-generation domain, but they support
+the broader claim that faithful structured generation often requires search and
+repair, not only syntactic validation.
 
 \section{Limitations}
 
