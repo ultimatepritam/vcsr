@@ -72,7 +72,7 @@ planner may then solve the formal problem perfectly while solving the wrong
 user task. The same risk appears in agentic LLM systems: if an agent converts a
 request into an internal plan, tool call sequence, or executable specification,
 then a valid-looking intermediate artifact can still cause the agent to pursue
-the wrong objective.
+the wrong objective \citep{yao2023react,schick2023toolformer}.
 
 \paragraph{A simple example.}
 Imagine asking an assistant to turn ``deliver the package to Purbita after Utpal
@@ -190,8 +190,8 @@ search, and verifier-only search. Fourth, we report negative results that
 clarify why the final gain comes from repair: additional verifier training and
 simple solvability-based search were not enough.
 
-Code and experiment artifacts are available at
-\url{https://github.com/ultimatepritam/vcsr}.
+Code, configs, and selected experiment artifacts are available
+online.\footnote{\url{https://github.com/ultimatepritam/vcsr}}
 
 \section{Related Work}
 
@@ -550,26 +550,31 @@ not uniformly harmless.}
 
 \section{Ablations and Analysis}
 
-Figure~\ref{fig:funnel} summarizes the development evidence. The project began
-with verifier training, but the final result is a system-level discovery:
+Table~\ref{tab:ablations} summarizes the development evidence. The project
+began with verifier training, but the final result is a system-level discovery:
 verifier-only search helps, simple planner/search policies do not reliably
 improve semantic selection, and repair provides the decisive jump.
 
-\begin{figure}[t]
+\begin{table}[t]
 \centering
-\fbox{
-\begin{minipage}{0.86\linewidth}
-\centering
-Verifier training
-$\rightarrow$ frozen round-4 verifier
-$\rightarrow$ verifier-ranked $K=8$: 0.420
-$\rightarrow$ solvability/search ablations: no reliable gain
-$\rightarrow$ domain-aware repair
-$\rightarrow$ repair-augmented $K=8$: 0.772.
-\end{minipage}}
-\caption{Evidence funnel from verifier-only search to repair-augmented \vcsr.}
-\label{fig:funnel}
-\end{figure}
+\small
+\begin{tabular}{p{0.24\linewidth}p{0.26\linewidth}p{0.22\linewidth}p{0.20\linewidth}}
+\toprule
+Ablation & Evidence source & Key result & Decision \\
+\midrule
+Verifier-only search & Final seeds 51--55 & Prompt-only 0.368 $\rightarrow$ verifier-ranked 0.420 at $K=8$ & Useful scaffold, not sufficient \\
+Solvability/planner search & Cached search replay over six pools & Best solvability policy 0.475 vs verifier-ranked 0.471 at $K=8$; parse-solvable index fell to 0.418 & No reliable selection gain \\
+Additional verifier training & Round-7 fixed-pool comparison & Round 7 gave +0.0067 at $K=8$ but -0.0133 at $K=4$ on fresh fixed pools & Keep round 4 frozen \\
+Guarded repair & Fresh seeds 67--71 & Reached 0.796 at $K=8$ but did not reduce blocksworld hurts & Do not promote guard \\
+Repair-augmented \vcsr & Final seeds 51--55 & Verifier-ranked 0.420 $\rightarrow$ repair 0.772 at $K=8$ & Promoted system \\
+\bottomrule
+\end{tabular}
+\caption{Development ablations. Values are semantic equivalence rates unless
+otherwise noted. The table explains why the final system uses a frozen verifier
+plus repair rather than solvability filtering, further verifier training, or a
+score guard.}
+\label{tab:ablations}
+\end{table}
 
 \paragraph{Verifier-only search is useful but insufficient.}
 Verifier-ranked selection improves over prompt-only generation at $K=8$,
@@ -608,14 +613,15 @@ files that validate but encode the wrong deployment, database queries that run
 but answer the wrong question, or domain-specific language programs that satisfy
 a grammar while violating user intent. The issue is especially relevant for
 agentic workflows, where structured plans or tool-call programs may be executed
-with real downstream consequences. In these settings, validity checks are
-necessary but not sufficient. The central design pattern behind \vcsr is to
-combine three ingredients: sample multiple candidates, use a task-specific
-semantic signal to choose a promising artifact, and then repair that artifact
-with non-oracle feedback. Our results do not prove that the same implementation
-will transfer unchanged to every structured-generation domain, but they support
-the broader claim that faithful structured generation often requires search and
-repair, not only syntactic validation.
+with real downstream consequences \citep{yao2023react,schick2023toolformer}.
+In these settings, validity checks are necessary but not sufficient. The central
+design pattern behind \vcsr is to combine three ingredients: sample multiple
+candidates, use a task-specific semantic signal to choose a promising artifact,
+and then repair that artifact with non-oracle feedback. Our results do not
+prove that the same implementation will transfer unchanged to every
+structured-generation domain, but they support the broader claim that faithful
+structured generation often requires search and repair, not only syntactic
+validation.
 
 \section{Limitations}
 
