@@ -43,6 +43,11 @@ That metadata points to the promoted round-4 verifier checkpoint:
 
 - `../results/verifier/ranking_aligned_round4/retrain_from_round3_focused/best_model/model.pt`
 
+The post-freeze Claude-family robustness benchmark is supporting evidence, not
+a replacement for the final seed `51-55` gate:
+
+- `../results/vcsr/model_benchmark/`
+
 ## Scope and Caveats
 
 The final claim is intentionally scoped to in-domain Planetarium
@@ -67,6 +72,15 @@ Related follow-up artifact:
 - `../PAPER_PLAN.md`: paper plan and frozen claim hierarchy
 - `../results/paper/final_vcsr/`: exported paper tables and figure specs
 - `../results/vcsr/final_repair_gate_round4/`: primary final evidence
+
+## Submission Notes
+
+- arXiv category: `cs.AI`
+- Do not tune on final seeds `51-55`.
+- If packaging source for arXiv, copy `../references.bib` next to `main.tex`
+  or adjust the bibliography path so arXiv does not need a parent directory.
+- The repository link in the manuscript is
+  `https://github.com/ultimatepritam/vcsr`.
 
 ## Build
 
