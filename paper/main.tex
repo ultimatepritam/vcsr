@@ -8,6 +8,7 @@
 \usepackage{xspace}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{hyperref}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric}
@@ -30,17 +31,18 @@ Birla Institute of Technology and Science, Pilani
 Large language models increasingly translate natural language into structured
 artifacts such as programs, configurations, and planning problems. A central
 failure mode is that these artifacts can be valid in form while unfaithful in
-meaning. This matters especially for agentic systems, where an agent may first
-translate a user's request into an executable plan or intermediate program
-before acting. We study this valid-but-wrong problem in text-to-\pddl
-generation, where a generated planning problem can parse and even be solvable
-while formalizing the wrong task. We introduce \vcsr, a verifier-calibrated
-search-and-repair framework for faithful structured generation. \vcsr generates
-a small candidate pool, ranks parseable candidates with a learned semantic
-verifier, and applies one domain-aware repair call to the verifier-selected
-candidate. On an in-domain Planetarium evaluation over \texttt{blocksworld} and
-\texttt{gripper}, using untouched final seeds, full \vcsr improves mean semantic
-equivalence at $K=8$ from 0.368 for prompt-only generation to 0.772, a gain of
+meaning. This gap between validity and faithfulness limits the reliability of
+LLM-based systems, especially agentic systems that translate user requests into
+plans or intermediate programs before acting. We study this valid-but-wrong
+problem in text-to-\pddl generation, where a generated planning problem can
+parse and even be solvable while formalizing the wrong task. We introduce
+\vcsr, a verifier-calibrated search-and-repair framework for faithful
+structured generation. \vcsr combines three ingredients: sample multiple
+candidates, select a promising parseable candidate with a learned semantic
+verifier, and repair the selected candidate with non-oracle feedback. On an
+in-domain Planetarium evaluation over \texttt{blocksworld} and
+\texttt{gripper}, full \vcsr improves mean semantic equivalence at $K=8$ from
+0.368 for prompt-only generation to 0.772 on untouched final seeds, a gain of
 40.4 percentage points. Verifier-only search improves to 0.420, making it a
 useful scaffold but not the final solution. The original $K=8$ candidate-pool
 oracle is only 0.464; \vcsr exceeds it because repair creates a new candidate
@@ -96,38 +98,80 @@ Figure~\ref{fig:pipeline} summarizes the pipeline.
 
 \begin{figure}[t]
 \centering
+\resizebox{\linewidth}{!}{%
 \begin{tikzpicture}[
-  node distance=0.55cm,
+  node distance=0.62cm and 0.7cm,
   stage/.style={
     draw,
     rounded corners,
     align=center,
-    minimum height=0.78cm,
-    minimum width=2.15cm,
+    minimum height=0.76cm,
+    minimum width=2.0cm,
     font=\small,
     fill=gray!8
+  },
+  candidate/.style={
+    draw,
+    rounded corners,
+    align=center,
+    minimum height=0.52cm,
+    minimum width=1.35cm,
+    font=\scriptsize,
+    fill=white
+  },
+  selected/.style={
+    candidate,
+    fill=green!10,
+    draw=green!45!black,
+    very thick
   },
   repair/.style={
     stage,
     fill=blue!8,
     draw=blue!45!black
   },
-  arrow/.style={-{Stealth[length=2.2mm]}, thick}
+  feedback/.style={
+    draw,
+    rounded corners,
+    align=center,
+    font=\scriptsize,
+    fill=blue!4,
+    minimum width=2.4cm,
+    minimum height=0.52cm
+  },
+  arrow/.style={-{Stealth[length=2.2mm]}, thick},
+  faintarrow/.style={-{Stealth[length=2mm]}, thick, gray!65}
 ]
 \node[stage] (nl) {Natural\\language};
-\node[stage, right=of nl] (gen) {Generate\\$K$ candidates};
-\node[stage, right=of gen] (parse) {Parse\\\pddl};
-\node[stage, right=of parse] (verify) {Verifier\\rank};
-\node[repair, right=of verify] (repair) {One-step\\repair};
-\node[stage, right=of repair] (eval) {Semantic\\equivalence};
+\node[stage, right=of nl] (gen) {Generate\\pool};
+\node[candidate, right=of gen, yshift=0.8cm] (c1) {\(y_1\)};
+\node[candidate, right=of gen] (c2) {\(\cdots\)};
+\node[candidate, right=of gen, yshift=-0.8cm] (c3) {\(y_K\)};
+\node[stage, right=1.1cm of c2] (parse) {Parse\\filter};
+\node[stage, right=of parse] (verify) {Semantic\\verifier};
+\node[selected, right=of verify] (select) {selected\\\(\hat{y}_V\)};
+\node[repair, right=of select] (repair) {One-step\\repair};
+\node[stage, right=of repair] (out) {Final\\candidate};
+\node[feedback, below=0.65cm of repair] (fb) {non-oracle feedback\\parse, solve, score};
 \draw[arrow] (nl) -- (gen);
-\draw[arrow] (gen) -- (parse);
+\draw[faintarrow] (gen) -- (c1);
+\draw[faintarrow] (gen) -- (c2);
+\draw[faintarrow] (gen) -- (c3);
+\draw[faintarrow] (c1) -- (parse);
+\draw[faintarrow] (c2) -- (parse);
+\draw[faintarrow] (c3) -- (parse);
 \draw[arrow] (parse) -- (verify);
-\draw[arrow] (verify) -- (repair);
-\draw[arrow] (repair) -- (eval);
+\draw[arrow] (verify) -- (select);
+\draw[arrow] (select) -- (repair);
+\draw[arrow] (repair) -- (out);
+\draw[faintarrow] (select) |- (fb);
+\draw[faintarrow] (fb) -- (repair);
 \end{tikzpicture}
-\caption{\vcsr pipeline. The repair prompt receives the selected candidate and
-non-oracle feedback, but never gold \pddl or an equivalence label.}
+}
+\caption{\vcsr pipeline. The system samples a candidate pool, filters parseable
+\pddl, uses the verifier to select a promising candidate, and repairs that
+candidate using non-oracle feedback. The repair prompt never receives gold
+\pddl or an equivalence label.}
 \label{fig:pipeline}
 \end{figure}
 
