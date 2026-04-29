@@ -3,10 +3,12 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{booktabs}
 \usepackage{array}
-\usepackage{hyperref}
 \usepackage{natbib}
 \usepackage{xcolor}
 \usepackage{xspace}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
 
 \title{Verifier-Calibrated Search and Repair for Faithful Text-to-PDDL Generation}
 \author{Pritam Mondal}
@@ -173,24 +175,74 @@ the gold task under Planetarium's equivalence evaluator
 the \texttt{test} split and restrict the final claim to \texttt{blocksworld} and
 \texttt{gripper}. We make no final claim for \texttt{floor-tile}.
 
+\subsection{Problem Formalization}
+
+Let \(x\) denote a natural-language task and \(y^\star\) denote its gold
+\pddl problem. A generator produces a candidate pool
+\[
+C_K(x) = \{y_1,\ldots,y_K\}
+\]
+under a test-time budget \(K\). Planetarium provides a binary semantic
+equivalence evaluator
+\[
+E(y,y^\star) \in \{0,1\},
+\]
+where \(E(y,y^\star)=1\) means that candidate \(y\) represents the same planning
+problem as the gold task. We also define the parseable subset of the candidate
+pool as
+\[
+\mathcal{P}_K(x) = \{y \in C_K(x) : \operatorname{parse}(y)=1\}.
+\]
+
+The verifier assigns each natural-language/candidate pair a score
+\[
+s_\theta(x,y) \in [0,1],
+\]
+intended to approximate semantic faithfulness. The verifier-ranked selector is
+\[
+\hat{y}_V(x) = \arg\max_{y \in \mathcal{P}_K(x)} s_\theta(x,y),
+\]
+when at least one parseable candidate is available. For analysis only, we define
+the oracle best-of-\(K\) diagnostic
+\[
+O_K(x) = \max_{y \in C_K(x)} E(y,y^\star).
+\]
+This quantity is useful for measuring how much useful signal exists in the
+generated pool, but it is not a policy the system can run at test time: it
+requires gold equivalence labels after generation.
+
+The deployable repair step instead starts from the verifier-selected candidate
+and applies a one-step transformation
+\[
+r = R\!\left(x, \hat{y}_V(x), f(\hat{y}_V(x))\right),
+\]
+where \(f(\hat{y}_V(x))\) is non-oracle feedback such as parse status,
+solvability status, and verifier score. The final repair-augmented policy at
+the main operating point \(K=8\) outputs this repaired candidate \(r\); the
+non-repair baselines output their policy-specific selected candidate from
+\(C_K(x)\). Because \(r\) need not belong to \(C_K(x)\), repair-augmented
+\vcsr can exceed the candidate-pool oracle \(O_K(x)\): repair is allowed to
+create a new candidate, not merely choose among the original samples.
+
 \subsection{Candidate Generation}
 
 Given an input description $x$, the generator produces $K$ candidate \pddl
-problems $\{y_1,\ldots,y_K\}$ using stochastic decoding. Our main experiments
-use $K \in \{1,4,8\}$, with $K=8$ as the primary operating point. Candidate
-outputs are parsed and normalized by the project evaluation stack. The $K=1$
-condition is the prompt-only baseline: the model is asked once, and the first
-candidate is evaluated directly.
+problems \(C_K(x)=\{y_1,\ldots,y_K\}\) using stochastic decoding. Our main
+experiments use $K \in \{1,4,8\}$, with $K=8$ as the primary operating point.
+Candidate outputs are parsed and normalized by the project evaluation stack.
+The $K=1$ condition is the prompt-only baseline: the model is asked once, and
+the first candidate is evaluated directly.
 
 \subsection{Semantic Verifier}
 
 The verifier is a DeBERTaV3-base cross-encoder \citep{he2021debertav3}. It
 scores pairs $(x,y)$, where $x$ is the natural-language task and $y$ is a
-candidate \pddl problem. It was trained from automatically labeled examples
-derived from Planetarium equivalence: parseable equivalent candidates are
-positive examples, while parseable non-equivalent candidates and targeted
-perturbations are negative examples. The final paper-facing verifier is the
-round-4 checkpoint recorded in
+candidate \pddl problem, producing \(s_\theta(x,y)\). The verifier is trained
+as a binary classifier over \((x,y,E(y,y^\star))\) examples derived from
+Planetarium equivalence: parseable equivalent candidates are positive examples,
+while parseable non-equivalent candidates and targeted perturbations are
+negative examples. The final paper-facing verifier is the round-4 checkpoint
+recorded in
 \path{results/verifier/best_current/selection.yaml}. Later verifier training
 experiments are treated as diagnostics and are not promoted.
 
@@ -199,10 +251,11 @@ experiments are treated as diagnostics and are not promoted.
 We evaluate four policies. \texttt{greedy\_first} selects the first generated
 candidate. This is the prompt-only policy at $K=1$ and a simple baseline at
 larger $K$. \texttt{random\_parseable} selects uniformly from parseable
-candidates. \texttt{verifier\_ranked} selects the parseable candidate with the
-highest frozen-verifier score. \texttt{verifier\_ranked\_repair} first selects
-the verifier-ranked candidate at $K=8$ and then applies one repair call. None
-of these policies uses the gold \pddl or equivalence label at selection time.
+candidates in \(\mathcal{P}_K(x)\). \texttt{verifier\_ranked} selects
+\(\hat{y}_V(x)\), the parseable candidate with the highest frozen-verifier
+score. \texttt{verifier\_ranked\_repair} first selects the verifier-ranked
+candidate at $K=8$ and then applies one repair call to produce \(r\). None of
+these policies uses the gold \pddl or equivalence label at selection time.
 
 \subsection{One-Step Domain-Aware Repair}
 
@@ -235,12 +288,13 @@ equivalent. ``Hurt'' means the original was equivalent and repair made it
 non-equivalent. ``Tied'' includes both-success and both-fail cases.
 
 \paragraph{Oracle best-of-$K$ diagnostic.}
-Oracle best-of-$K$ is an offline candidate-pool diagnostic, not a deployable
-policy. It uses ground-truth equivalence labels after generation to ask whether
-at least one of the original $K$ candidates is semantically equivalent. It is
-therefore an upper bound for policies that must choose among the original
-candidates. It is not an upper bound for repair-augmented \vcsr, because repair
-creates a new candidate outside the original pool.
+Oracle best-of-$K$, \(O_K(x)\), is an offline candidate-pool diagnostic, not a
+deployable policy. It uses ground-truth equivalence labels after generation to
+ask whether at least one candidate in the original pool \(C_K(x)\) is
+semantically equivalent. It is therefore an upper bound for policies that must
+choose among the original candidates. It is not an upper bound for
+repair-augmented \vcsr, because repair creates a new candidate outside the
+original pool.
 
 \paragraph{Replay and reproducibility.}
 During development, we used cached candidate pools to replay alternative
@@ -295,13 +349,14 @@ operating point.}
 \subsection{Candidate-Pool Oracle}
 
 Table~\ref{tab:oracle} reports candidate-pool diagnostics. At $K=8$, the
-original generated pool contains at least one semantically equivalent candidate
-for only 46.4\% of rows. This explains why verifier-only search has limited
-headroom: even a perfect selector over the original pool could not solve rows
-where no candidate is equivalent. Repair-augmented \vcsr reaches 77.2\% because
-it edits the verifier-selected candidate and can create a new equivalent \pddl
-problem. Repair exceeding oracle best-of-$K$ is therefore expected: repair adds
-candidate quality rather than merely selecting better from the same pool.
+original generated pool \(C_8(x)\) contains at least one semantically
+equivalent candidate, \(O_8(x)=1\), for only 46.4\% of rows. This explains why
+verifier-only search has limited headroom: even a perfect selector over the
+original pool could not solve rows where no candidate is equivalent.
+Repair-augmented \vcsr reaches 77.2\% because it edits \(\hat{y}_V(x)\) and can
+create a new equivalent \pddl problem. Repair exceeding oracle best-of-$K$ is
+therefore expected: repair adds candidate quality rather than merely selecting
+better from the same pool.
 
 \begin{table}[t]
 \centering
@@ -315,10 +370,10 @@ $K$ & Avg. parseable candidates & Avg. equivalent candidates & Oracle best-of-$K
 8 & 7.564 & 2.888 & 0.464 \\
 \bottomrule
 \end{tabular}
-\caption{Candidate-pool diagnostics on final seeds 51--55. Oracle best-of-$K$
-uses gold equivalence labels and is only an offline upper bound for selecting
-among the original generated candidates. Repair can exceed this diagnostic
-because it creates a new candidate.}
+\caption{Candidate-pool diagnostics on final seeds 51--55. Oracle best-of-$K$,
+\(O_K(x)\), uses gold equivalence labels and is only an offline upper bound for
+selecting among the original generated candidates. Repair can exceed this
+diagnostic because it creates a new candidate.}
 \label{tab:oracle}
 \end{table}
 
