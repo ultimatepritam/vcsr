@@ -14,7 +14,10 @@
 
 \title{When Valid Is Not Faithful:\\
 Verifier-Calibrated Search and Repair for Structured Generation}
-\author{Pritam Mondal}
+\author{
+\href{mailto:ultimatepritam@hotmail.com}{Pritam Mondal}\\
+Birla Institute of Technology and Science, Pilani
+}
 \date{}
 
 \newcommand{\vcsr}{\textsc{VCSR}\xspace}
@@ -137,6 +140,9 @@ prompt-only generation, random parseable best-of-$K$, planner/solvability
 search, and verifier-only search. Fourth, we report negative results that
 clarify why the final gain comes from repair: additional verifier training and
 simple solvability-based search were not enough.
+
+Code and experiment artifacts are available at
+\url{https://github.com/ultimatepritam/vcsr}.
 
 \section{Related Work}
 
@@ -329,7 +335,8 @@ changes with generator randomness and was used to reject additional verifier
 training rounds and planner/solvability-only search policies. The final
 evidence is stored under
 \path{results/vcsr/final_repair_gate_round4}; derived paper tables are stored
-under \path{results/paper/final_vcsr}.
+under \path{results/paper/final_vcsr}. The project repository is available at
+\url{https://github.com/ultimatepritam/vcsr}.
 
 \section{Results}
 
