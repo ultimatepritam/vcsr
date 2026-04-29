@@ -11,9 +11,10 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{hyperref}
+\hypersetup{hidelinks}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric}
 
-\title{When Valid Is Not Faithful:\\
+\title{When Valid Isn't Faithful:\\
 Verifier-Calibrated Search and Repair for Structured Generation}
 \author{
 \href{mailto:ultimatepritam@hotmail.com}{Pritam Mondal}\\
@@ -39,12 +40,12 @@ parse and even be solvable while formalizing the wrong task. We introduce
 \vcsr, a verifier-calibrated search-and-repair framework for faithful
 structured generation. \vcsr combines three ingredients: sample multiple
 candidates, select a promising parseable candidate with a learned semantic
-verifier, and repair the selected candidate with non-oracle feedback. On an
-in-domain Planetarium evaluation over \texttt{blocksworld} and
-\texttt{gripper}, full \vcsr improves mean semantic equivalence at $K=8$ from
-0.368 for prompt-only generation to 0.772 on untouched final seeds, a gain of
-40.4 percentage points. Verifier-only search improves to 0.420, making it a
-useful scaffold but not the final solution. The original $K=8$ candidate-pool
+verifier, and repair the selected candidate with non-oracle feedback. On
+untouched final Planetarium seeds, full \vcsr improves mean semantic
+equivalence at $K=8$ from 0.368 for prompt-only generation to 0.772 over
+\texttt{blocksworld} and \texttt{gripper}, a gain of 40.4 percentage points.
+Verifier-only search improves to 0.420, making it a useful scaffold but not the
+final solution. The original $K=8$ candidate-pool
 oracle is only 0.464; \vcsr exceeds it because repair creates a new candidate
 outside the original pool. We also report negative evidence: planner/solvability
 search and further verifier training did not reliably solve semantic selection.
@@ -94,6 +95,8 @@ We propose \vcsr: Verifier-Calibrated Search and Repair. \vcsr is built around
 the view that faithful text-to-\pddl generation requires a system, not only a
 larger prompt or a better verifier. The system should generate alternatives,
 score semantic plausibility, and repair promising but wrong formalizations.
+In short, faithful structured generation requires search and repair, not
+validation alone.
 Figure~\ref{fig:pipeline} summarizes the pipeline.
 
 \begin{figure}[t]
@@ -121,14 +124,14 @@ Figure~\ref{fig:pipeline} summarizes the pipeline.
   },
   selected/.style={
     candidate,
-    fill=green!10,
+    fill=green!14,
     draw=green!45!black,
     very thick
   },
   repair/.style={
     stage,
     fill=blue!8,
-    draw=blue!45!black
+    draw=blue!50!black
   },
   feedback/.style={
     draw,
@@ -136,11 +139,13 @@ Figure~\ref{fig:pipeline} summarizes the pipeline.
     align=center,
     font=\scriptsize,
     fill=blue!4,
-    minimum width=2.4cm,
-    minimum height=0.52cm
+    draw=blue!35!black,
+    minimum width=2.45cm,
+    minimum height=0.58cm
   },
   arrow/.style={-{Stealth[length=2.2mm]}, thick},
-  faintarrow/.style={-{Stealth[length=2mm]}, thick, gray!65}
+  faintarrow/.style={-{Stealth[length=2mm]}, thick, gray!58},
+  feedbackarrow/.style={-{Stealth[length=2mm]}, thick, blue!45!black, dashed}
 ]
 \node[stage] (nl) {Natural\\language};
 \node[stage, right=of nl] (gen) {Generate\\pool};
@@ -149,7 +154,7 @@ Figure~\ref{fig:pipeline} summarizes the pipeline.
 \node[candidate, right=of gen, yshift=-0.8cm] (c3) {\(y_K\)};
 \node[stage, right=1.1cm of c2] (parse) {Parse\\filter};
 \node[stage, right=of parse] (verify) {Semantic\\verifier};
-\node[selected, right=of verify] (select) {selected\\\(\hat{y}_V\)};
+\node[selected, right=of verify] (select) {Selected\\\(\hat{y}_V\)};
 \node[repair, right=of select] (repair) {One-step\\repair};
 \node[stage, right=of repair] (out) {Final\\candidate};
 \node[feedback, below=0.65cm of repair] (fb) {non-oracle feedback\\parse, solve, score};
@@ -164,8 +169,8 @@ Figure~\ref{fig:pipeline} summarizes the pipeline.
 \draw[arrow] (verify) -- (select);
 \draw[arrow] (select) -- (repair);
 \draw[arrow] (repair) -- (out);
-\draw[faintarrow] (select) |- (fb);
-\draw[faintarrow] (fb) -- (repair);
+\draw[feedbackarrow] (select) |- (fb);
+\draw[feedbackarrow] (fb) -- (repair);
 \end{tikzpicture}
 }
 \caption{\vcsr pipeline. The system samples a candidate pool, filters parseable
@@ -404,12 +409,10 @@ $K$ & Policy & Parse & Equiv. & Equiv./Parse \\
 1 & Greedy first & 0.924 & 0.368 & 0.399 \\
 1 & Random parseable & 0.924 & 0.368 & 0.399 \\
 1 & Verifier-ranked & 0.924 & 0.368 & 0.399 \\
-1 & \vcsr repair-augmented & 0.924 & 0.368 & 0.399 \\
 \midrule
 4 & Greedy first & 0.924 & 0.368 & 0.399 \\
 4 & Random parseable & 0.996 & 0.376 & 0.378 \\
 4 & Verifier-ranked & 0.996 & 0.392 & 0.394 \\
-4 & \vcsr repair-augmented & 0.996 & 0.392 & 0.394 \\
 \midrule
 8 & Greedy first & 0.924 & 0.368 & 0.399 \\
 8 & Random parseable & 1.000 & 0.376 & 0.376 \\
@@ -418,8 +421,8 @@ $K$ & Policy & Parse & Equiv. & Equiv./Parse \\
 \bottomrule
 \end{tabular}
 \caption{Final fresh-seed aggregate metrics on seeds 51--55. Semantic
-equivalence is the primary metric. Repair is applied only at the main $K=8$
-operating point.}
+equivalence is the primary metric. \vcsr repair is reported only at the main
+$K=8$ operating point where repair is actually applied.}
 \label{tab:main}
 \end{table}
 
@@ -644,6 +647,7 @@ Planetarium text-to-\pddl tasks, the underlying pattern is broader: systems that
 translate natural language into structured executable artifacts need mechanisms
 for checking and repairing meaning, not only syntax.
 
+\clearpage
 \appendix
 
 \section{Claude-Family Robustness Benchmark}
