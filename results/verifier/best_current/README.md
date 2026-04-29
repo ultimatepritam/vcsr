@@ -1,7 +1,8 @@
 # Best Current Verifier
 
 This directory records the verifier checkpoint that should be treated as the
-current default artifact for downstream VCSR experiments.
+current default artifact for downstream VCSR experiments and for the paper's
+verifier-ranked selection stage.
 
 The source-of-truth training run remains in its original experiment directory.
 This folder exists to provide a stable reference point for future scripts and
@@ -35,3 +36,8 @@ evaluation runs.
 
 The model weights are not duplicated here. This folder is a stable pointer and
 metadata location, not a second copy of the artifact.
+
+The final paper-facing system is not verifier-only. It uses this frozen
+round-4 verifier to select a `K=8` candidate, then applies one domain-aware
+repair call. On untouched final seeds `51-55`, verifier-only selection reaches
+`0.4200` semantic equivalence and repair-augmented VCSR reaches `0.7720`.

@@ -1,7 +1,15 @@
-# VCSR: Verifier-Calibrated Search and Repair for Text-to-PDDL
+# VCSR: Verifier-Calibrated Search and Repair
 
-A research framework for faithful natural-language to PDDL translation using
-calibrated semantic verification, best-of-K selection, and abstention-aware repair.
+[![DOI](https://img.shields.io/badge/DOI-10.17605%2FOSF.IO%2F8TJMV-blue)](https://doi.org/10.17605/OSF.IO/8TJMV)
+
+A research framework for faithful structured generation. The paper instantiates
+the problem in natural-language to PDDL translation: generated artifacts can be
+valid in form while unfaithful in meaning. VCSR combines best-of-K candidate
+generation, learned semantic verification, and one-step repair with non-oracle
+feedback.
+
+Paper title: **When Valid Is Not Faithful: Verifier-Calibrated Search and
+Repair for Structured Generation**.
 
 ## Project Structure
 
@@ -18,7 +26,7 @@ generation/        LLM backends, prompts, perturbations
   perturbations.py        Domain-aware gold PDDL mutations (hard negatives)
 pddl_utils/        Oracle planner, Fast Downward + VAL wrappers (not `pddl/` — shadows PyPI `pddl`)
 verifier/          Cross-encoder dataset/model/train/eval code
-search/            (currently minimal) Best-of-K, abstention, repair loop
+search/            (currently minimal) Best-of-K, selection, repair loop
 scripts/           Baselines, neggen, verifier training, calibration, sweeps
 results/           Metrics, verifier runs, calibration reports, selected checkpoints
 tools/             External tool installs (Fast Downward, VAL)
@@ -26,6 +34,15 @@ tools/             External tool installs (Fast Downward, VAL)
 
 ## Current Status
 
+- The paper-facing manuscript is in `paper/main.tex`, with paper notes in
+  `paper/README.md`.
+- Final repair-augmented VCSR passed the untouched seed `51-55` gate: at `K=8`,
+  prompt-only reaches `0.3680`, verifier-ranked reaches `0.4200`, and
+  repair-augmented VCSR reaches `0.7720`.
+- The final paper claim is intentionally scoped to in-domain Planetarium
+  `blocksworld` and `gripper`; no final claim is made for `floor-tile`.
+- The promoted verifier remains round 4, recorded in
+  `results/verifier/best_current/selection.yaml`.
 - Foundations and the negative-generation pilot are completed.
 - Verifier training is implemented and has been run successfully on the pilot dataset.
 - Clean calibration analysis, hard-negative retraining, ranking-aligned retraining, a capacity-push sweep, held-out failure analysis, and a focused round-4 verifier pass have also been completed.
@@ -77,13 +94,13 @@ tools/             External tool installs (Fast Downward, VAL)
   guard replicated the large repair gain (`0.4360 -> 0.7960` at `K=8`) but did
   not reduce blocksworld hurts relative to unconditional repair, so it is not a
   promoted improvement.
-- A post-paper Claude-family model benchmark is complete under
+- A post-freeze Claude-family model benchmark is complete under
   `results/vcsr/model_benchmark/`: across Haiku 4.5, Sonnet 4.5, and Opus 4.6,
   repair-augmented VCSR improves mean `K=8` semantic equivalence over
   prompt-only generation. Verifier-only is reported as an ablation.
-- The paper-facing plan is frozen in `PAPER_PLAN.md`. Derived paper tables,
-  claim notes, and Mermaid figure specs are generated from frozen artifacts by
-  `scripts/export_paper_artifacts.py` under `results/paper/final_vcsr/`.
+- The paper-facing plan is frozen in `PAPER_PLAN.md`. The current manuscript
+  uses the final tables and notation directly in `paper/main.tex`; generated
+  support artifacts remain under `results/paper/final_vcsr/`.
 
 ## Quick Start
 
@@ -312,7 +329,7 @@ Current key verifier artifacts:
 | `results/verifier/ranking_aligned_round4/` | Current promoted verifier after replay gains plus the repeated fresh held-out gate |
 | `results/verifier/pairwise_round5/` | Hybrid pairwise-ranking experiment; trained successfully but not promoted because replay regressed vs round 4 |
 | `results/verifier/ranking_round6/` | Conservative ranking-aware successor from round 4; trained successfully but rejected by replay gate |
-| `results/verifier/focused_round7/` | Focused pointwise round-7 dataset and training artifacts; passed cached replay but not promoted yet |
+| `results/verifier/focused_round7/` | Focused pointwise round-7 dataset and training artifacts; passed cached replay but was not promoted after fresh gates |
 | `results/verifier/best_current/selection.yaml` | Stable metadata record for the current best verifier checkpoint |
 
 As of the current repo state, the selected best verifier comes from:
@@ -478,7 +495,7 @@ Current project conclusion from these pilots:
 - A first verifier-score guarded repair attempt did not fix that caveat:
   on seeds `67-71`, guarded and unconditional repair both reached `0.7960` at
   `K=8` and both had `14` hurt rows, all in blocksworld.
-- The post-paper Claude-family benchmark strengthens the wrapper story:
+- The post-freeze Claude-family benchmark strengthens the wrapper story:
   across seeds `72-74` with `10` rows per seed, VCSR repair improved `K=8`
   semantic equivalence over prompt-only generation for Haiku
   (`0.4000 -> 0.9000`), Sonnet (`0.5000 -> 0.9333`), and Opus
@@ -489,13 +506,11 @@ Current project conclusion from these pilots:
 
 The highest-value next task is now:
 
-- prepare paper tables, figures, and write-up around the final
-  repair-augmented VCSR result
-- use `PAPER_PLAN.md` and `results/paper/final_vcsr/` as the source of truth
-  for the paper claim, tables, and figure specs
-- include the completed post-paper Claude-family model benchmark as appendix or
-  robustness evidence; keep it separate from the frozen seed `51-55` primary
-  paper evidence
+- keep `paper/main.tex` stable unless making explicit submission-polish edits
+- prepare arXiv/release packaging so the TeX source and bibliography compile
+  without parent-directory paths
+- keep the completed Claude-family model benchmark as appendix/robustness
+  evidence, separate from the frozen seed `51-55` primary paper evidence
 
 Why this matters:
 

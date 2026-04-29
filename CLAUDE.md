@@ -1,33 +1,42 @@
-# VCSR: Verifier-Calibrated Search and Repair for Text-to-PDDL
+# VCSR: Verifier-Calibrated Search and Repair
 
 ## Project Overview
 
-Research project for a cs.AI arXiv paper. The core problem: LLMs generate PDDL
-that parses and may even be solvable by a classical planner, yet **semantically
-misrepresents** the intended task. We call this the "valid-but-wrong" gap.
+Research project for a cs.AI arXiv paper: **When Valid Is Not Faithful:
+Verifier-Calibrated Search and Repair for Structured Generation**.
+
+The core problem is that LLMs can produce structured artifacts that are valid
+in form while unfaithful in meaning. We instantiate this "valid-but-wrong" gap
+in text-to-PDDL generation, where generated PDDL can parse and may even be
+solvable by a classical planner while **semantically misrepresenting** the
+intended task.
 
 **VCSR** addresses this by training a semantic verifier on Planetarium's
-equivalence labels, using it for best-of-K selection, and adding calibrated
-abstention to avoid verifier-induced failures at scale.
+equivalence labels, using it for best-of-K selection, and applying one
+domain-aware repair step to the verifier-selected candidate. The final paper
+message is search + semantic selection + repair, not abstention.
 
 Full design rationale is in `deep-research-report.md`.
 
 ## Current Paper Framing
 
-- Paper-facing title: **Verifier-Calibrated Search and Repair for Faithful
-  Text-to-PDDL Generation**.
+- Paper-facing title: **When Valid Is Not Faithful: Verifier-Calibrated Search
+  and Repair for Structured Generation**.
 - The final system is frozen round-4 verifier-ranked `K=8` search plus
   one-step domain-aware repair.
 - Main final evidence is `results/vcsr/final_repair_gate_round4` on untouched
-  seeds `51-55`: `verifier_ranked` `0.4200` -> `verifier_ranked_repair`
-  `0.7720`.
+  seeds `51-55`: prompt-only `0.3680`, round-4 `verifier_ranked` `0.4200`,
+  and repair-augmented `verifier_ranked_repair` `0.7720` at `K=8`.
+- The `K=8` candidate-pool oracle is `0.4640`; repair exceeds it because the
+  repaired output is a new candidate outside the original pool.
 - Secondary robustness evidence is now available under
   `results/vcsr/model_benchmark/`: with seeds `72-74`, `10` rows per seed,
   VCSR repair improves Claude Haiku 4.5, Sonnet 4.5, and Opus 4.6 at `K=8`.
 - `verifier_ranked` is the immediate pre-repair ablation, not the only baseline.
   The paper should also compare against greedy, random parseable best-of-K, and
   planner/solvability search.
-- Use `PAPER_PLAN.md` and generated artifacts in `results/paper/final_vcsr/`.
+- The current manuscript source is `paper/main.tex`; `paper/README.md` records
+  the paper-facing evidence and build instructions.
 - Do not tune prompts, checkpoints, guards, or selection rules using seeds
   `51-55`.
 
@@ -61,7 +70,7 @@ scripts/
   calibrate_verifier.py   Separate calibration/evaluation protocol + risk-coverage curves
   run_verifier_lr_sweep.py  Execute LR sweep and summarize verifier runs
   sample_verifier_jsonl.py  Stratified random lines from verifier_train.jsonl
-search/                   (currently minimal) Best-of-K, abstention, repair
+search/                   (currently minimal) Best-of-K, selection, repair
 verifier/                 Dataset/model/train/eval code for cross-encoder verifier
 results/
   baseline/               Baseline JSON
@@ -191,34 +200,38 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - [x] Integrate repair-augmented best-of-K selection
 - [x] Run final fresh repair-augmented VCSR gate on untouched seeds `51-55`
 - [x] Run guarded repair follow-up on fresh seeds `67-71`
-- [x] Run Claude-family post-paper model benchmark on seeds `72-74`
+- [x] Run Claude-family post-freeze model benchmark on seeds `72-74`
 
 ### Phase 4: Paper and Release (Weeks 7-8)
 
-- [ ] Paper, figures, artifact
+- [x] Paper draft, figures, final tables, and artifact links
+- [ ] Final arXiv packaging / upload
 
 ---
 
 ## What To Work On Next
 
-1. **Prepare paper tables and write-up**
-   Final repair-augmented VCSR passed the untouched seed gate: mean `K=8`
-   equivalence improved from `0.4200` with plain round-4 `verifier_ranked` to
-   `0.7720` with `verifier_ranked_repair` on seeds `51-55`.
-2. **Replay remains the checkpoint-selection rule**
+1. **Keep the final paper source stable**
+   `paper/main.tex` is the paper-facing manuscript. Do not change numbers,
+   claims, final seeds, or promoted policies unless a new run is explicitly
+   intended to supersede the paper.
+2. **Prepare arXiv/release packaging**
+   Package the TeX source, bibliography, and any required generated files so
+   arXiv can compile without parent-directory paths.
+3. **Replay remains the checkpoint-selection rule**
    Continue to judge new verifier checkpoints primarily by replay on cached
    pools, not by offline AUC alone.
-3. **Preserve provenance**
+4. **Preserve provenance**
    Never reuse pool output directories; every long-running generation or
    training run must have its own output directory and visible `progress.log`.
-4. **Keep the distinction clear**
+5. **Keep the distinction clear**
    Rounds 5 and 6 failed because they pushed pairwise/ranking loss. Round 7 is
    different: it is a larger round-4-style focused pointwise retrain, and it
    passed cached replay but did not pass the fresh promotion gate.
-5. **Do not tune on final seeds**
+6. **Do not tune on final seeds**
    Seeds `51-55` are now final evidence. Do not use them for prompt edits,
    checkpoint selection, selector-policy design, or repair gating.
-6. **Do not oversell guarded repair**
+7. **Do not oversell guarded repair**
    The verifier-score guard replicated the repair gain on seeds `67-71`, but it
    did not reduce blocksworld hurts versus unconditional repair.
 
@@ -227,7 +240,9 @@ Config: `configs/neggen.yaml`. Generator: **Bedrock** (`BEDROCK_MODEL_ID`, e.g. 
 - The negative-generation pilot under `results/neggen/pilot/` is the completed data milestone for Phase 2.
 - `results/verifier/pilot/` should still be treated as dry-run / debugging output from the earlier smoke-test stage.
 - A completed verifier training run now exists under `results/verifier/full_run/`, along with threshold analysis and a cleaner calibration/evaluation report.
-- We have now completed fixed-pool replay on multiple cached pools and verified that the ranking-aligned round-3 checkpoint is the current official best downstream verifier.
+- We completed fixed-pool replay on multiple cached pools. Round 3 was the
+  earlier replay-backed baseline; round 4 is now the promoted best-current
+  verifier.
 - `results/verifier/best_current/selection.yaml` now points to `results/verifier/ranking_aligned_round4/retrain_from_round3_focused`.
 - The fresh held-out end-to-end runs under `results/vcsr/bestofk_round3_holdout_eval/` and `results/vcsr/bestofk_round4_holdout_eval_clean/` are complete.
 - Round 4 improved over round 3 on replay and also improved fresh held-out `verifier_ranked` at both `K=4` and `K=8`.
